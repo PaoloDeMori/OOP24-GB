@@ -39,6 +39,9 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+
+    //spotbugs annotations
+    testCompileOnly("com.github.spotbugs:spotbugs-annotations:4.9.8")
 }
 
 application {
