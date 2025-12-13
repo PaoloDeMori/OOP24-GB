@@ -2,7 +2,6 @@ package it.unibo.geometrybash.model.geometry;
 
 import java.util.IntSummaryStatistics;
 import java.util.List;
-import java.util.Locale;
 import java.util.NoSuchElementException;
 import java.util.function.ToIntFunction;
 
@@ -74,13 +73,6 @@ public final class HitBox {
                             .mapToInt(extractor)
                             .summaryStatistics();
 
-        if (stats.getCount() == 0) {
-            throw new NoSuchElementException(
-                "Cannot calculate delta for axis '" + axis.name().toLowerCase(Locale.getDefault()) + "': vertices list is empty"
-            );
-        }
-
         return stats.getMax() - stats.getMin();
     }
-
 }
