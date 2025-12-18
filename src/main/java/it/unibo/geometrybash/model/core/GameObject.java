@@ -5,6 +5,7 @@ import it.unibo.geometrybash.model.geometry.Vector2;
 
 /**
  * Represents a generic game object.
+ *
  * <p>
  * This interface defines the minimal behavior required for all game objects.
  * Each object must implement its own update logic in {@link #update(float)}.
@@ -38,7 +39,21 @@ public interface GameObject {
     HitBox getHitBox();
 
     /**
+     * Returns a defensive copy of this {@link GameObject}.
+     *
+     * <p>
+     * Used to prevent exposing internal mutable state. Implementations
+     * must return a new instance with the same state so that modifications
+     * to the copy do not affect the original.
+     * </p>
+     *
+     * @return a new {@link GameObject} instance duplicating this object's state
+     */
+    GameObject copy();
+
+    /**
      * Returns whether the object is currently active.
+     *
      * <p>
      * The active state is a general indicator of whether the object
      * is considered "in use" or "enabled" in the game context.
@@ -50,6 +65,7 @@ public interface GameObject {
 
     /**
      * Sets the active state of the object.
+     *
      * <p>
      * This method updates the general status of the object as active
      * or inactive. The specific effects depend on the implementation.
@@ -69,6 +85,7 @@ public interface GameObject {
 
     /**
      * Updates the object-specific logic for the current frame.
+     *
      * <p>
      * This method advances the internal state of the object based on the
      * elapsed time. The actual behavior depends on the concrete type.
