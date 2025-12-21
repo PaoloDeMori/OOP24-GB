@@ -1,6 +1,4 @@
-package it.unibo.geometrybash.model;
-
-import it.unibo.geometrybash.controller.gameloop.GameLoop;
+package it.unibo.geometrybash.controller.gameloop;
 
 /**
  * This interface represents an action that has to be executed after a change in the gameloop.

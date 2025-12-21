@@ -1,10 +1,11 @@
-package it.unibo.geometrybash.model.exceptions;
+package it.unibo.geometrybash.controller.gameloop.exceptions;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import it.unibo.geometrybash.controller.gameloop.GameLoop;
 
 /**
- * An Exception for a generic error during a method call in the {@link it.unibo.geometrybash.controller.gameloop.GameLoop}.
+ * An Exception for a generic error during a method call in the {@link GameLoop}.
  */
 public class InvalidGameLoopStatusException extends Exception {
 
@@ -13,7 +14,7 @@ public class InvalidGameLoopStatusException extends Exception {
     private static final Logger LOGGER = LoggerFactory.getLogger(InvalidGameLoopStatusException.class);
 
     /**
-     * Constructs a new Exception for a generic error during a method call in the {@link it.unibo.geometrybash.controller.gameloop.GameLoop}.
+     * Constructs a new Exception for a generic error during a method call in the {@link GameLoop}.
      * 
      * <p>Add a string to the default message.
      * 
@@ -25,7 +26,7 @@ public class InvalidGameLoopStatusException extends Exception {
     }
 
     /**
-     * Constructs a new Exception for a generic error during a method call in the {@link it.unibo.geometrybash.controller.gameloop.GameLoop}.
+     * Constructs a new Exception for a generic error during a method call in the {@link GameLoop}.
      * 
      * <p>Uses the default message.
      */

@@ -8,13 +8,11 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import org.junit.jupiter.api.Test;
 
-import it.unibo.geometrybash.controller.gameloop.GameLoop;
-import it.unibo.geometrybash.controller.gameloop.GameLoopImpl;
-import it.unibo.geometrybash.model.exceptions.FpsNotCalculatedException;
-import it.unibo.geometrybash.model.exceptions.InvalidGameLoopConfigurationException;
-import it.unibo.geometrybash.model.exceptions.InvalidGameLoopStatusException;
-import it.unibo.geometrybash.model.exceptions.NotOnPauseException;
-import it.unibo.geometrybash.model.exceptions.NotStartedException;
+import it.unibo.geometrybash.controller.gameloop.exceptions.FpsNotCalculatedException;
+import it.unibo.geometrybash.controller.gameloop.exceptions.InvalidGameLoopConfigurationException;
+import it.unibo.geometrybash.controller.gameloop.exceptions.InvalidGameLoopStatusException;
+import it.unibo.geometrybash.controller.gameloop.exceptions.NotOnPauseException;
+import it.unibo.geometrybash.controller.gameloop.exceptions.NotStartedException;
 
 class TestGameLoopImpl {
     private static final String INTERRUPT_RECEIVED_MESSAGE = "interrupt received";
