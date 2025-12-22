@@ -7,15 +7,30 @@ import it.unibo.geometrybash.commons.pattern.observerpattern.viewobserverpattern
 import it.unibo.geometrybash.commons.pattern.observerpattern.viewobserverpattern.ViewEventType;
 import it.unibo.geometrybash.view.KeyProcessor;
 
-public class SwingStrategyWithObservable implements InputListenerStrategy {
+/**
+ * Implementation of {@link InputListenerStrategy} that maps Swing key codes
+ * to view events and notifies a {@link KeyProcessor}.
+ */
+public final class SwingStrategyWithObservable implements InputListenerStrategy {
 
-    private KeyProcessor kp;
-    private StandardViewEventType eventType = null;
+    private final KeyProcessor kp;
+    private StandardViewEventType eventType;
 
-    SwingStrategyWithObservable(final KeyProcessor obs){
+    /**
+     * Creates a new strategy that will notify the given processor.
+     *
+     * @param obs the processor to notify of key events
+     */
+    public SwingStrategyWithObservable(final KeyProcessor obs) {
         this.kp = obs;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p>
+     * Maps SPACE/UP to JUMP and ESCAPE to MENU. Other keys are ignored.
+     */
     @Override
     public void handleInput(final int keyCode) {
         switch (keyCode) {
@@ -31,6 +46,6 @@ public class SwingStrategyWithObservable implements InputListenerStrategy {
         }
         final ViewEventType viewEventType = ViewEventTypeFactory.standard(eventType);
         final ViewEvent viewEvent = ViewEvent.createEvent(viewEventType);
-        kp.keyPressionRecived(viewEvent);
+        kp.keyPressionReceived(viewEvent);
     }
 }

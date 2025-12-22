@@ -35,7 +35,7 @@ final class StandardViewEvent implements ViewEventType {
     /**
      * {@inheritDoc}
      *
-     * <p> return true if it is a user input
+     * <p>return true if it is a user input
      */
     @Override
     public boolean isFromUserInput() {
@@ -43,7 +43,7 @@ final class StandardViewEvent implements ViewEventType {
     }
 
     /**
-     * * {@inheritDoc}
+     * {@inheritDoc}
      *
      * <p>returns the type of the  standard event.
      */

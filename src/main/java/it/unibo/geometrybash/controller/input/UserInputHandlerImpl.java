@@ -16,7 +16,7 @@ import it.unibo.geometrybash.controller.OnInputEventAction;
  * Implementation of {@link UserInputHandler} for handling user input events.
  * Maps user actions (JUMP, MENU) to configured actions.
  */
-public class UserInputHandlerImpl implements UserInputHandler {
+public final class UserInputHandlerImpl implements UserInputHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserInputHandlerImpl.class);
 
     private final Map<StandardViewEventType, OnInputEventAction> actionMap;

@@ -9,24 +9,24 @@ import it.unibo.geometrybash.controller.OnInputEventAction;
  */
 public interface UserInputHandler {
 
-   /**
-     * Handles a view event representing user input.
-     *
-     * @param event the view event
-     */
-    void handleUserInputEvent(ViewEvent event);
+  /**
+   * Handles a view event representing user input.
+   *
+   * @param event the view event
+   */
+  void handleUserInputEvent(ViewEvent event);
 
-    /**
-     * Sets the action to execute when player performs jump.
-     *
-     * @param action the action to execute
-     */
-    void setOnJumpAction(OnInputEventAction action);
+  /**
+   * Sets the action to execute when player performs jump.
+   *
+   * @param action the action to execute
+   */
+  void setOnJumpAction(OnInputEventAction action);
 
-    /**
-     * Sets the action to execute when player opens menu/pause.
-     *
-     * @param action the action to execute
-     */
-    void setOnMenuAction(OnInputEventAction action);
+  /**
+   * Sets the action to execute when player opens menu/pause.
+   *
+   * @param action the action to execute
+   */
+  void setOnMenuAction(OnInputEventAction action);
 }
