@@ -1,8 +1,10 @@
 package it.unibo.geometrybash.commons.pattern.observerpattern.viewobserverpattern;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
@@ -40,12 +42,10 @@ class StandardViewEventTypeTest {
     @Test
     void testCommandNamesAreDifferent() {
         assertNotEquals(StandardViewEventType.START.getCommandName(),
-        StandardViewEventType.CLOSE.getCommandName()
-    );
-    assertNotEquals(
-            StandardViewEventType.RESUME.getCommandName(),
-            StandardViewEventType.RESTART.getCommandName()
-        );
+                StandardViewEventType.CLOSE.getCommandName());
+        assertNotEquals(
+                StandardViewEventType.RESUME.getCommandName(),
+                StandardViewEventType.RESTART.getCommandName());
     }
 
     @Test
@@ -55,5 +55,27 @@ class StandardViewEventTypeTest {
         for (final StandardViewEventType type : values) {
             assertNotNull(type.getCommandName());
         }
+    }
+
+    @Test
+    void testIsGuiEvent() {
+        assertTrue(StandardViewEventType.START.isGuiEvent());
+        assertTrue(StandardViewEventType.RESUME.isGuiEvent());
+        assertTrue(StandardViewEventType.HOME.isGuiEvent());
+        assertTrue(StandardViewEventType.RESTART.isGuiEvent());
+        assertTrue(StandardViewEventType.CLOSE.isGuiEvent());
+        assertTrue(StandardViewEventType.INVENTORY.isGuiEvent());
+        assertFalse(StandardViewEventType.JUMP.isGuiEvent());
+        assertFalse(StandardViewEventType.MENU.isGuiEvent());
+        assertFalse(StandardViewEventType.GENERIC.isGuiEvent());
+    }
+
+    @Test
+    void testIsUserInput() {
+        assertTrue(StandardViewEventType.JUMP.isUserInput());
+        assertTrue(StandardViewEventType.MENU.isUserInput());
+        assertFalse(StandardViewEventType.START.isUserInput());
+        assertFalse(StandardViewEventType.CLOSE.isUserInput());
+        assertFalse(StandardViewEventType.GENERIC.isUserInput());
     }
 }

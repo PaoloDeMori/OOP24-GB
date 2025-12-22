@@ -4,6 +4,7 @@ import java.util.Objects;
 
 import it.unibo.geometrybash.commons.input.StandardViewEventType;
 import it.unibo.geometrybash.commons.pattern.observerpattern.viewobserverpattern.ViewEvent;
+import it.unibo.geometrybash.commons.pattern.observerpattern.viewobserverpattern.ViewEventType;
 import it.unibo.geometrybash.controller.InputHandler;
 import it.unibo.geometrybash.controller.OnGenericCommandAction;
 import it.unibo.geometrybash.controller.OnInputEventAction;
@@ -28,7 +29,7 @@ public final class CompositeInputHandler implements InputHandler {
     @Override
     public void update(final ViewEvent event) {
         Objects.requireNonNull(event, "ViewEvent cannot be null");
-        final var eventType = event.getType();
+        final ViewEventType eventType = event.getType();
         if (eventType.isFromUserInput()) {
             userInputHandler.handleUserInputEvent(event);
         } else {
