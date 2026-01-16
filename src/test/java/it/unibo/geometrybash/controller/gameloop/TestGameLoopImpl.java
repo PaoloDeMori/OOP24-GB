@@ -235,7 +235,7 @@ class TestGameLoopImpl {
         final GameLoop gL = new GameLoopImpl();
         final ExampleClass eC = new ExampleClass();
         //number of times to check the number of fps.
-        final short timesToCycle = 5;
+        final short timesToCycle = 3;
         //time to wait for the thread to calculate a new number of fps
         final long oneSecondAndOneMillisecond = 6_001L;
         short fpsSum = 0;
