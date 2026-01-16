@@ -1,4 +1,4 @@
-package it.unibo.geometrybash.model.exceptions;
+package it.unibo.geometrybash.controller.gameloop.exceptions;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

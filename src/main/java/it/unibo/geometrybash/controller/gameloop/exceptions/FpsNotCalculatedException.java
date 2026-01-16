@@ -1,10 +1,11 @@
-package it.unibo.geometrybash.model.exceptions;
+package it.unibo.geometrybash.controller.gameloop.exceptions;
 
+import it.unibo.geometrybash.controller.gameloop.GameLoop;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * An Exception thrown if a client tries to get the number of FPS of the {@link it.unibo.geometrybash.model.GameLoop}, 
+ * An Exception thrown if a client tries to get the number of FPS of the {@link GameLoop}, 
  * but it has not been calculated once yet.
  */
 public class FpsNotCalculatedException extends Exception {
