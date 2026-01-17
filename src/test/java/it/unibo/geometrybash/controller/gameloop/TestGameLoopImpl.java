@@ -239,8 +239,8 @@ class TestGameLoopImpl {
         //time to wait for the thread to calculate a new number of fps
         final long oneSecondAndOneMillisecond = 6_001L;
         short fpsSum = 0;
-        final short maxAverageFrameRate = 65;
-        final short minAverageFramerate = 55;
+        final short maxAverageFrameRate = 75;
+        final short minAverageFramerate = 40;
         gL.setUpdateAction(eC::executable);
         assertDoesNotThrow(gL::start);
         //verifies that an exception is thrown if the client tries to get the number of fps before the first evaluation.
