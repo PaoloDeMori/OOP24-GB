@@ -8,15 +8,6 @@ import it.unibo.geometrybash.model.geometry.Vector2;
  *
  * <p>This interface defines the minimal behavior required for all game objects.
  * Each object must implement its own update logic in {@link #update(float)}.
- *
- * <p>Implementations must provide:
- * <ul>
- *   <li>Current position via {@link #getPosition()}</li>
- *   <li>Collision boundaries via {@link #getHitBox()}</li>
- *   <li>Active state management via {@link #isActive()} and {@link #setActive(boolean)}</li>
- *   <li>Per-frame game logic updates via {@link #update(float)}</li>
- *   <li>Type information via {@link #getType()}</li>
- * </ul>
  */
 public interface GameObject {
 

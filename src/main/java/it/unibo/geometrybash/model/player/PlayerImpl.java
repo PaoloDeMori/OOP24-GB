@@ -4,10 +4,11 @@ import it.unibo.geometrybash.model.collision.Collidable;
 import it.unibo.geometrybash.model.collision.CollisionEvent;
 import it.unibo.geometrybash.model.core.AbstractGameObject;
 import it.unibo.geometrybash.model.core.GameObject;
+import it.unibo.geometrybash.model.core.Updatable;
 import it.unibo.geometrybash.model.geometry.HitBox;
 import it.unibo.geometrybash.model.geometry.Vector2;
 
-public class PlayerImpl extends AbstractGameObject implements Player, Collidable{
+public class PlayerImpl extends AbstractGameObject implements Player, Collidable, Updatable {
 
     protected PlayerImpl(Vector2 position, HitBox hitBox) {
         super(position, hitBox);
@@ -66,5 +67,11 @@ public class PlayerImpl extends AbstractGameObject implements Player, Collidable
     public GameObject copy() {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'copy'");
+    }
+
+    @Override
+    public void update(float deltaTime) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'update'");
     }
 }
