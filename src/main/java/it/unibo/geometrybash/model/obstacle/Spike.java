@@ -40,4 +40,9 @@ public final class Spike extends AbstractObstacle {
         return copy;
     }
 
+    @Override
+    public Class<Spike> getType() {
+        return Spike.class;
+    }
+
 }

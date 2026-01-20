@@ -25,7 +25,7 @@ public final class PowerUpFactory {
      * @param position the power-up's position in the game world
      * @return a new {@link PowerUp}
      */
-    public static PowerUp create(final PowerUpType type, final Vector2 position) {
+    public static PowerUp<?> create(final PowerUpType type, final Vector2 position) {
         return switch (type) {
             case COIN -> new Coin(position);
             case SHIELD -> new ShieldPowerUp(position);

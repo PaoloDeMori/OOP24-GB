@@ -1,8 +1,6 @@
 package it.unibo.geometrybash.model.powerup;
 
-import java.util.List;
-
-import it.unibo.geometrybash.model.geometry.HitBox;
+import it.unibo.geometrybash.model.geometry.CircleHitBox;
 import it.unibo.geometrybash.model.geometry.Vector2;
 
 /**
@@ -12,12 +10,12 @@ import it.unibo.geometrybash.model.geometry.Vector2;
  * When activated, the power-up applies a speed multiplier for a limited
  * duration.
  */
-public class SpeedBoostPowerUp extends AbstractPowerUp {
+public class SpeedBoostPowerUp extends AbstractPowerUp<CircleHitBox> {
 
     /**
      * The size of the square power-up's hitbox.
      */
-    public static final int SIZE = 28;
+    public static final int RADIUS = 12;
 
     /**
      * The duration, in second, of the speed boost effect.
@@ -35,20 +33,7 @@ public class SpeedBoostPowerUp extends AbstractPowerUp {
      * @param position the initial position of the power-up in the world
      */
     public SpeedBoostPowerUp(final Vector2 position) {
-        super(position, createHitBox(), PowerUpType.SPEED_BOOST, DURATION);
-    }
-
-    /**
-     * Creates the hitbox associated with this power-up.
-     *
-     * @return a new {@link HitBox} representing the collision area of the power-up
-     */
-    private static HitBox createHitBox() {
-        return new HitBox(List.of(
-                new Vector2(0, 0),
-                new Vector2(SIZE, 0),
-                new Vector2(SIZE, SIZE),
-                new Vector2(0, SIZE)));
+        super(position, new CircleHitBox(RADIUS), PowerUpType.SPEED_BOOST, DURATION);
     }
 
     /**
@@ -73,6 +58,11 @@ public class SpeedBoostPowerUp extends AbstractPowerUp {
         final SpeedBoostPowerUp copySpeedBoostPowerUp = new SpeedBoostPowerUp(this.position);
         copySpeedBoostPowerUp.setActive(this.active);
         return copySpeedBoostPowerUp;
+    }
+
+    @Override
+    public Class<SpeedBoostPowerUp> getType() {
+        return SpeedBoostPowerUp.class;
     }
 
 }

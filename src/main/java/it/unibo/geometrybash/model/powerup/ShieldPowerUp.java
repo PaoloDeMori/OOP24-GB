@@ -1,7 +1,6 @@
 package it.unibo.geometrybash.model.powerup;
 
-import java.util.List;
-import it.unibo.geometrybash.model.geometry.HitBox;
+import it.unibo.geometrybash.model.geometry.CircleHitBox;
 import it.unibo.geometrybash.model.geometry.Vector2;
 
 /**
@@ -10,12 +9,12 @@ import it.unibo.geometrybash.model.geometry.Vector2;
  * <p>
  * The shield protects the player from one deadly collision.
  */
-public final class ShieldPowerUp extends AbstractPowerUp {
+public final class ShieldPowerUp extends AbstractPowerUp<CircleHitBox> {
 
     /**
      * Size of the square hitbox of the power-up.
      */
-    public static final int SIZE = 28;
+    public static final int RADIUS = 12;
 
     /**
      * Creates a new {@code ShieldPowerUp} at the given position.
@@ -23,20 +22,7 @@ public final class ShieldPowerUp extends AbstractPowerUp {
      * @param position the initial position of the power-up in the game world
      */
     public ShieldPowerUp(final Vector2 position) {
-        super(position, createHitBox(), PowerUpType.SHIELD, 0);
-    }
-
-    /**
-     * Creates the hitbox associated with this power-up.
-     *
-     * @return a new {@link HitBox} representing the collision area of the power-up
-     */
-    private static HitBox createHitBox() {
-        return new HitBox(List.of(
-                new Vector2(0, 0),
-                new Vector2(SIZE, 0),
-                new Vector2(SIZE, SIZE),
-                new Vector2(0, SIZE)));
+        super(position, new CircleHitBox(RADIUS), PowerUpType.SHIELD, 0);
     }
 
     /**
@@ -52,6 +38,11 @@ public final class ShieldPowerUp extends AbstractPowerUp {
         final ShieldPowerUp copyShieldPowerUp = new ShieldPowerUp(this.position);
         copyShieldPowerUp.setActive(this.active);
         return copyShieldPowerUp;
+    }
+
+    @Override
+    public Class<ShieldPowerUp> getType() {
+       return ShieldPowerUp.class;
     }
 
 }

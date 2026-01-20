@@ -1,8 +1,6 @@
 package it.unibo.geometrybash.model.powerup;
 
-import java.util.List;
-
-import it.unibo.geometrybash.model.geometry.HitBox;
+import it.unibo.geometrybash.model.geometry.CircleHitBox;
 import it.unibo.geometrybash.model.geometry.Vector2;
 
 /**
@@ -14,12 +12,12 @@ import it.unibo.geometrybash.model.geometry.Vector2;
  * numerical value when picked up.
  */
 
-public final class Coin extends AbstractPowerUp {
+public final class Coin extends AbstractPowerUp<CircleHitBox> {
 
     /**
      * The side lenght of square hitbox of the coin.
      */
-    public static final int SIZE = 24;
+    public static final int RADIUS = 12;
 
     /**
      * The default values awarded.
@@ -34,21 +32,8 @@ public final class Coin extends AbstractPowerUp {
      * @param position the initial coin's position
      */
     public Coin(final Vector2 position) {
-        super(position, createHitBox(), PowerUpType.COIN, 0);
+        super(position, new CircleHitBox(RADIUS), PowerUpType.COIN, 0);
         this.value = DEFAULT_VALUE;
-    }
-
-    /**
-     * Creates the square hitbox used for collision detection of the coin.
-     *
-     * @return a square {@link HitBox} with side length {@link #SIZE}
-     */
-    private static HitBox createHitBox() {
-        return new HitBox(List.of(
-                new Vector2(0, 0),
-                new Vector2(SIZE, 0),
-                new Vector2(SIZE, SIZE),
-                new Vector2(0, SIZE)));
     }
 
     /**
@@ -71,6 +56,11 @@ public final class Coin extends AbstractPowerUp {
         final Coin copy = new Coin(this.position);
         copy.setActive(this.active);
         return copy;
+    }
+
+    @Override
+    public Class<Coin> getType() {
+        return Coin.class;
     }
 
 }

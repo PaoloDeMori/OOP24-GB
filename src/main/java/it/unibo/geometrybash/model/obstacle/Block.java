@@ -14,7 +14,7 @@ import it.unibo.geometrybash.model.geometry.Vector2;
  */
 public final class Block extends AbstractObstacle {
 
-     public static final int SIZE = 32;
+    public static final int SIZE = 32;
 
     /**
      * Creates a block at the given position.
@@ -31,7 +31,8 @@ public final class Block extends AbstractObstacle {
      * @return a square {@link HitBox} representing the block
      */
     public static HitBox createHitBox() {
-        return new HitBox(List.of(new Vector2(0, 0), new Vector2(SIZE, 0), new Vector2(SIZE, SIZE), new Vector2(0, SIZE)));
+        return new HitBox(
+                List.of(new Vector2(0, 0), new Vector2(SIZE, 0), new Vector2(SIZE, SIZE), new Vector2(0, SIZE)));
     }
 
     @Override
@@ -39,5 +40,10 @@ public final class Block extends AbstractObstacle {
         final Block copy = new Block(this.position);
         copy.setActive(this.active);
         return copy;
+    }
+
+    @Override
+    public Class<Block> getType() {
+        return Block.class;
     }
 }

@@ -1,7 +1,7 @@
 package it.unibo.geometrybash.model.powerup;
 
 import it.unibo.geometrybash.model.core.AbstractGameObject;
-import it.unibo.geometrybash.model.geometry.HitBox;
+import it.unibo.geometrybash.model.geometry.Shape;
 import it.unibo.geometrybash.model.geometry.Vector2;
 
 /**
@@ -11,7 +11,7 @@ import it.unibo.geometrybash.model.geometry.Vector2;
  * A power-up is a game object that provides a temporary or permanent effect
  * to an entity when collected
  */
-public abstract class AbstractPowerUp extends AbstractGameObject implements PowerUp {
+public abstract class AbstractPowerUp<S extends Shape> extends AbstractGameObject<S> implements PowerUp<S> {
 
     private final PowerUpType powerUpType;
     private final float duration;
@@ -25,7 +25,7 @@ public abstract class AbstractPowerUp extends AbstractGameObject implements Powe
      *                    temporary
      * @param duration    the effect duration which is 0 for the permanent one
      */
-    protected AbstractPowerUp(final Vector2 position, final HitBox hitBox, final PowerUpType powerUpType,
+    protected AbstractPowerUp(final Vector2 position, final S hitBox, final PowerUpType powerUpType,
             final float duration) {
         super(position, hitBox);
         this.powerUpType = powerUpType;
@@ -48,6 +48,6 @@ public abstract class AbstractPowerUp extends AbstractGameObject implements Powe
     }
 
     @Override
-    public abstract AbstractPowerUp copy();
+    public abstract AbstractPowerUp<S> copy();
 
 }

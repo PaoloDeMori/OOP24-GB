@@ -12,7 +12,7 @@ import it.unibo.geometrybash.model.geometry.Vector2;
  * detection but does not actively react to collisions. The collision logic
  * is handled by the player
  */
-public abstract class AbstractObstacle extends AbstractGameObject implements Obstacle {
+public abstract class AbstractObstacle extends AbstractGameObject<HitBox> implements Obstacle {
 
     private final ObstacleType obstacleType;
 

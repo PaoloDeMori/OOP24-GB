@@ -1,13 +1,14 @@
 package it.unibo.geometrybash.model.powerup;
 
 import it.unibo.geometrybash.model.core.GameObject;
+import it.unibo.geometrybash.model.geometry.Shape;
 
 /**
  * Represents a collectible power-up in the game.
  *
  * <p>Power-ups can be permanent (coins) or temporary
  */
-public interface PowerUp extends GameObject {
+public interface PowerUp<S extends Shape> extends GameObject<S> {
 
     /**
      * Returns the type of this power-up.
