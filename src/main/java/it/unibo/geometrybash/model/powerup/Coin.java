@@ -17,7 +17,7 @@ import it.unibo.geometrybash.model.player.Player;
 public final class Coin extends AbstractPowerUp<CircleHitBox> implements Collidable {
 
     /**
-     * The side lenght of square hitbox of the coin.
+     * The radius lenght of circle hitbox of the coin.
      */
     public static final float RADIUS = 0.4f;
 
@@ -66,7 +66,7 @@ public final class Coin extends AbstractPowerUp<CircleHitBox> implements Collida
      * <p>
      * Adds the coin's value to the player's total and deactivates
      * the coin object so it can no longer be collected or rendered.
-     * </p>
+     *
      *
      * @param player the player that collected the coin
      */
