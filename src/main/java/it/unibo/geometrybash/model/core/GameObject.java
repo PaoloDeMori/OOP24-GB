@@ -1,24 +1,19 @@
 package it.unibo.geometrybash.model.core;
 
+import it.unibo.geometrybash.model.geometry.CircleHitBox;
 import it.unibo.geometrybash.model.geometry.HitBox;
+import it.unibo.geometrybash.model.geometry.Shape;
 import it.unibo.geometrybash.model.geometry.Vector2;
 
 /**
  * Represents a generic game object.
  *
  * <p>This interface defines the minimal behavior required for all game objects.
- * Each object must implement its own update logic in {@link #update(float)}.
  *
- * <p>Implementations must provide:
- * <ul>
- *   <li>Current position via {@link #getPosition()}</li>
- *   <li>Collision boundaries via {@link #getHitBox()}</li>
- *   <li>Active state management via {@link #isActive()} and {@link #setActive(boolean)}</li>
- *   <li>Per-frame game logic updates via {@link #update(float)}</li>
- *   <li>Type information via {@link #getType()}</li>
- * </ul>
+ * @param <S> the type of {@link Shape} used for this object's hitbox,
+ *            e.g., {@link CircleHitBox} or {@link HitBox}
  */
-public interface GameObject {
+public interface GameObject<S extends Shape> {
 
     /**
      * Returns the current position of the object in the game world.
@@ -28,11 +23,12 @@ public interface GameObject {
     Vector2 getPosition();
 
     /**
-     * Returns the hitbox of the object, used for collision detection.
+     * Returns the hitbox of the game object.
      *
-     * @return a {@link HitBox} defining the object's physical boundaries
+     * @return the {@link Shape} representing this object's hitbox, which
+     *         may be a {@link CircleHitBox} or a {@link HitBox}
      */
-    HitBox getHitBox();
+    S getHitBox();
 
     /**
      * Returns a defensive copy of this {@link GameObject}.
@@ -45,7 +41,7 @@ public interface GameObject {
      *
      * @return a new {@link GameObject} instance duplicating this object's state
      */
-    GameObject copy();
+    GameObject<S> copy();
 
     /**
      * Returns whether the object is currently active.
@@ -71,11 +67,4 @@ public interface GameObject {
      *               {@code false} to mark it as inactive
      */
     void setActive(boolean active);
-
-    /**
-     * Returns the runtime class of the object.
-     *
-     * @return the {@link Class} object corresponding to this object's type
-     */
-    Class<? extends GameObject> getType();
 }
