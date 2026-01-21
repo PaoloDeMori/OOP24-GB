@@ -1,7 +1,9 @@
 package it.unibo.geometrybash.model.powerup;
 
+import it.unibo.geometrybash.model.collision.Collidable;
 import it.unibo.geometrybash.model.geometry.CircleHitBox;
 import it.unibo.geometrybash.model.geometry.Vector2;
+import it.unibo.geometrybash.model.player.Player;
 
 /**
  * A {@link Coin} is a collective {@link PowerUp} which increases its in-game
@@ -12,12 +14,12 @@ import it.unibo.geometrybash.model.geometry.Vector2;
  * numerical value when picked up.
  */
 
-public final class Coin extends AbstractPowerUp<CircleHitBox> {
+public final class Coin extends AbstractPowerUp<CircleHitBox> implements Collidable {
 
     /**
      * The side lenght of square hitbox of the coin.
      */
-    public static final int RADIUS = 12;
+    public static final float RADIUS = 0.4f;
 
     /**
      * The default values awarded.
@@ -58,9 +60,21 @@ public final class Coin extends AbstractPowerUp<CircleHitBox> {
         return copy;
     }
 
+    /**
+     * Handles the collection of the coin.
+     *
+     * <p>
+     * Adds the coin's value to the player's total and deactivates
+     * the coin object so it can no longer be collected or rendered.
+     * </p>
+     *
+     * @param player the player that collected the coin
+     */
     @Override
-    public Class<Coin> getType() {
-        return Coin.class;
+    public void onCollision(final Player player) {
+        player.addCoin(DEFAULT_VALUE);
+        this.setActive(false);
+
     }
 
 }

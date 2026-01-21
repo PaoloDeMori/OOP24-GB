@@ -8,24 +8,22 @@ public enum PowerUpType {
     /**
      * Collectible coin, adds to the player's score, they can be used for shop new skins.
      */
-    COIN("coin", false),
+    COIN("coin"),
 
     /**
      * Shield, grants temporary invincibility.
      */
-    SHIELD("shield", false),
+    SHIELD("shield"),
 
     /**
      *  Speed boost temporarily increase player's speed.
      */
-    SPEED_BOOST("speedboost", true);
+    SPEED_BOOST("speedboost");
 
     private final String name;
-    private final boolean temporary;
 
-    PowerUpType(final String name, final boolean temporary) {
+    PowerUpType(final String name) {
         this.name = name;
-        this.temporary = temporary;
     }
 
     /**
@@ -37,12 +35,4 @@ public enum PowerUpType {
         return this.name;
     }
 
-    /**
-     * Check if this power-up has temporary effect.
-     *
-     * @return true if temporary, false if permament like the coin
-     */
-    public boolean isTemporary() {
-        return this.temporary;
-    }
 }

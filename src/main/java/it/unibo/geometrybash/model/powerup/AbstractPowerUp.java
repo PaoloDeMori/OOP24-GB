@@ -10,11 +10,12 @@ import it.unibo.geometrybash.model.geometry.Vector2;
  * <p>
  * A power-up is a game object that provides a temporary or permanent effect
  * to an entity when collected
+ *
+ * @param <S> the type of shape used for collision detection
  */
 public abstract class AbstractPowerUp<S extends Shape> extends AbstractGameObject<S> implements PowerUp<S> {
 
     private final PowerUpType powerUpType;
-    private final float duration;
 
     /**
      * Creates a new power-up.
@@ -29,22 +30,11 @@ public abstract class AbstractPowerUp<S extends Shape> extends AbstractGameObjec
             final float duration) {
         super(position, hitBox);
         this.powerUpType = powerUpType;
-        this.duration = duration;
     }
 
     @Override
     public final PowerUpType getPowerUpType() {
         return this.powerUpType;
-    }
-
-    @Override
-    public final boolean isTemporary() {
-        return this.powerUpType.isTemporary();
-    }
-
-    @Override
-    public final float getDuration() {
-        return this.duration;
     }
 
     @Override

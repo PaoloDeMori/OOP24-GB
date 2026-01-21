@@ -1,7 +1,9 @@
 package it.unibo.geometrybash.model.powerup;
 
+import it.unibo.geometrybash.model.collision.Collidable;
 import it.unibo.geometrybash.model.geometry.CircleHitBox;
 import it.unibo.geometrybash.model.geometry.Vector2;
+import it.unibo.geometrybash.model.player.Player;
 
 /**
  * Represent a {@link PowerUp} that grants a shield to the player.
@@ -9,12 +11,12 @@ import it.unibo.geometrybash.model.geometry.Vector2;
  * <p>
  * The shield protects the player from one deadly collision.
  */
-public final class ShieldPowerUp extends AbstractPowerUp<CircleHitBox> {
+public final class ShieldPowerUp extends AbstractPowerUp<CircleHitBox> implements Collidable {
 
     /**
      * Size of the square hitbox of the power-up.
      */
-    public static final int RADIUS = 12;
+    public static final float RADIUS = 0.45f;
 
     /**
      * Creates a new {@code ShieldPowerUp} at the given position.
@@ -40,9 +42,19 @@ public final class ShieldPowerUp extends AbstractPowerUp<CircleHitBox> {
         return copyShieldPowerUp;
     }
 
+    /**
+     * Handles the collection of the shield power-up.
+     *
+     * <p>
+     * Activates the one-time protection shield via the player's
+     * PowerUpManager and deactivates this collectible object.
+     *
+     * @param player the player that collected the shield
+     */
     @Override
-    public Class<ShieldPowerUp> getType() {
-       return ShieldPowerUp.class;
+    public void onCollision(final Player player) {
+        player.getPowerUpManager().activateShield();
+        this.setActive(false);
     }
 
 }

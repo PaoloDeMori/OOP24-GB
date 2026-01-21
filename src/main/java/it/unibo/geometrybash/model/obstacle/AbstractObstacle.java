@@ -34,10 +34,5 @@ public abstract class AbstractObstacle extends AbstractGameObject<HitBox> implem
     }
 
     @Override
-    public final boolean isDeadly() {
-        return this.obstacleType.isDeadly();
-    }
-
-    @Override
     public abstract AbstractObstacle copy();
 }

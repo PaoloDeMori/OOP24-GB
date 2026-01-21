@@ -17,10 +17,4 @@ public interface Obstacle extends GameObject<HitBox> {
      */
     ObstacleType getObstacleType();
 
-    /**
-     * Check if this obstacle kills the player on contact.
-     *
-     * @return true if deadly, false otherwise
-     */
-    boolean isDeadly();
 }

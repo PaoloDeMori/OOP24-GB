@@ -1,7 +1,9 @@
 package it.unibo.geometrybash.model.powerup;
 
+import it.unibo.geometrybash.model.collision.Collidable;
 import it.unibo.geometrybash.model.geometry.CircleHitBox;
 import it.unibo.geometrybash.model.geometry.Vector2;
+import it.unibo.geometrybash.model.player.Player;
 
 /**
  * Represents a {@link PowerUp} which increases the player's speed.
@@ -10,12 +12,12 @@ import it.unibo.geometrybash.model.geometry.Vector2;
  * When activated, the power-up applies a speed multiplier for a limited
  * duration.
  */
-public class SpeedBoostPowerUp extends AbstractPowerUp<CircleHitBox> {
+public class SpeedBoostPowerUp extends AbstractPowerUp<CircleHitBox> implements Collidable {
 
     /**
      * The size of the square power-up's hitbox.
      */
-    public static final int RADIUS = 12;
+    public static final float RADIUS = 0.45f;
 
     /**
      * The duration, in second, of the speed boost effect.
@@ -60,9 +62,18 @@ public class SpeedBoostPowerUp extends AbstractPowerUp<CircleHitBox> {
         return copySpeedBoostPowerUp;
     }
 
+    /**
+     * Handles the collection of the speed boost power-up.
+     *
+     * <p>
+     * Applies a speed multiplier for a set duration through the
+     * player's PowerUpManager and deactivates this collectible object.
+     *
+     * @param player the player that collected the speed boost
+     */
     @Override
-    public Class<SpeedBoostPowerUp> getType() {
-        return SpeedBoostPowerUp.class;
+    public void onCollision(final Player player) {
+        player.getPowerUpManager().applySpeedModifier(MULTIPLIER, DURATION);
+        this.setActive(false);
     }
-
 }
