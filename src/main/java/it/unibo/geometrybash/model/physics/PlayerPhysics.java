@@ -1,11 +1,10 @@
 package it.unibo.geometrybash.model.physics;
 
-import org.jbox2d.dynamics.Body;
-
 import it.unibo.geometrybash.model.geometry.Vector2;
 
 /**
  * Defines the physics-related operations of a player entity.
+ *
  * <p>
  * This interface represents the contract between the game logic layer
  * and the physics system. It exposes movement, state query, and body
@@ -17,6 +16,7 @@ public interface PlayerPhysics {
 
     /**
      * Applies a vertical impulse to make the player jump.
+     *
      * <p>
      * The method triggers a jump action by modifying the physical state
      * of the player in the physics simulation.
@@ -26,6 +26,7 @@ public interface PlayerPhysics {
 
     /**
      * Scales the player's current linear velocity by the specified factor.
+     *
      * <p>
      * The resulting velocity is computed by applying the multiplier to
      * the current velocity components.
@@ -37,6 +38,7 @@ public interface PlayerPhysics {
 
     /**
      * Returns the current linear velocity of the player.
+     *
      * <p>
      * The velocity is expressed using a domain-level vector type,
      * independent from the underlying physics engine.
@@ -54,14 +56,8 @@ public interface PlayerPhysics {
     boolean isGrounded();
 
     /**
-     * Returns the physical body associated with the player.
-     *
-     * @return the physics body representing the player
-     */
-    Body getBody();
-
-    /**
      * Sets the player's physical state to a new position.
+     *
      * <p>
      * This operation updates the player's position in the physics world
      * and resets its dynamic state.
@@ -70,6 +66,13 @@ public interface PlayerPhysics {
      * @param pos the new position of the player
      */
     void resetBodyTo(Vector2 pos);
+
+    /**
+     * Returns the position of the player.
+     *
+     * @return the body's position of the player
+     */
+    Vector2 getPosition();
 
     /**
      * Associates arbitrary user-defined data with the player's physical body.

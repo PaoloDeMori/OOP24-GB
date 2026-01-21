@@ -6,6 +6,7 @@ import org.jbox2d.dynamics.Body;
 
 /**
  * Concrete implementation of {@link PlayerPhysics} based on JBox2D.
+ *
  * <p>
  * This class manages the physical state and behavior of a player entity
  * by delegating all physics-related operations to a JBox2D {@link Body}.
@@ -13,7 +14,7 @@ import org.jbox2d.dynamics.Body;
  * exposing physics data through domain-level types where required.
  * </p>
  */
-public class PlayerPhysicsImpl implements PlayerPhysics{
+public class PlayerPhysicsImpl implements PlayerPhysics {
 
     /**
      * Magnitude of the vertical impulse applied when a jump is performed.
@@ -54,22 +55,21 @@ public class PlayerPhysicsImpl implements PlayerPhysics{
             return;
         }
 
-        Vec2 vel = body.getLinearVelocity();
-        body.setLinearVelocity(new Vec2(vel.x, 0f));
+        final Vec2 velocity = this.body.getLinearVelocity();
+        this.body.setLinearVelocity(new Vec2(velocity.x, 0f));
 
-        body.applyLinearImpulse(
-            new Vec2(0f, JUMP_IMPULSE),
-            body.getWorldCenter()
-        );
+        this.body.applyLinearImpulse(
+                new Vec2(0f, JUMP_IMPULSE),
+                this.body.getWorldCenter());
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void setVelocity(float multiplier) {
+    public void setVelocity(final float multiplier) {
         final float currentSpeed = BASE_SPEED * multiplier;
-        body.setLinearVelocity(new Vec2(currentSpeed, body.getLinearVelocity().y));
+        this.body.setLinearVelocity(new Vec2(currentSpeed, this.body.getLinearVelocity().y));
     }
 
     /**
@@ -77,7 +77,7 @@ public class PlayerPhysicsImpl implements PlayerPhysics{
      */
     @Override
     public Vector2 getVelocity() {
-        return new Vector2(body.getLinearVelocity().x, body.getLinearVelocity().y);
+        return new Vector2(this.body.getLinearVelocity().x, this.body.getLinearVelocity().y);
     }
 
     /**
@@ -85,33 +85,33 @@ public class PlayerPhysicsImpl implements PlayerPhysics{
      */
     @Override
     public boolean isGrounded() {
-        return groundContacts > 0;
+        return this.groundContacts > 0;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Body getBody() {
-        return body;
+    public void resetBodyTo(final Vector2 position) {
+        this.body.setTransform(new Vec2(position.x(), position.y()), 0f);
+        this.body.setLinearVelocity(new Vec2(0f, 0f));
+        this.body.setAngularVelocity(0f);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void resetBodyTo(Vector2 pos) {
-        body.setTransform(new Vec2(pos.x(), pos.y()), 0f);
-        body.setLinearVelocity(new Vec2(0f, 0f));
-        body.setAngularVelocity(0f);
+    public Vector2 getPosition() {
+        return new Vector2(body.getPosition().x, body.getPosition().y);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void setUserData(Object userData) {
-        body.setUserData(userData);
+    public void setUserData(final Object userData) {
+        this.body.setUserData(userData);
     }
 
     /**
@@ -119,7 +119,7 @@ public class PlayerPhysicsImpl implements PlayerPhysics{
      */
     @Override
     public void incrementGroundContacts() {
-        groundContacts++;
+        this.groundContacts++;
     }
 
     /**
@@ -127,7 +127,7 @@ public class PlayerPhysicsImpl implements PlayerPhysics{
      */
     @Override
     public void decrementGroundContacts() {
-        groundContacts = Math.max(0, groundContacts - 1);
+        this.groundContacts = Math.max(0, this.groundContacts - 1);
     }
 
 }

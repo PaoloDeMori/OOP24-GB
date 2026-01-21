@@ -6,7 +6,7 @@ public interface Player {
 
     void jump();
 
-    void kill();
+    void die();
 
     void respawn(Vector2 position);
 
@@ -14,7 +14,7 @@ public interface Player {
 
     int getCoins();
 
-    void applySpeedModifier(float multiplier, float duration);
+    void applySpeedModifier(float multiplier);
 
     Skin getSkin();
 
