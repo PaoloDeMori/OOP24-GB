@@ -6,6 +6,7 @@ import it.unibo.geometrybash.model.core.Updatable;
 import it.unibo.geometrybash.model.geometry.HitBox;
 import it.unibo.geometrybash.model.geometry.Vector2;
 import it.unibo.geometrybash.model.physics.PlayerPhysics;
+import it.unibo.geometrybash.model.physics.PlayerPhysicsFactory;
 import it.unibo.geometrybash.model.powerup.PowerUpManager;
 
 /**
@@ -44,15 +45,21 @@ public class PlayerImpl extends AbstractGameObject<HitBox> implements Player, Up
     private Skin skin;
 
     /**
+     * The factory for create a {@link PlayerPhysics} istance.
+     */
+    private final PlayerPhysicsFactory factory;
+
+    /**
      * Creates a new {@code PlayerImpl} instance with a position, hitbox, and physics component.
      *
      * @param position the initial position of the player in the game world
      * @param hitBox the collision hitbox associated with the player
-     * @param physics the physics component responsible for movement and collisions
+     * @param physicsFactory create the physics component responsible for movement and collisions
      */
-    protected PlayerImpl(final Vector2 position, final HitBox hitBox, final PlayerPhysics physics) {
+    public PlayerImpl(final Vector2 position, final HitBox hitBox, final PlayerPhysicsFactory physicsFactory) {
         super(position, hitBox);
-        this.physics = physics;
+        this.physics = physicsFactory.createPhysics(position);
+        this.factory = physicsFactory;
         this.powerUpManager = new PowerUpManager();
         this.coins = 0;
         this.skin = null;
@@ -176,7 +183,7 @@ public class PlayerImpl extends AbstractGameObject<HitBox> implements Player, Up
      */
     @Override
     public GameObject<HitBox> copy() {
-        final PlayerImpl copy = new PlayerImpl(new Vector2(position.x(), position.y()), hitBox, physics);
+        final PlayerImpl copy = new PlayerImpl(new Vector2(position.x(), position.y()), hitBox, this.factory);
         copy.coins = this.coins;
         copy.skin = this.skin;
         return copy;
