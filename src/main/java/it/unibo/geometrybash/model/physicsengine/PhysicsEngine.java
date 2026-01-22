@@ -13,7 +13,7 @@ public interface PhysicsEngine {
      * 
      * @param obj the GameObject to create in the physics-engine world
      */
-    void addGameObject(GameObject obj);
+    void addGameObject(GameObject<?> obj);
 
     /**
      * A method to remove the equivalent version of a gameObject from the physics-engine world
@@ -21,7 +21,7 @@ public interface PhysicsEngine {
      * 
      * @param obj the GameObject to remove in the physics-engine world
      */
-    void removeGameObject(GameObject obj);
+    void removeGameObject(GameObject<?> obj);
 
     /**
      * A method to update the physics-engine.
@@ -40,6 +40,6 @@ public interface PhysicsEngine {
      * 
      * @param player the gameobject that has to jump.
      */
-    void jump(GameObject player);
+    void jump(GameObject<?> player);
 
 }

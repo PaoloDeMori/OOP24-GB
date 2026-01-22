@@ -1,5 +1,7 @@
 package it.unibo.geometrybash.model;
 
+import it.unibo.geometrybash.model.player.Player;
+
 /**
  * The model state.
  */
