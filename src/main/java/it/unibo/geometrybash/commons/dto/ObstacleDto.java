@@ -8,7 +8,8 @@ package it.unibo.geometrybash.commons.dto;
  * @param width the width
  * @param height the height
  * @param type the obstacle type identifier
+ * @param isActive if the obstacle is active
  */
-public record ObstacleDto(float x, float y, float width, float height, String type) {
+public record ObstacleDto(float x, float y, float width, float height, boolean isActive, DtoObstaclesType type) {
 
 }

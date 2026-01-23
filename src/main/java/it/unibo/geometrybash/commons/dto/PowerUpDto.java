@@ -8,7 +8,8 @@ package it.unibo.geometrybash.commons.dto;
  * @param width the width
  * @param height the height
  * @param type the power-up type identifier
+ * @param isActive if the power-up is active
  */
-public record PowerUpDto(float x, float y, float width, float height, String type) {
+public record PowerUpDto(float x, float y, float width, float height, boolean isActive, DtoPowerUpType type) {
 
 }
