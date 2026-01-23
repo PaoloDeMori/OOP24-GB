@@ -1,4 +1,4 @@
-package it.unibo.geometrybash.commons.dto;
+package it.unibo.geometrybash.commons.dtos;
 
 public enum DtoObstaclesType {
     SPIKE, BLOCK

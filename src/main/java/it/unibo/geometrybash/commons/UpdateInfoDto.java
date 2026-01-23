@@ -2,7 +2,7 @@ package it.unibo.geometrybash.commons;
 
 import java.io.Serializable;
 
-import it.unibo.geometrybash.commons.dto.GameStateDto;
+import it.unibo.geometrybash.commons.dtos.GameStateDto;
 
 /**
  * The information used to update the view.
