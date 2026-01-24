@@ -3,10 +3,11 @@ package it.unibo.geometrybash.model.physicsengine;
 import it.unibo.geometrybash.model.AbstractGameModel;
 
 /**
- * An Abstract implementation of the {@link GameModelWithPhysicsEngine} 
- * interface that implements the get and set of the physics engine.
+ * An Abstract implementation of the {@link GameModelWithPhysicsEngine}
+ * interface that implements the getter and setter of the physics engine.
  */
-public abstract class AbstractGameModelWithPhysicsEngine extends AbstractGameModel implements GameModelWithPhysicsEngine {
+public abstract class AbstractGameModelWithPhysicsEngine extends AbstractGameModel
+        implements GameModelWithPhysicsEngine {
     private PhysicsEngine physicsEngine;
 
     /**

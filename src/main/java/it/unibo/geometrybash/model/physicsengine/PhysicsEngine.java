@@ -8,16 +8,20 @@ import it.unibo.geometrybash.model.core.GameObject;
 public interface PhysicsEngine {
 
     /**
-     * A method to add the equivalent version of a gameObject in the physics-engine world
-     * and save the correspondence of the GameObject with its physiscs-world version.
+     * A method to add the equivalent version of a gameObject in the physics-engine
+     * world
+     * and save the correspondence of the GameObject with its physiscs-world
+     * version.
      * 
      * @param obj the GameObject to create in the physics-engine world
      */
     void addGameObject(GameObject<?> obj);
 
     /**
-     * A method to remove the equivalent version of a gameObject from the physics-engine world
-     * and remove the correspondence of the GameObject with its physics-world version.
+     * A method to remove the equivalent version of a gameObject from the
+     * physics-engine world
+     * and remove the correspondence of the GameObject with its physics-world
+     * version.
      * 
      * @param obj the GameObject to remove in the physics-engine world
      */
@@ -31,15 +35,13 @@ public interface PhysicsEngine {
     void updatePhysicsEngine(float deltaTime);
 
     /**
-     * A method to synchronize the data inside the gameobjects with the data inside their physics engine version.
+     * A method to synchronize the data inside the gameobjects with the data inside
+     * their physics engine version.
      */
     void synchronizeGameEntitiesWithPhysicsEntities();
 
     /**
-     * apply if possible the jump to the given GameObject.
-     * 
-     * @param player the gameobject that has to jump.
+     * Resets the physics engine.
      */
-    void jump(GameObject<?> player);
-
+    void reset();
 }

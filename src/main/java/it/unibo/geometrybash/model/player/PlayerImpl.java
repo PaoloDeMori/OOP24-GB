@@ -21,7 +21,7 @@ import it.unibo.geometrybash.model.powerup.PowerUpManager;
  * All temporary effects are managed internally and updated via the {@link #update(float)} method.
  * </p>
  */
-public class PlayerImpl extends AbstractGameObject<HitBox> implements Player, Updatable {
+public class PlayerImpl extends AbstractGameObject<HitBox> implements Player<HitBox>, Updatable {
 
     /**
      *  Manages all temporary power-up effects for the player.

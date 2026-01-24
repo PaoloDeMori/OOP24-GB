@@ -165,7 +165,7 @@ class AbstractGameModelTest {
         }
 
         @Override
-        public Player getPlayer() {
+        public Player<?> getPlayer() {
             throw new UnsupportedOperationException(NOT_NECESSARY_METHOD);
         }
 

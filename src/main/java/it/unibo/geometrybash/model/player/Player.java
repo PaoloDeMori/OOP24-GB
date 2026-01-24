@@ -1,5 +1,8 @@
 package it.unibo.geometrybash.model.player;
 
+import it.unibo.geometrybash.model.core.GameObject;
+import it.unibo.geometrybash.model.geometry.HitBox;
+import it.unibo.geometrybash.model.geometry.Shape;
 import it.unibo.geometrybash.model.geometry.Vector2;
 
 /**
@@ -10,8 +13,10 @@ import it.unibo.geometrybash.model.geometry.Vector2;
  * player-controlled
  * entity in game.
  * </p>
+ * 
+ * @param <S> the type of shape used for collision detection
  */
-public interface Player {
+public interface Player<S extends Shape> extends GameObject<HitBox> { 
 
     /**
      * Makes the player jump, applying the appropriate vertical impulse.

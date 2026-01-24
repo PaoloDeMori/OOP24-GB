@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 /**
  * An Exception thrown if an object of the physics engine isnt correctly initialise.
  */
-public class InvalidPhysicsEngineConfiguration extends Exception {
+public class InvalidPhysicsEngineConfiguration extends RuntimeException {
     private static final String DEFAULT_MESSAGE = "Error during initialization in model";
     private static final Logger LOGGER = LoggerFactory.getLogger(InvalidPhysicsEngineConfiguration.class);
 
