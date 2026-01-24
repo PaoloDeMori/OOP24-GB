@@ -17,7 +17,7 @@ public final class PowerUpView implements Drawable<List<PowerUpDto>> {
     private final SpriteRegistry spriteRegistry;
 
     /**
-     * Creates a new {@code ObstacleView}
+     * Creates a new {@code PowerUpView}.
      *
      * @param spriteRegistry the registry to retrieve power-ups sprites.
      */
@@ -31,12 +31,12 @@ public final class PowerUpView implements Drawable<List<PowerUpDto>> {
      * @param g2d           the graphics context
      * @param renderContext the rendering context which gives the view port and
      *                      camera
-     * @param obstacles     the list of power-ups ro render
+     * @param powerups     the list of power-ups ro render
      */
     @Override
-    public void draw(Graphics2D g2d, RenderContext renderContext, List<PowerUpDto> data) {
+    public void draw(final Graphics2D g2d, final RenderContext renderContext, final List<PowerUpDto> powerups) {
         final Camera2D camera = renderContext.camera();
-        for (PowerUpDto powerUp : data) {
+        for (final PowerUpDto powerUp : powerups) {
             if (powerUp.isActive()) {
                 final BufferedImage sprite = spriteRegistry.powerUpSprite(powerUp.type());
                 final int x = camera.xToPx(powerUp.x());

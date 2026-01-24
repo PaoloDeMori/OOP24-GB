@@ -8,6 +8,7 @@ import it.unibo.geometrybash.view.core.RenderContext;
  *
  * @param <T> the type of data transfer objects (DTO) to be rendered
  */
+@FunctionalInterface
 public interface Drawable<T> {
 
     /**

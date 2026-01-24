@@ -18,7 +18,7 @@ public final class ObstacleView implements Drawable<List<ObstacleDto>> {
     private final SpriteRegistry spriteRegistry;
 
     /**
-     * Creates a new {@code ObstacleView}
+     * Creates a new {@code ObstacleView}.
      *
      * @param spriteRegistry the registry to retrieve obstacle sprites.
      */
@@ -33,6 +33,7 @@ public final class ObstacleView implements Drawable<List<ObstacleDto>> {
      * @param renderContext the rendering context which gives the view port and camera
      * @param obstacles the list of obstacles ro render
      */
+    @Override
     public void draw(final Graphics2D g2d, final RenderContext renderContext, final List<ObstacleDto> obstacles) {
         final Camera2D camera = renderContext.camera();
 
