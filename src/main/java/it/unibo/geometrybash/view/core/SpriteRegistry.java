@@ -1,4 +1,4 @@
-package it.unibo.geometrybash.view;
+package it.unibo.geometrybash.view.core;
 
 import java.awt.image.BufferedImage;
 import java.util.Objects;

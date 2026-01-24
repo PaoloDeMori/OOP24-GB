@@ -22,7 +22,7 @@ public class CollisionHandler implements ContactListener {
      * Creates a new CollisionHandler.
      */
     public CollisionHandler() {
-        // Default constructor
+        // Default constructor.
     }
 
     /**
