@@ -11,11 +11,10 @@ import it.unibo.geometrybash.model.player.Player;
 
 /**
  * Detects collisions between game objects using the JBox2D physics engine.
- * 
+ *
  * <p>
  * Implements {@link ContactListener} to receive notifications when two fixtures
- * begin or end contact. For each collision, a {@link CollisionEvent} is created
- * and dispatched to objects implementing {@link Collidable}.
+ * begin or end contact.
  * </p>
  */
 public class CollisionHandler implements ContactListener {
