@@ -35,6 +35,20 @@ public class BodyFactoryImpl implements BodyFactory {
     private final World world;
 
     /**
+     * A private method to convert the position of a polygonal object from the bottom left vertex to the geometric center.
+     * 
+     * @param leftCenter the model version of the position representing the bottom left vertex.
+     * @param hB the hitbox of the geometric figure.
+     * @return the geometric center.
+     */
+    private Vector2 modelCenterToJBox2dCenterConverter(Vector2 leftCenter,HitBox hB){
+        return new Vector2(
+                leftCenter.x() + (hB.getWidth()/2f),
+                leftCenter.y() + (hB.getHeight()/2f)
+            );
+    }
+
+    /**
      * The constructor of this class.
      * 
      * @param world the {@link World} used to create the bodies
@@ -46,8 +60,7 @@ public class BodyFactoryImpl implements BodyFactory {
     /**
      * Creates a JBox2d Body instance.
      * 
-     * @param pos      the world position of the body,it indicates the center if circular and
-     *                 the bottom left vertex if polygonal
+     * @param pos      the world position of the body,it indicates the center.
      * @param bodyType the {@link BodyType} oh the body
      * @param data     the {@link GameObject} set as user data and uses for
      *                 collision handling.
@@ -79,8 +92,12 @@ public class BodyFactoryImpl implements BodyFactory {
      */
     private FixtureDef createPoligonalFixtureDefinition(final HitBox hB, final boolean isASensor) {
         final PolygonShape shapeBox2d = new PolygonShape();
+
+        final float halfWidth = hB.getWidth() / 2f;
+        final float halfHeight = hB.getHeight() / 2f;
+
         final Vec2[] verts = hB.getVertices().stream()
-                .map(v -> new Vec2(v.x(), v.y()))
+                .map(v -> new Vec2(v.x() - halfWidth, v.y() - halfHeight))
                 .toArray(Vec2[]::new);
         shapeBox2d.set(verts, verts.length);
         final FixtureDef fDef = new FixtureDef();
@@ -125,7 +142,9 @@ public class BodyFactoryImpl implements BodyFactory {
             throw new InvalidPhysicsEngineConfiguration("Circular obstacle dont exist");
         } else if (sH instanceof HitBox) {
             final HitBox hB = (HitBox) sH;
-            final Body body = createBody(obj.getPosition(), BodyType.STATIC, obj);
+            Vector2 obstaclePosition = obj.getPosition();
+            final Vector2 centerPos = modelCenterToJBox2dCenterConverter(obstaclePosition,hB);
+            final Body body = createBody(centerPos, BodyType.STATIC, obj);
             final FixtureDef fDef = createPoligonalFixtureDefinition(hB, false);
             body.createFixture(fDef);
 
@@ -151,7 +170,9 @@ public class BodyFactoryImpl implements BodyFactory {
             return body;
         } else if (sH instanceof HitBox) {
             final HitBox hB = (HitBox) sH;
-            final Body body = createBody(obj.getPosition(), BodyType.STATIC, obj);
+            Vector2 powerUpPosition = obj.getPosition();
+            final Vector2 centerPos = modelCenterToJBox2dCenterConverter(powerUpPosition,hB);
+            final Body body = createBody(centerPos, BodyType.STATIC, obj);
             final FixtureDef fDef = createPoligonalFixtureDefinition(hB, true);
             body.createFixture(fDef);
 
@@ -171,7 +192,9 @@ public class BodyFactoryImpl implements BodyFactory {
             throw new InvalidPhysicsEngineConfiguration("Circular player dont exist");
         } else if (sH instanceof HitBox) {
             final HitBox hB = (HitBox) sH;
-            final Body body = createBody(p.getPosition(), BodyType.DYNAMIC, p);
+            Vector2 playerPosition = p.getPosition();
+            final Vector2 centerPos = modelCenterToJBox2dCenterConverter(playerPosition,hB);
+            final Body body = createBody(centerPos, BodyType.DYNAMIC, p);
             final FixtureDef fDef = createPoligonalFixtureDefinition(hB, false);
             fDef.density = 1.0f;
             body.createFixture(fDef);

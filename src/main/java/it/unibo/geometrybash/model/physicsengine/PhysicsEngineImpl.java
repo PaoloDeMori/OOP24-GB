@@ -135,7 +135,9 @@ public class PhysicsEngineImpl implements PhysicsEngine {
         for (final GameObject<?> gameObject : updatableObjects) {
             final Body b = physicsToModelLink.get(gameObject);
             final Vec2 bodyPosition = b.getPosition();
-            gameObject.setPosition(new Vector2(bodyPosition.x, bodyPosition.y));
+            float bodyX = bodyPosition.x - (gameObject.getHitBox().getWidth() / 2f);
+            float bodyY = bodyPosition.y - (gameObject.getHitBox().getHeight() / 2f);
+            gameObject.setPosition(new Vector2(bodyX, bodyY));
         }
     }
 
