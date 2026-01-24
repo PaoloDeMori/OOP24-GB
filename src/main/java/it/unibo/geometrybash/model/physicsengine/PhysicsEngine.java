@@ -4,8 +4,10 @@ import it.unibo.geometrybash.model.core.GameObject;
 
 /**
  * A physics engine that handle the game.
+ * 
+ * @param <T> the body class that represents the objects in the physics engine.
  */
-public interface PhysicsEngine {
+public interface PhysicsEngine<T> {
 
     /**
      * A method to add the equivalent version of a gameObject in the physics-engine

@@ -1,4 +1,4 @@
-package it.unibo.geometrybash.model.physicsengine;
+package it.unibo.geometrybash.model.physicsengine.impl.jbox2d;
 
 import org.jbox2d.collision.shapes.CircleShape;
 import org.jbox2d.collision.shapes.PolygonShape;
@@ -15,6 +15,7 @@ import it.unibo.geometrybash.model.geometry.HitBox;
 import it.unibo.geometrybash.model.geometry.Shape;
 import it.unibo.geometrybash.model.geometry.Vector2;
 import it.unibo.geometrybash.model.obstacle.Obstacle;
+import it.unibo.geometrybash.model.physicsengine.BodyFactory;
 import it.unibo.geometrybash.model.physicsengine.exception.InvalidPhysicsEngineConfiguration;
 import it.unibo.geometrybash.model.player.Player;
 import it.unibo.geometrybash.model.powerup.PowerUp;
@@ -22,7 +23,7 @@ import it.unibo.geometrybash.model.powerup.PowerUp;
 /**
  * A {@link BodyFactory} implementation.
  */
-public class BodyFactoryImpl implements BodyFactory {
+public class BodyFactoryImpl implements BodyFactory<Body> {
     /**
      * The default friction value.
      */
@@ -35,26 +36,26 @@ public class BodyFactoryImpl implements BodyFactory {
     private final World world;
 
     /**
-     * A private method to convert the position of a polygonal object from the bottom left vertex to the geometric center.
-     * 
-     * @param leftCenter the model version of the position representing the bottom left vertex.
-     * @param hB the hitbox of the geometric figure.
-     * @return the geometric center.
-     */
-    private Vector2 modelCenterToJBox2dCenterConverter(Vector2 leftCenter,HitBox hB){
-        return new Vector2(
-                leftCenter.x() + (hB.getWidth()/2f),
-                leftCenter.y() + (hB.getHeight()/2f)
-            );
-    }
-
-    /**
      * The constructor of this class.
      * 
      * @param world the {@link World} used to create the bodies
      */
     protected BodyFactoryImpl(final World world) {
         this.world = world;
+    }
+
+    /**
+     * A private method to convert the position of a polygonal object from the bottom left vertex to the geometric center.
+     * 
+     * @param leftCenter the model version of the position representing the bottom left vertex.
+     * @param hB the hitbox of the geometric figure.
+     * @return the geometric center.
+     */
+    private Vector2 modelCenterToJBox2dCenterConverter(final Vector2 leftCenter, final HitBox hB) {
+        return new Vector2(
+                leftCenter.x() + (hB.getWidth() / 2f),
+                leftCenter.y() + (hB.getHeight() / 2f)
+            );
     }
 
     /**
@@ -142,8 +143,8 @@ public class BodyFactoryImpl implements BodyFactory {
             throw new InvalidPhysicsEngineConfiguration("Circular obstacle dont exist");
         } else if (sH instanceof HitBox) {
             final HitBox hB = (HitBox) sH;
-            Vector2 obstaclePosition = obj.getPosition();
-            final Vector2 centerPos = modelCenterToJBox2dCenterConverter(obstaclePosition,hB);
+            final Vector2 obstaclePosition = obj.getPosition();
+            final Vector2 centerPos = modelCenterToJBox2dCenterConverter(obstaclePosition, hB);
             final Body body = createBody(centerPos, BodyType.STATIC, obj);
             final FixtureDef fDef = createPoligonalFixtureDefinition(hB, false);
             body.createFixture(fDef);
@@ -170,8 +171,8 @@ public class BodyFactoryImpl implements BodyFactory {
             return body;
         } else if (sH instanceof HitBox) {
             final HitBox hB = (HitBox) sH;
-            Vector2 powerUpPosition = obj.getPosition();
-            final Vector2 centerPos = modelCenterToJBox2dCenterConverter(powerUpPosition,hB);
+            final Vector2 powerUpPosition = obj.getPosition();
+            final Vector2 centerPos = modelCenterToJBox2dCenterConverter(powerUpPosition, hB);
             final Body body = createBody(centerPos, BodyType.STATIC, obj);
             final FixtureDef fDef = createPoligonalFixtureDefinition(hB, true);
             body.createFixture(fDef);
@@ -192,8 +193,8 @@ public class BodyFactoryImpl implements BodyFactory {
             throw new InvalidPhysicsEngineConfiguration("Circular player dont exist");
         } else if (sH instanceof HitBox) {
             final HitBox hB = (HitBox) sH;
-            Vector2 playerPosition = p.getPosition();
-            final Vector2 centerPos = modelCenterToJBox2dCenterConverter(playerPosition,hB);
+            final Vector2 playerPosition = p.getPosition();
+            final Vector2 centerPos = modelCenterToJBox2dCenterConverter(playerPosition, hB);
             final Body body = createBody(centerPos, BodyType.DYNAMIC, p);
             final FixtureDef fDef = createPoligonalFixtureDefinition(hB, false);
             fDef.density = 1.0f;

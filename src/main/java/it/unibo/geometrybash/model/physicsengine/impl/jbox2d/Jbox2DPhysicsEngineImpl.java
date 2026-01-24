@@ -1,4 +1,4 @@
-package it.unibo.geometrybash.model.physicsengine;
+package it.unibo.geometrybash.model.physicsengine.impl.jbox2d;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -12,6 +12,8 @@ import org.jbox2d.dynamics.World;
 import it.unibo.geometrybash.model.core.GameObject;
 import it.unibo.geometrybash.model.geometry.Vector2;
 import it.unibo.geometrybash.model.obstacle.Obstacle;
+import it.unibo.geometrybash.model.physicsengine.BodyFactory;
+import it.unibo.geometrybash.model.physicsengine.PhysicsEngine;
 import it.unibo.geometrybash.model.physicsengine.exception.InvalidPhysicsEngineConfiguration;
 import it.unibo.geometrybash.model.player.Player;
 import it.unibo.geometrybash.model.powerup.PowerUp;
@@ -21,7 +23,7 @@ import it.unibo.geometrybash.model.powerup.PowerUp;
  * 
  * @see PhysicsEngine
  */
-public class PhysicsEngineImpl implements PhysicsEngine {
+public class Jbox2DPhysicsEngineImpl implements PhysicsEngine<Body> {
     /**
      * The gravity of the {@link World}.
      */
@@ -40,13 +42,13 @@ public class PhysicsEngineImpl implements PhysicsEngine {
     private final Map<GameObject<?>, Body> physicsToModelLink = new HashMap<>();
     private final List<GameObject<?>> toRemove = new LinkedList<>();
     private final List<GameObject<?>> updatableObjects = new LinkedList<>();
-    private BodyFactory bF;
+    private BodyFactory<Body> bF;
     private World world;
 
     /**
      * The constructor of this class.
      */
-    public PhysicsEngineImpl() {
+    public Jbox2DPhysicsEngineImpl() {
         this.world = new World(new Vec2(GRAVITY.x(), GRAVITY.y()));
         bF = new BodyFactoryImpl(world);
     }
@@ -135,8 +137,8 @@ public class PhysicsEngineImpl implements PhysicsEngine {
         for (final GameObject<?> gameObject : updatableObjects) {
             final Body b = physicsToModelLink.get(gameObject);
             final Vec2 bodyPosition = b.getPosition();
-            float bodyX = bodyPosition.x - (gameObject.getHitBox().getWidth() / 2f);
-            float bodyY = bodyPosition.y - (gameObject.getHitBox().getHeight() / 2f);
+            final float bodyX = bodyPosition.x - (gameObject.getHitBox().getWidth() / 2f);
+            final float bodyY = bodyPosition.y - (gameObject.getHitBox().getHeight() / 2f);
             gameObject.setPosition(new Vector2(bodyX, bodyY));
         }
     }
