@@ -1,10 +1,14 @@
 package it.unibo.geometrybash.model.player;
 
+import java.util.List;
+
 import it.unibo.geometrybash.model.core.AbstractGameObject;
 import it.unibo.geometrybash.model.core.GameObject;
 import it.unibo.geometrybash.model.core.Updatable;
 import it.unibo.geometrybash.model.geometry.HitBox;
 import it.unibo.geometrybash.model.geometry.Vector2;
+import it.unibo.geometrybash.model.obstacle.Spike;
+import it.unibo.geometrybash.model.physics.PlayerPhysicsFactory;
 import it.unibo.geometrybash.model.physicsengine.PlayerPhysics;
 import it.unibo.geometrybash.model.powerup.PowerUpManager;
 
@@ -23,24 +27,11 @@ import it.unibo.geometrybash.model.powerup.PowerUpManager;
  */
 public class PlayerImpl extends AbstractGameObject<HitBox> implements Player<HitBox>, Updatable {
 
-    /**
-     *  Manages all temporary power-up effects for the player.
-     */
+    private static final float SIZE = 1.0f;
     private final PowerUpManager powerUpManager;
-
-    /**
-     * The physics component handle all physics interactions.
-     */
     private final PlayerPhysics physics;
-
-    /**
-     * The total number of coins currently collected by the player.
-     */
+    private final PlayerPhysicsFactory factory;
     private int coins;
-
-    /**
-     * The visual representation or skin currently assigned to the player.
-     */
     private Skin skin;
 
     /**
@@ -48,11 +39,12 @@ public class PlayerImpl extends AbstractGameObject<HitBox> implements Player<Hit
      *
      * @param position the initial position of the player in the game world
      * @param hitBox the collision hitbox associated with the player
-     * @param physics the physics component responsible for movement and collisions
+     * @param physicsFactory create the physics component responsible for movement and collisions
      */
-    protected PlayerImpl(final Vector2 position, final HitBox hitBox, final PlayerPhysics physics) {
-        super(position, hitBox);
-        this.physics = physics;
+    public PlayerImpl(final Vector2 position, final HitBox hitBox, final PlayerPhysicsFactory physicsFactory) {
+        super(position, createHitBox());
+        this.physics = physicsFactory.createPhysics(position);
+        this.factory = physicsFactory;
         this.powerUpManager = new PowerUpManager();
         this.coins = 0;
         this.skin = null;
@@ -131,9 +123,10 @@ public class PlayerImpl extends AbstractGameObject<HitBox> implements Player<Hit
      * {@inheritDoc}
      */
     @Override
-    public void onSpikeCollision() {
+    public void onSpikeCollision(final Spike obstacle) {
         if (powerUpManager.isShielded()) {
             powerUpManager.consumeShield();
+            obstacle.setActive(false);
         } else {
             die();
         }
@@ -176,10 +169,14 @@ public class PlayerImpl extends AbstractGameObject<HitBox> implements Player<Hit
      */
     @Override
     public GameObject<HitBox> copy() {
-        final PlayerImpl copy = new PlayerImpl(new Vector2(position.x(), position.y()), hitBox, physics);
+        final PlayerImpl copy = new PlayerImpl(new Vector2(position.x(), position.y()), hitBox, this.factory);
         copy.coins = this.coins;
         copy.skin = this.skin;
         return copy;
     }
 
+    private static HitBox createHitBox() {
+        return new HitBox(
+                List.of(new Vector2(0, 0), new Vector2(SIZE, 0), new Vector2(SIZE, SIZE), new Vector2(0, SIZE)));
+    }
 }

@@ -4,6 +4,7 @@ import it.unibo.geometrybash.model.core.GameObject;
 import it.unibo.geometrybash.model.geometry.HitBox;
 import it.unibo.geometrybash.model.geometry.Shape;
 import it.unibo.geometrybash.model.geometry.Vector2;
+import it.unibo.geometrybash.model.obstacle.Spike;
 
 /**
  * Represents the player entity in the game.
@@ -88,8 +89,10 @@ public interface Player<S extends Shape> extends GameObject<HitBox> {
      * The player should internally check if any shield is active to absorb the hit,
      * or otherwise trigger the death sequence.
      * </p>
+     *
+     * @param obstacle the spike obstacle whitch collides with player
      */
-    void onSpikeCollision();
+    void onSpikeCollision(Spike obstacle);
 
     /**
      * Returns the current speed multiplier applied to the player.

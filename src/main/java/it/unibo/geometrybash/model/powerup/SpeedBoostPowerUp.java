@@ -15,7 +15,7 @@ import it.unibo.geometrybash.model.player.Player;
 public class SpeedBoostPowerUp extends AbstractPowerUp<CircleHitBox> implements Collidable {
 
     /**
-     * The size of the square power-up's hitbox.
+     * Radius of the circle hitbox of the power-up.
      */
     public static final float RADIUS = 0.45f;
 
