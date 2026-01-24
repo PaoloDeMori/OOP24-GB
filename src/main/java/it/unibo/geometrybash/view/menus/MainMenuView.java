@@ -21,6 +21,9 @@ import it.unibo.geometrybash.commons.pattern.observerpattern.viewobserverpattern
 import it.unibo.geometrybash.commons.pattern.observerpattern.viewobserverpattern.ViewObservable;
 import it.unibo.geometrybash.controller.input.CompositeInputHandler;
 import it.unibo.geometrybash.model.MenuModel;
+import it.unibo.geometrybash.view.assets.ResourceLoader;
+import it.unibo.geometrybash.view.assets.ResourceLoaderImpl;
+import it.unibo.geometrybash.view.assets.TextAssetReader;
 import it.unibo.geometrybash.view.utilities.TerminalColor;
 
 /**
@@ -32,27 +35,11 @@ import it.unibo.geometrybash.view.utilities.TerminalColor;
 public final class MainMenuView extends AbstractObservableWithSet<ViewEvent> implements ViewObservable {
     /** Prompt displayed before the user input. */
     private static final String PROMPT = "geometrybash@oop24:~# ";
-
-    /** ASCII art logo displayed in the header area. */
-    // CHECKSTYLE: LineLength OFF
-    private static final String ASCII_ART =
-
-  "  $$$$$$\\                                               $$\\                               $$$$$$$\\                      $$\\       \n"
-+ "  $$  __$$\\                                              $$ |                              $$  __$$\\                     $$ |      \n"
-+ "  $$ /  \\__| $$$$$$\\   $$$$$$\\  $$$$$$\\$$$$\\   $$$$$$\\ $$$$$$\\    $$$$$$\\  $$\\   $$\\       $$ |  $$ | $$$$$$\\   $$$$$$$\\ $$$$$$$\\  \n"
-+ "  $$ |$$$$\\ $$  __$$\\ $$  __$$\\ $$  _$$  _$$\\ $$  __$$\\\\_$$  _|  $$  __$$\\ $$ |  $$ |      $$$$$$$\\ | \\____$$\\ $$  _____|$$  __$$\\ \n"
-+ "  $$ |\\_$$ |$$$$$$$$ |$$ /  $$ |$$ / $$ / $$ |$$$$$$$$ | $$ |    $$ |  \\__|$$ |  $$ |      $$  __$$\\  $$$$$$$ |\\$$$$$$\\  $$ |  $$ |\n"
-+ "  $$ |  $$ |$$   ____|$$ |  $$ |$$ | $$ | $$ |$$   ____| $$ |$$\\ $$ |      $$ |  $$ |      $$ |  $$ |$$  __$$ | \\____$$\\ $$ |  $$ |\n"
-+ "  \\$$$$$$  |\\$$$$$$$\\ \\$$$$$$  |$$ | $$ | $$ |\\$$$$$$$\\  \\$$$$  |$$ |      \\$$$$$$$ |      $$$$$$$  |\\$$$$$$$ |$$$$$$$  |$$ |  $$ |\n"
-+ "   \\______/  \\_______| \\______/ \\__| \\__| \\__| \\_______|  \\____/ \\__|       \\____$$ |      \\_______/  \\_______|\\_______/ \\__|  \\__|\n"
-+ "                                                                           $$\\   $$ |                                              \n"
-+ "                                                                           \\$$$$$$  |                                              \n"
-+ "                                                                            \\______/                                               \n";
-
-    // CHECKSTYLE: LineLength ON
     private final JFrame frame;
     private final JTextArea outputArea;
     private final JTextField inputField;
+    private final TextAssetReader textReader;
+    private final ResourceLoader resourceLoader;
 
     /**
      * Initializes the main menu view and its graphical components.
@@ -63,6 +50,9 @@ public final class MainMenuView extends AbstractObservableWithSet<ViewEvent> imp
         this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.frame.getContentPane().setBackground(TerminalColor.BACKGROUND);
         this.frame.setLayout(new BorderLayout());
+
+        this.resourceLoader = new ResourceLoaderImpl();
+        this.textReader = new TextAssetReader(this.resourceLoader);
 
         this.outputArea = createOutputArea();
         this.inputField = createInputField();
@@ -89,7 +79,8 @@ public final class MainMenuView extends AbstractObservableWithSet<ViewEvent> imp
         margin.setBackground(TerminalColor.BACKGROUND);
         header.add(margin, BorderLayout.NORTH);
 
-        final JTextArea logo = new JTextArea(ASCII_ART);
+        final String title = textReader.readAll("it/unibo/view/startMenu/logo.txt");
+        final JTextArea logo = new JTextArea(title);
         logo.setBackground(TerminalColor.BACKGROUND);
         logo.setForeground(TerminalColor.FOREGROUND);
         logo.setFont(TerminalColor.ASCII_FONT);
