@@ -109,6 +109,16 @@ public interface Player<S extends Shape> extends GameObject<HitBox> {
     boolean isShielded();
 
     /**
+     * Set physics grounded state at true to indicate that Player is on ground.
+     */
+    void setOnGround();
+
+    /**
+     * Set physics grounded state at false to indicate that Player is not on ground.
+     */
+    void setNotOnGround();
+
+    /**
      * Returns the currently assigned skin of the player.
      *
      * @return the player's skin, or {@code null} if none is set

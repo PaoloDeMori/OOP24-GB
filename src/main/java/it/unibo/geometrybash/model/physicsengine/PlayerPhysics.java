@@ -50,13 +50,6 @@ public interface PlayerPhysics {
     Vector2 getVelocity();
 
     /**
-     * Indicates whether the player is currently considered grounded.
-     *
-     * @return {@code true} if the player is grounded, {@code false} otherwise
-     */
-    boolean isGrounded();
-
-    /**
      * Sets the player's physical state to a new position.
      *
      * <p>
@@ -84,12 +77,12 @@ public interface PlayerPhysics {
     void setUserData(Object userData);
 
     /**
-     * Updates the internal grounded state by registering an additional ground contact.
+     * Set internal grounded state at false to indicate that Player is not on ground.
      */
-    void incrementGroundContacts();
+    void setNotOnGround();
 
     /**
-     * Updates the internal grounded state by removing a previously registered ground contact.
+     * Set internal grounded state at true to indicate that Player is on ground.
      */
-    void decrementGroundContacts();
+    void setOnGround();
 }
