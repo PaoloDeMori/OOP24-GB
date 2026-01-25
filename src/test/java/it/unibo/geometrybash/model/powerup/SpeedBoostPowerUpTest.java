@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import it.unibo.geometrybash.model.geometry.Vector2;
@@ -17,9 +18,15 @@ class SpeedBoostPowerUpTest {
 
     private static final Vector2 POS = new Vector2(10, 10);
 
+    private SpeedBoostPowerUp speedBoostPowerUp;
+
+    @BeforeEach
+    void setUp() {
+        speedBoostPowerUp = new SpeedBoostPowerUp(POS);
+    }
+
     @Test
     void testCreation() {
-        final SpeedBoostPowerUp speedBoostPowerUp = new SpeedBoostPowerUp(POS);
         assertEquals(POS, speedBoostPowerUp.getPosition());
         assertEquals(PowerUpType.SPEED_BOOST, speedBoostPowerUp.getPowerUpType());
         assertEquals(SpeedBoostPowerUp.MULTIPLIER, speedBoostPowerUp.getMultiplier());
@@ -28,7 +35,6 @@ class SpeedBoostPowerUpTest {
 
     @Test
     void testCopy() {
-        final SpeedBoostPowerUp speedBoostPowerUp = new SpeedBoostPowerUp(POS);
         final SpeedBoostPowerUp copy = speedBoostPowerUp.copy();
         assertEquals(speedBoostPowerUp.getPosition(), copy.getPosition());
         assertTrue(copy.isActive());
@@ -36,7 +42,6 @@ class SpeedBoostPowerUpTest {
 
     @Test
     void testOnCollision() {
-        final SpeedBoostPowerUp speedBoostPowerUp = new SpeedBoostPowerUp(POS);
         final Player<?> player = new PlayerImpl(POS, null);
         assertEquals(1.0f, player.getSpeedMultiplier());
         speedBoostPowerUp.onCollision(player);

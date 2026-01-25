@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import it.unibo.geometrybash.model.geometry.Vector2;
@@ -18,9 +19,16 @@ class CoinTest {
 
     private static final Vector2 POS = new Vector2(10, 10);
 
+    private Coin coin;
+
+    @BeforeEach
+    void setUp() {
+        coin = new Coin(POS);
+    }
+
     @Test
     void testCreation() {
-        final Coin coin = new Coin(POS);
+
         assertEquals(POS, coin.getPosition());
         assertEquals(PowerUpType.COIN, coin.getPowerUpType());
         assertEquals(Coin.DEFAULT_VALUE, coin.getValue());
@@ -29,7 +37,6 @@ class CoinTest {
 
     @Test
     void testCopy() {
-        final Coin coin = new Coin(POS);
         final Coin copy = coin.copy();
         assertNotSame(coin, copy);
         assertEquals(coin.getPosition(), copy.getPosition());
@@ -38,7 +45,6 @@ class CoinTest {
 
     @Test
     void testOnCollision() {
-        final Coin coin = new Coin(POS);
         final Player<?> player = new PlayerImpl(new Vector2(0, 0), null);
         assertEquals(0, player.getCoins());
         assertTrue(coin.isActive());
