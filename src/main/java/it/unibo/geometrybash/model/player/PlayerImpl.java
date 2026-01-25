@@ -1,7 +1,9 @@
 package it.unibo.geometrybash.model.player;
 
 import java.util.List;
+import java.util.Objects;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import it.unibo.geometrybash.model.core.AbstractGameObject;
 import it.unibo.geometrybash.model.core.GameObject;
 import it.unibo.geometrybash.model.core.Updatable;
@@ -16,15 +18,17 @@ import it.unibo.geometrybash.model.powerup.PowerUpManager;
  *
  * <p>
  * The {@code PlayerImpl} does not directly modify physics bodies; it delegates
- * movement and collision response to {@link PlayerPhysics}. This allows separation
+ * movement and collision response to {@link PlayerPhysics}. This allows
+ * separation
  * of game logic from the underlying physics engine.
  * </p>
  *
  * <p>
- * All temporary effects are managed internally and updated via the {@link #update(float)} method.
+ * All temporary effects are managed internally and updated via the
+ * {@link #update(float)} method.
  * </p>
  */
-public class PlayerImpl extends AbstractGameObject<HitBox> implements Player<HitBox>, Updatable {
+public class PlayerImpl extends AbstractGameObject<HitBox> implements PlayerWithPhysics, Updatable {
 
     private static final float SIZE = 1.0f;
     private final PowerUpManager powerUpManager;
@@ -33,17 +37,16 @@ public class PlayerImpl extends AbstractGameObject<HitBox> implements Player<Hit
     private Skin skin;
 
     /**
-     * Creates a new {@code PlayerImpl} instance with a position, hitbox, and physics component.
+     * Creates a new {@code PlayerImpl} instance with a position, hitbox, and
+     * physics component.
      *
      * @param position the initial position of the player in the game world
-     * @param hitBox the collision hitbox associated with the player
+     * @param hitBox   the collision hitbox associated with the player
      */
     public PlayerImpl(final Vector2 position, final HitBox hitBox) {
         super(position, createHitBox());
         this.powerUpManager = new PowerUpManager();
-        this.physics = null;
         this.coins = 0;
-        this.skin = null;
     }
 
     /**
@@ -52,8 +55,8 @@ public class PlayerImpl extends AbstractGameObject<HitBox> implements Player<Hit
     @Override
     public void update(final float deltaTime) {
         this.powerUpManager.update(deltaTime);
-        this.physics.setVelocity(this.powerUpManager.getSpeedMultiplier());
-        this.position = this.physics.getPosition();
+        getNotEmptyPhysics().setVelocity(this.powerUpManager.getSpeedMultiplier());
+        this.position = getNotEmptyPhysics().getPosition(hitBox);
     }
 
     /**
@@ -61,7 +64,7 @@ public class PlayerImpl extends AbstractGameObject<HitBox> implements Player<Hit
      */
     @Override
     public void jump() {
-        this.physics.applyJump();
+        getNotEmptyPhysics().applyJump();
     }
 
     /**
@@ -79,16 +82,8 @@ public class PlayerImpl extends AbstractGameObject<HitBox> implements Player<Hit
      */
     @Override
     public void respawn(final Vector2 position) {
-        this.physics.resetBodyTo(position);
+        getNotEmptyPhysics().resetBodyTo(position);
         this.position = position;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setPhysics(final PlayerPhysics physics) {
-        this.physics = physics;
     }
 
     /**
@@ -179,8 +174,34 @@ public class PlayerImpl extends AbstractGameObject<HitBox> implements Player<Hit
         return copy;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressFBWarnings(value = "EI2",
+                        justification = "The reference to PlayerPhysics is intentionally stored as part of a one-time binding. "
+                                + "The method enforces immutability of the association by preventing reassignment "
+                                + "through an explicit state check inside the method. ")
+    @Override
+    public void bindPhysics(final PlayerPhysics phy) {
+        /*
+         * This check ensures that the physics component is bound exactly once.
+         * The physical representation is assigned during the physics engine
+         * initialization.
+         */
+        if (this.physics != null) {
+            throw new IllegalStateException("Physics already bound");
+        }
+        this.physics = Objects.requireNonNull(phy);
+    }
+
     private static HitBox createHitBox() {
         return new HitBox(
                 List.of(new Vector2(0, 0), new Vector2(SIZE, 0), new Vector2(SIZE, SIZE), new Vector2(0, SIZE)));
+    }
+
+    private PlayerPhysics getNotEmptyPhysics() {
+        return Objects.requireNonNull(
+                physics,
+                "Player physics not bound yet");
     }
 }
