@@ -1,6 +1,7 @@
 package it.unibo.geometrybash.model.physicsengine;
 
 import it.unibo.geometrybash.model.core.GameObject;
+import it.unibo.geometrybash.model.player.PlayerWithPhysics;
 
 /**
  * A physics engine that handle the game.
@@ -37,10 +38,14 @@ public interface PhysicsEngine<T> {
     void updatePhysicsEngine(float deltaTime);
 
     /**
-     * A method to synchronize the data inside the gameobjects with the data inside
-     * their physics engine version.
+     * A method to add the equivalent version of a player in the physics-engine
+     * world
+     * and save the correspondence of the GameObject with its physiscs-world
+     * version.
+     * 
+     * @param obj the player to create in the physics-engine world
      */
-    void synchronizeGameEntitiesWithPhysicsEntities();
+     void addPlayer(final PlayerWithPhysics obj);
 
     /**
      * Resets the physics engine.

@@ -14,8 +14,10 @@ import it.unibo.geometrybash.model.geometry.Vector2;
 import it.unibo.geometrybash.model.obstacle.Obstacle;
 import it.unibo.geometrybash.model.physicsengine.BodyFactory;
 import it.unibo.geometrybash.model.physicsengine.PhysicsEngine;
+import it.unibo.geometrybash.model.physicsengine.PlayerPhysics;
 import it.unibo.geometrybash.model.physicsengine.exception.InvalidPhysicsEngineConfiguration;
 import it.unibo.geometrybash.model.player.Player;
+import it.unibo.geometrybash.model.player.PlayerWithPhysics;
 import it.unibo.geometrybash.model.powerup.PowerUp;
 
 /**
@@ -41,7 +43,6 @@ public class Jbox2DPhysicsEngineImpl implements PhysicsEngine<Body> {
 
     private final Map<GameObject<?>, Body> physicsToModelLink = new HashMap<>();
     private final List<GameObject<?>> toRemove = new LinkedList<>();
-    private final List<GameObject<?>> updatableObjects = new LinkedList<>();
     private BodyFactory<Body> bF;
     private World world;
 
@@ -65,10 +66,6 @@ public class Jbox2DPhysicsEngineImpl implements PhysicsEngine<Body> {
         } else if (obj instanceof PowerUp) {
             b = bF.createPowerUp((PowerUp<?>) obj);
             physicsToModelLink.put(obj, b);
-        } else if (obj instanceof Player) {
-            b = bF.createPlayer((Player<?>) obj);
-            physicsToModelLink.put(obj, b);
-            addToUpdatableObject(obj);
         } else {
             throw new InvalidPhysicsEngineConfiguration("Trying to add to the world an invalid game object");
         }
@@ -76,23 +73,16 @@ public class Jbox2DPhysicsEngineImpl implements PhysicsEngine<Body> {
     }
 
     /**
-     * Add a GameObject to the list of objects to synchronize after the world
-     * update.
-     * 
-     * @param gO the {@link GameObject} to add
+     * {@inheritDoc}
      */
-    private void addToUpdatableObject(final GameObject<?> gO) {
-        updatableObjects.add(gO);
-    }
-
-    /**
-     * Remove a GameObject from the list of objects to synchronize after the world
-     * update.
-     * 
-     * @param gO the {@link GameObject} to remove
-     */
-    public void removeUpdatableObject(final GameObject<?> gO) {
-        updatableObjects.remove(gO);
+    @Override
+    public void addPlayer(final PlayerWithPhysics obj) {
+        final Body b;
+        final PlayerPhysics pPh;
+        b = bF.createPlayer((Player<?>) obj);
+        physicsToModelLink.put(obj, b);
+        pPh = new PlayerPhysicsImpl(b);
+        obj.bindPhysics(pPh);
     }
 
     /**
@@ -122,25 +112,8 @@ public class Jbox2DPhysicsEngineImpl implements PhysicsEngine<Body> {
             if (b != null) {
                 world.destroyBody(b);
             }
-            if (updatableObjects.contains(gameObject)) {
-                updatableObjects.remove(gameObject);
-            }
         }
         toRemove.clear();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void synchronizeGameEntitiesWithPhysicsEntities() {
-        for (final GameObject<?> gameObject : updatableObjects) {
-            final Body b = physicsToModelLink.get(gameObject);
-            final Vec2 bodyPosition = b.getPosition();
-            final float bodyX = bodyPosition.x - (gameObject.getHitBox().getWidth() / 2f);
-            final float bodyY = bodyPosition.y - (gameObject.getHitBox().getHeight() / 2f);
-            gameObject.setPosition(new Vector2(bodyX, bodyY));
-        }
     }
 
     /**
@@ -152,6 +125,5 @@ public class Jbox2DPhysicsEngineImpl implements PhysicsEngine<Body> {
         bF = new BodyFactoryImpl(world);
         this.physicsToModelLink.clear();
         this.toRemove.clear();
-        this.updatableObjects.clear();
     }
 }
