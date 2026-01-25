@@ -27,7 +27,7 @@ import it.unibo.geometrybash.model.powerup.PowerUpManager;
  * {@link #update(float)} method.
  * </p>
  */
-public class PlayerImpl extends AbstractGameObject<HitBox> implements Player<HitBox>, Updatable, Bindable {
+public class PlayerImpl extends AbstractGameObject<HitBox> implements PlayerWithPhysics, Updatable  {
 
     private static final float SIZE = 1.0f;
     private final PowerUpManager powerUpManager;
