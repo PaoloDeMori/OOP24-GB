@@ -50,5 +50,6 @@ class GameMapTest {
         ));
         assertEquals(2, map.getCellInRange(1, 2).size());
         assertEquals(0, map.getCellInRange(startX, startY).size());
+        assertEquals(2, map.getAllCells().size());
     }
 }
