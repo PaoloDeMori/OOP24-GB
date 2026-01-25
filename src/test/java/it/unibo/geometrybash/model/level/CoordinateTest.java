@@ -10,9 +10,11 @@ import org.junit.jupiter.api.Test;
 class CoordinateTest {
     @Test
     void testCoordinateValues() {
-        final Coordinate coord = new Coordinate(10, 20);
-        assertEquals(10, coord.x());
-        assertEquals(20, coord.y());
+        final int x = 10;
+        final int y = 20;
+        final Coordinate coord = new Coordinate(x, y);
+        assertEquals(x, coord.x());
+        assertEquals(y, coord.y());
     }
 
     @Test

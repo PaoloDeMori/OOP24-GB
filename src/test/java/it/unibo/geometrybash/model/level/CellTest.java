@@ -13,7 +13,7 @@ import it.unibo.geometrybash.model.obstacle.ObstacleFactory;
 import it.unibo.geometrybash.model.obstacle.ObstacleType;
 
 /**
- * test for {@link Cell}
+ * test for {@link Cell}.
  */
 class CellTest {
     @Test
