@@ -3,6 +3,7 @@ package it.unibo.geometrybash.model.player;
 import java.util.List;
 import java.util.Objects;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import it.unibo.geometrybash.model.core.AbstractGameObject;
 import it.unibo.geometrybash.model.core.GameObject;
 import it.unibo.geometrybash.model.core.Updatable;
@@ -27,7 +28,7 @@ import it.unibo.geometrybash.model.powerup.PowerUpManager;
  * {@link #update(float)} method.
  * </p>
  */
-public class PlayerImpl extends AbstractGameObject<HitBox> implements PlayerWithPhysics, Updatable  {
+public class PlayerImpl extends AbstractGameObject<HitBox> implements PlayerWithPhysics, Updatable {
 
     private static final float SIZE = 1.0f;
     private final PowerUpManager powerUpManager;
@@ -55,7 +56,7 @@ public class PlayerImpl extends AbstractGameObject<HitBox> implements PlayerWith
     public void update(final float deltaTime) {
         this.powerUpManager.update(deltaTime);
         getNotEmptyPhysics().setVelocity(this.powerUpManager.getSpeedMultiplier());
-        this.position = this.physics.getPosition();
+        this.position = getNotEmptyPhysics().getPosition(hitBox);
     }
 
     /**
@@ -84,14 +85,6 @@ public class PlayerImpl extends AbstractGameObject<HitBox> implements PlayerWith
         getNotEmptyPhysics().resetBodyTo(position);
         this.position = position;
     }
-
-    // @Override
-    // public void setPhysics(final PlayerPhysics physics) {
-    // if (this.physics != null) {
-    // throw new IllegalStateException("Physics already bound");
-    // }
-    // this.physics = Objects.requireNonNull(physics);
-    // }
 
     /**
      * {@inheritDoc}
@@ -184,8 +177,19 @@ public class PlayerImpl extends AbstractGameObject<HitBox> implements PlayerWith
     /**
      * {@inheritDoc}
      */
+    @SuppressFBWarnings(value = "EI2", justification = "\"The reference to PlayerPhysics is intentionally stored as part of a one-time binding. \"\r\n" + //
+                "                  + \"The method enforces immutability of the association by preventing reassignment \"\r\n" + //
+                "                  + \"through an explicit state check inside the method.\"")
     @Override
     public void bindPhysics(final PlayerPhysics physics) {
+        /*
+         * This check ensures that the physics component is bound exactly once.
+         * The physical representation is assigned during the physics engine
+         * initialization.
+         */
+        if (this.physics != null) {
+            throw new IllegalStateException("Physics already bound");
+        }
         this.physics = Objects.requireNonNull(physics);
     }
 

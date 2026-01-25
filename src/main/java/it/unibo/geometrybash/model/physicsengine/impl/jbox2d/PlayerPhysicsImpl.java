@@ -1,5 +1,6 @@
 package it.unibo.geometrybash.model.physicsengine.impl.jbox2d;
 
+import it.unibo.geometrybash.model.geometry.HitBox;
 import it.unibo.geometrybash.model.geometry.Vector2;
 import it.unibo.geometrybash.model.physicsengine.PlayerPhysics;
 
@@ -91,8 +92,11 @@ public class PlayerPhysicsImpl implements PlayerPhysics {
      * {@inheritDoc}
      */
     @Override
-    public Vector2 getPosition() {
-        return new Vector2(body.getPosition().x, body.getPosition().y);
+    public Vector2 getPosition(HitBox hB) {
+        // Converts the physics body position to the model position, which represents the bottom-left corner of the entity.
+        return new Vector2(
+                body.getPosition().x - (hB.getWidth() / 2f),
+                body.getPosition().y - (hB.getHeight() / 2f));
     }
 
     /**

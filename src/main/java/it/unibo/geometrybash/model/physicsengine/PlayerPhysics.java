@@ -1,5 +1,6 @@
 package it.unibo.geometrybash.model.physicsengine;
 
+import it.unibo.geometrybash.model.geometry.HitBox;
 import it.unibo.geometrybash.model.geometry.Vector2;
 
 /**
@@ -72,7 +73,7 @@ public interface PlayerPhysics {
      *
      * @return the body's position of the player
      */
-    Vector2 getPosition();
+    Vector2 getPosition(HitBox hB);
 
     /**
      * Associates arbitrary user-defined data with the player's physical body.
