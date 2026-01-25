@@ -15,6 +15,7 @@ import it.unibo.geometrybash.commons.pattern.observerpattern.Observer;
 import it.unibo.geometrybash.commons.pattern.observerpattern.modelobserver.ModelEvent;
 import it.unibo.geometrybash.model.core.Updatable;
 import it.unibo.geometrybash.model.exceptions.RunTimeModelInitializationException;
+import it.unibo.geometrybash.model.level.Level;
 import it.unibo.geometrybash.model.player.Player;
 
 // CHECKSTYLE: AbstractClassName OFF
@@ -23,7 +24,7 @@ import it.unibo.geometrybash.model.player.Player;
 class AbstractGameModelTest {
     // CHECKSTYLE: AbstractClassName ON
 
-    private static final String NOT_NECESSARY_METHOD = "this method is not tested here"; 
+    private static final String NOT_NECESSARY_METHOD = "this method is not tested here";
     private TestModel aGM;
 
     @Test
@@ -38,7 +39,7 @@ class AbstractGameModelTest {
         list.add(new TestUpdatable());
         aGM = new TestModel(list);
         assertDoesNotThrow(() -> aGM.update(0));
-        //check if after the update the update 
+        //check if after the update the update
         assertTrue(aGM.isAfterGameObjectsUpdateActionExecuted());
     }
 
