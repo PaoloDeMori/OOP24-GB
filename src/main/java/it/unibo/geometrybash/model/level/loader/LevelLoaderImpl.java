@@ -39,7 +39,7 @@ public class LevelLoaderImpl implements LevelLoader {
 
     /**
      * Given an object representation of the loaded level returns a level Map.
-     * 
+     *
      * @param data object representation of the loaded level
      * @return A level Map {@see Map}
      * @throws LoadingFileException if a problem occured during the map creation
@@ -76,7 +76,7 @@ public class LevelLoaderImpl implements LevelLoader {
      * Given a {@link ObstacleType} and the data representation of the obstacle in
      * the file, populates a
      * datastructure with the coordinates and the Cell representing the obstacle.
-     * 
+     *
      * @param type           the type of the obstacle
      * @param obstaclesData  the data representation of the obstacle
      * @param cellsContainer the datastructure to populate
@@ -106,7 +106,7 @@ public class LevelLoaderImpl implements LevelLoader {
      * Given a {@link PowerUpType} and the data representation of the powerup in
      * the file, populates a
      * datastructure with the coordinates and the Cell representing the powerup.
-     * 
+     *
      * @param type           the type of the powerup
      * @param powerUpsData   the data representation of the powerup
      * @param cellsContainer the datastructure to populate
