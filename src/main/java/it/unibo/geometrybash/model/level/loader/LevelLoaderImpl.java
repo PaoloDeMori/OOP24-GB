@@ -21,6 +21,7 @@ import it.unibo.geometrybash.model.level.map.GameMapImpl;
 import it.unibo.geometrybash.model.obstacle.Obstacle;
 import it.unibo.geometrybash.model.obstacle.ObstacleFactory;
 import it.unibo.geometrybash.model.obstacle.ObstacleType;
+import it.unibo.geometrybash.model.core.OnStateModifiedContact;
 import it.unibo.geometrybash.model.geometry.Vector2;
 import it.unibo.geometrybash.model.level.Coordinate;
 import it.unibo.geometrybash.model.level.Level;
@@ -36,6 +37,12 @@ import it.unibo.geometrybash.model.powerup.PowerUpType;
 public class LevelLoaderImpl implements LevelLoader {
     private static final Logger LOGGER = LoggerFactory.getLogger(LevelLoaderImpl.class);
     private static final String STANDARD_EXCEPTION_MESSAGE = "The level file obstacle's section isn't correctly formatted";
+
+    private final OnStateModifiedContact onStateModifiedContact;
+
+    public LevelLoaderImpl(OnStateModifiedContact onStateModifiedContact) {
+        this.onStateModifiedContact = onStateModifiedContact;
+    }
 
     /**
      * Given an object representation of the loaded level returns a level Map.
@@ -93,6 +100,9 @@ public class LevelLoaderImpl implements LevelLoader {
                 }
                 final Obstacle ob = ObstacleFactory.create(type,
                         new Vector2((float) coordinate.x(), (float) coordinate.y()));
+                if(ob.getObstacleType()==ObstacleType.SPIKE){
+                    ob.addOnStateModifierContact(onStateModifiedContact);
+                }
                 final Cell cell = new CellImpl(ob);
                 cellsContainer.put(coordinate, cell);
             } catch (final IllegalArgumentException e) {
@@ -123,6 +133,7 @@ public class LevelLoaderImpl implements LevelLoader {
                 }
                 final PowerUp<?> ob = PowerUpFactory.create(type,
                         new Vector2((float) coordinate.x(), (float) coordinate.y()));
+                ob.addOnStateModifierContact(onStateModifiedContact);
                 final Cell cell = new CellImpl(ob);
                 cellsContainer.put(coordinate, cell);
             } catch (final IllegalArgumentException e) {

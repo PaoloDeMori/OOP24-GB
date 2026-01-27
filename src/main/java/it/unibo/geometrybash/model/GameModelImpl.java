@@ -2,12 +2,16 @@ package it.unibo.geometrybash.model;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.jbox2d.dynamics.Body;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import it.unibo.geometrybash.commons.assets.ResourceLoader;
+import it.unibo.geometrybash.commons.pattern.observerpattern.modelobserver.ModelEvent;
+import it.unibo.geometrybash.model.core.GameObject;
 import it.unibo.geometrybash.model.exceptions.InvalidModelMethodInvocationException;
 import it.unibo.geometrybash.model.geometry.HitBox;
 import it.unibo.geometrybash.model.geometry.Vector2;
@@ -37,6 +41,7 @@ public final class GameModelImpl extends AbstractGameModelWithPhysicsEngine<Body
     private final ResourceLoader rLoader;
     private String levelName;
     private final PhysicsEngineFactory<Body> physicsFactory;
+    private final List<GameObject<?>> changedStateObjects;
 
     /**
      * The constructor of this gamemodel implementation.
@@ -46,8 +51,39 @@ public final class GameModelImpl extends AbstractGameModelWithPhysicsEngine<Body
      */
     public GameModelImpl(final ResourceLoader rLoader, final PhysicsEngineFactory<Body> pEF) {
         this.rLoader = rLoader;
-        this.levelLoader = new LevelLoaderImpl();
+        this.levelLoader = new LevelLoaderImpl(this::resetStateObjects);
         this.physicsFactory = pEF;
+        this.changedStateObjects = new ArrayList<>();
+    }
+
+    /**
+     * Method called when the player dies.
+     * 
+     * <p>
+     * Linked to the game execution through a functional interface in the player.
+     * </p>
+     */
+    private void onPlayerDeath() {
+        notifyObservers(ModelEvent.createGameOverEvent());
+        changedStateObjects.forEach(i -> i.setActive(true));
+        changedStateObjects.clear();
+    }
+
+    /**
+     * Notify the observer that the player fullfil the victory condition.
+     */
+    private void onPlayerWin() {
+        notifyObservers(ModelEvent.createVictoryEvent());
+    }
+
+    /**
+     * Method to pass to the selected objects in the level loader for handle state
+     * changes.
+     * 
+     * @param gO the object calling this method that lived a state change.
+     */
+    private void resetStateObjects(GameObject<?> gO) {
+        this.changedStateObjects.add(gO);
     }
 
     /**
@@ -65,6 +101,9 @@ public final class GameModelImpl extends AbstractGameModelWithPhysicsEngine<Body
         throw ex;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void start(final String levName) throws InvalidModelMethodInvocationException,
             ModelExecutionException {
@@ -84,6 +123,7 @@ public final class GameModelImpl extends AbstractGameModelWithPhysicsEngine<Body
 
                     final Vector2 playerStartPosition = level.getPlayerStartPosition();
                     player = new PlayerImpl(playerStartPosition);
+                    player.setOnDeath(this::onPlayerDeath);
                     this.getPhysicsEngine().addPlayer(player);
                     this.addUpdatableGameObjects((PlayerImpl) player);
 
@@ -101,6 +141,9 @@ public final class GameModelImpl extends AbstractGameModelWithPhysicsEngine<Body
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void pause() throws InvalidModelMethodInvocationException {
         switch (state) {
@@ -112,6 +155,9 @@ public final class GameModelImpl extends AbstractGameModelWithPhysicsEngine<Body
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void resume() throws InvalidModelMethodInvocationException {
         switch (state) {
@@ -123,13 +169,20 @@ public final class GameModelImpl extends AbstractGameModelWithPhysicsEngine<Body
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void restart() throws InvalidModelMethodInvocationException, ModelExecutionException {
         this.state = Status.NEVERSTARTED;
         clearUpdatableList();
+        this.changedStateObjects.clear();
         start(levelName);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void jumpSignal() {
         if (this.player != null) {
@@ -137,6 +190,9 @@ public final class GameModelImpl extends AbstractGameModelWithPhysicsEngine<Body
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Player<HitBox> getPlayer() throws ModelExecutionException {
         if (this.player != null) {
@@ -147,21 +203,37 @@ public final class GameModelImpl extends AbstractGameModelWithPhysicsEngine<Body
         throw new ModelExecutionException(errorOnInputStream);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Level getLevel() {
         return this.level;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Status getStatus() {
         return this.state;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void afterGameObjectsUpdate(final float deltaTime) {
+        if (this.level.playerWin(this.player.getPosition())) {
+            this.onPlayerWin();
+        }
+        ;
         this.getPhysicsEngine().updatePhysicsEngine(deltaTime);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected boolean isUpdatable() {
         switch (state) {
