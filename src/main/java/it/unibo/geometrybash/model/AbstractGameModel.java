@@ -86,14 +86,16 @@ public abstract class AbstractGameModel extends AbstractObservableWithSet<ModelE
             if (!updatables.isEmpty()) {
                 updatables.forEach(i -> i.update(deltaTime));
             }
-            this.afterGameObjectsUpdate();
+            this.afterGameObjectsUpdate(deltaTime);
         }
     }
 
     /**
      * The actions to implement after updating all the updatables.
+     * 
+     * @param deltaTime the time elapsed since last update.
      */
-    protected abstract void afterGameObjectsUpdate();
+    protected abstract void afterGameObjectsUpdate(float deltaTime);
 
     /**
      * Add an updatable game object to the list of updatables to update when an

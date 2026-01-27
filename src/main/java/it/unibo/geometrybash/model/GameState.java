@@ -2,6 +2,7 @@ package it.unibo.geometrybash.model;
 
 import it.unibo.geometrybash.model.geometry.Shape;
 import it.unibo.geometrybash.model.level.Level;
+import it.unibo.geometrybash.model.physicsengine.exception.ModelExecutionException;
 import it.unibo.geometrybash.model.player.Player;
 
 /**
@@ -13,7 +14,7 @@ public interface GameState {
      *
      * @return The player of the game.
      */
-    Player<? extends Shape> getPlayer();
+    Player<? extends Shape> getPlayer() throws ModelExecutionException;
 
     /**
      * Returns the level of the game.

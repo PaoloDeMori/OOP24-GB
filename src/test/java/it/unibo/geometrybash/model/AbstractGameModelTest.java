@@ -192,7 +192,7 @@ class AbstractGameModelTest {
         }
 
         @Override
-        protected void afterGameObjectsUpdate() {
+        protected void afterGameObjectsUpdate(final float deltaTime) {
             isAfterGameObjectsUpdateActionExecuted = true;
         }
 
