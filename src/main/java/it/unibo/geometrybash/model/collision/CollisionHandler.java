@@ -70,6 +70,7 @@ public class CollisionHandler implements ContactListener {
                 player.notifyGroundContactBegin();
             }
             collidable.onCollision(player);
+            source.activateContact();
         }
     }
 

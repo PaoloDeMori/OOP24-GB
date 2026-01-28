@@ -95,4 +95,18 @@ public final class LevelImpl implements Level {
                 .flatMap(Cell::getGameObject);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<GameObject<?>> getAllGameObject() {
+        final List<GameObject<?>> allObjects = new ArrayList<>();
+        for (final Cell cell : this.map.getAllCells()) {
+            if (cell.getGameObject().isPresent()) {
+                allObjects.add(cell.getGameObject().get());
+            }
+        }
+        return allObjects;
+    }
+
 }

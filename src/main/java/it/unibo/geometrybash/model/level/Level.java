@@ -52,4 +52,11 @@ public interface Level {
      *         or an empty optional if the position is empty.
      */
     Optional<GameObject<?>> getGameObjectAtPosition(Vector2 pos);
+
+    /**
+     * Retrives all the game object in the game.
+     *
+     * @return a list of games object.
+     */
+    List<GameObject<?>> getAllGameObject();
 }

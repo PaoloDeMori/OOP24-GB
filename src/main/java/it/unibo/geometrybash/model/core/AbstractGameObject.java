@@ -1,5 +1,8 @@
 package it.unibo.geometrybash.model.core;
 
+import java.util.Objects;
+
+import it.unibo.geometrybash.model.core.exception.OnStateModifierNotSetException;
 import it.unibo.geometrybash.model.geometry.CircleHitBox;
 import it.unibo.geometrybash.model.geometry.HitBox;
 import it.unibo.geometrybash.model.geometry.Shape;
@@ -19,7 +22,8 @@ import it.unibo.geometrybash.model.geometry.Vector2;
 public abstract class AbstractGameObject<S extends Shape> implements GameObject<S> {
 
     // CHECKSTYLE: VisibilityModifier OFF
-    // Protected fields are required for subclasses; rule disabled because these are not truly public
+    // Protected fields are required for subclasses; rule disabled because these are
+    // not truly public
 
     /**
      * Current position of the game object.
@@ -35,17 +39,17 @@ public abstract class AbstractGameObject<S extends Shape> implements GameObject<
      * Active state of the game object.
      */
     protected boolean active;
+
+    private OnStateModifiedContact onState;
     // CHECKSTYLE: VisibilityModifier ON
 
     /**
      * Creates a new game object with the given position and hitbox.
      *
      * @param position the initial position of the object
-     * @param hitBox   the hitbox associated with the object
      */
-    protected AbstractGameObject(final Vector2 position, final S hitBox) {
+    protected AbstractGameObject(final Vector2 position) {
         this.position = position;
-        this.hitBox = hitBox;
         this.active = true;
     }
 
@@ -93,5 +97,24 @@ public abstract class AbstractGameObject<S extends Shape> implements GameObject<
     @Override
     public void setActive(final boolean active) {
         this.active = active;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void addOnStateModifierContact(final OnStateModifiedContact onStateFunc) {
+        this.onState = Objects.requireNonNull(onStateFunc);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void activateContact() {
+        if (this.onState == null) {
+            throw new OnStateModifierNotSetException();
+        }
+        Objects.requireNonNull(this.onState).activateObject(this);
     }
 }

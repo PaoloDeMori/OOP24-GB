@@ -94,4 +94,14 @@ public final class GameMapImpl implements GameMap {
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<Cell> getAllCells() {
+        return this.gameMap.values().stream()
+        .flatMap(column -> column.values().stream())
+        .toList();
+    }
+
 }

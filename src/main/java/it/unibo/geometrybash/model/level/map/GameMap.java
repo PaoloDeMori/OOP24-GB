@@ -45,4 +45,11 @@ public interface GameMap {
      */
     Optional<Cell> getCell(Coordinate c);
 
+    /**
+     * Retrives all the cells in the map.
+     *
+     * @return a list of all the cells in the map.
+     */
+    List<Cell> getAllCells();
+
 }

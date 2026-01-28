@@ -136,4 +136,19 @@ public interface Player<S extends Shape> extends GameObject<HitBox> {
      * @return the string represent the current state of the player
      */
     String getState();
+    
+    /**
+     * Set onDeath param.
+     *
+     * @param onDeath the functional interface to set
+     */
+    void setOnDeath(OnDeathExecute onDeath);
+
+    /**
+     * Returns a defensive copy of this Player.
+     *
+     * @return a new Player instance with the same state
+     */
+    @Override
+    Player<HitBox> copy();
 }

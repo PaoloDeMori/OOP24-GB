@@ -11,10 +11,13 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
+import it.unibo.geometrybash.commons.UpdateInfoDto;
 import it.unibo.geometrybash.commons.pattern.observerpattern.Observer;
 import it.unibo.geometrybash.commons.pattern.observerpattern.modelobserver.ModelEvent;
 import it.unibo.geometrybash.model.core.Updatable;
+import it.unibo.geometrybash.model.exceptions.InvalidModelMethodInvocationException;
 import it.unibo.geometrybash.model.exceptions.RunTimeModelInitializationException;
+import it.unibo.geometrybash.model.level.Level;
 import it.unibo.geometrybash.model.player.Player;
 
 // CHECKSTYLE: AbstractClassName OFF
@@ -23,7 +26,7 @@ import it.unibo.geometrybash.model.player.Player;
 class AbstractGameModelTest {
     // CHECKSTYLE: AbstractClassName ON
 
-    private static final String NOT_NECESSARY_METHOD = "this method is not tested here"; 
+    private static final String NOT_NECESSARY_METHOD = "this method is not tested here";
     private TestModel aGM;
 
     @Test
@@ -38,7 +41,7 @@ class AbstractGameModelTest {
         list.add(new TestUpdatable());
         aGM = new TestModel(list);
         assertDoesNotThrow(() -> aGM.update(0));
-        //check if after the update the update 
+        // check if after the update the update
         assertTrue(aGM.isAfterGameObjectsUpdateActionExecuted());
     }
 
@@ -190,7 +193,7 @@ class AbstractGameModelTest {
         }
 
         @Override
-        protected void afterGameObjectsUpdate() {
+        protected void afterGameObjectsUpdate(final float deltaTime) {
             isAfterGameObjectsUpdateActionExecuted = true;
         }
 
@@ -205,6 +208,16 @@ class AbstractGameModelTest {
         @Override
         protected boolean isUpdatable() {
             return this.isUpdatable;
+        }
+
+        @Override
+        public void start(final String levelName) throws InvalidModelMethodInvocationException {
+            throw new UnsupportedOperationException(NOT_NECESSARY_METHOD);
+        }
+
+        @Override
+        public UpdateInfoDto tDto() {
+            throw new UnsupportedOperationException(NOT_NECESSARY_METHOD);
         }
     }
 }

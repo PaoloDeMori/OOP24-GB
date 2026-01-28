@@ -5,7 +5,6 @@ import java.util.Objects;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import it.unibo.geometrybash.model.core.AbstractGameObject;
-import it.unibo.geometrybash.model.core.GameObject;
 import it.unibo.geometrybash.model.core.Updatable;
 import it.unibo.geometrybash.model.geometry.HitBox;
 import it.unibo.geometrybash.model.geometry.Vector2;
@@ -36,16 +35,19 @@ public class PlayerImpl extends AbstractGameObject<HitBox> implements PlayerWith
     private PlayerPhysics physics;
     private int coins;
     private Skin skin;
+    private OnDeathExecute onDeath;
+    private final Vector2 startPos;
 
     /**
      * Creates a new {@code PlayerImpl} instance with a position, hitbox, and
      * physics component.
      *
      * @param position the initial position of the player in the game world
-     * @param hitBox   the collision hitbox associated with the player
      */
-    public PlayerImpl(final Vector2 position, final HitBox hitBox) {
-        super(position, createHitBox());
+    public PlayerImpl(final Vector2 position) {
+        super(position);
+        this.startPos = position;
+        this.hitBox = createHitBox();
         this.powerUpManager = new PowerUpManager();
         this.coins = 0;
         this.physics = null;
@@ -82,7 +84,8 @@ public class PlayerImpl extends AbstractGameObject<HitBox> implements PlayerWith
     public void die() {
         this.coins = 0;
         this.powerUpManager.reset();
-        respawn(new Vector2(0f, 0f));
+        respawn(this.startPos);
+        this.onDeath.onDeath();
     }
 
     /**
@@ -175,8 +178,8 @@ public class PlayerImpl extends AbstractGameObject<HitBox> implements PlayerWith
      * {@inheritDoc}
      */
     @Override
-    public GameObject<HitBox> copy() {
-        final PlayerImpl copy = new PlayerImpl(new Vector2(position.x(), position.y()), createHitBox());
+    public Player<HitBox> copy() {
+        final PlayerImpl copy = new PlayerImpl(new Vector2(position.x(), position.y()));
         copy.coins = this.coins;
         copy.skin = this.skin;
         copy.state = this.state;
@@ -225,6 +228,10 @@ public class PlayerImpl extends AbstractGameObject<HitBox> implements PlayerWith
     @Override
     public String getState() {
         return this.state.getName();
+    }
+
+    public void setOnDeath(final OnDeathExecute onDeath) {
+        this.onDeath = Objects.requireNonNull(onDeath);
     }
 
     private static HitBox createHitBox() {
