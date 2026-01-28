@@ -30,13 +30,17 @@ import it.unibo.geometrybash.model.powerup.PowerUpManager;
 public class PlayerImpl extends AbstractGameObject<HitBox> implements PlayerWithPhysics, Updatable {
 
     private static final float SIZE = 1.0f;
+    private static final double TWO_PI = Math.PI * 2.0;
+    private static final double RIGHT_ANGLE_RAD = Math.PI / 2.0;
+    private static final double ANGULAR_SPEED_RAD_S = Math.toRadians(720.0);
     private final PowerUpManager powerUpManager;
+    private final Vector2 startPos;
     private PlayerState state;
     private PlayerPhysics physics;
     private int coins;
     private Skin skin;
     private OnDeathExecute onDeath;
-    private final Vector2 startPos;
+    private double rotationRad;
 
     /**
      * Creates a new {@code PlayerImpl} instance with a position, hitbox, and
@@ -64,7 +68,20 @@ public class PlayerImpl extends AbstractGameObject<HitBox> implements PlayerWith
         this.position = getNotEmptyPhysics().getPosition(hitBox);
         if (this.physics.isGrounded()) {
             this.state = PlayerState.ON_GROUND;
+            // player rotate with a angular rotation of 4PI/s
+            rotationRad += ANGULAR_SPEED_RAD_S * deltaTime;
+            // normalize angle to the [0, 2PI) range
+            rotationRad %= TWO_PI;
         } else {
+            // take the nearest approximation of possible orientation value
+            final double step = Math.round(rotationRad / RIGHT_ANGLE_RAD);
+            double snapped = step * RIGHT_ANGLE_RAD;
+            snapped %= TWO_PI;
+            // if snapped is negative shift it to the equivalent positive angle
+            if (snapped < 0) {
+                snapped += TWO_PI;
+            }
+            rotationRad = snapped;
             this.state = PlayerState.JUMPING;
         }
     }
@@ -205,8 +222,8 @@ public class PlayerImpl extends AbstractGameObject<HitBox> implements PlayerWith
     /**
      * {@inheritDoc}
      */
-    @SuppressFBWarnings(value = "EI2", justification =
-            "The reference to PlayerPhysics is intentionally stored as part of a one-time binding. "
+    @SuppressFBWarnings(value = "EI2",
+            justification = "The reference to PlayerPhysics is intentionally stored as part of a one-time binding. "
             + "The method enforces immutability of the association by preventing reassignment "
             + "through an explicit state check inside the method. ")
     @Override
@@ -236,6 +253,14 @@ public class PlayerImpl extends AbstractGameObject<HitBox> implements PlayerWith
     @Override
     public void setOnDeath(final OnDeathExecute onDeath) {
         this.onDeath = Objects.requireNonNull(onDeath);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public double getAngularRotation() {
+        return this.rotationRad;
     }
 
     private static HitBox createHitBox() {

@@ -147,6 +147,13 @@ public interface Player<S extends Shape> extends GameObject<HitBox> {
     void setOnDeath(OnDeathExecute onDeath);
 
     /**
+     * Returns the rotation angle computed using the delta time and normalized to a valid range.
+     *
+     * @return the player rotation angle
+     */
+    double getAngularRotation();
+
+    /**
      * Returns a defensive copy of this Player.
      *
      * @return a new Player instance with the same state

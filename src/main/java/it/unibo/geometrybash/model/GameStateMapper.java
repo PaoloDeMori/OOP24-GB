@@ -142,6 +142,6 @@ public final class GameStateMapper {
                                 player.isActive(),
                                 player.isShielded(),
                                 null,
-                                player.getState());
+                                player.getAngularRotation());
         }
 }
