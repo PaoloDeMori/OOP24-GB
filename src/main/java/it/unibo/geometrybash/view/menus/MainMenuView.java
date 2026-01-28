@@ -61,6 +61,10 @@ public final class MainMenuView extends AbstractObservableWithSet<ViewEvent> imp
     private static final String MEDIUM = "medium";
     /** Command for set the 1024x768 resolution. */
     private static final String SMALL = "small";
+    /** Prefix for command list items. */
+    private static final String CMD_PREFIX = " > ";
+    /** Command for create new line. */
+    private static final String NEW_LINE = "\n";
 
     private final JFrame frame;
     private final JTextArea outputArea;
@@ -123,7 +127,8 @@ public final class MainMenuView extends AbstractObservableWithSet<ViewEvent> imp
         this.logo.setFocusable(false);
         header.add(logo, BorderLayout.CENTER);
 
-        this.insertLabel = new JLabel("Insert 'commands' or 'help' to show the list of available actions");
+        this.insertLabel = new JLabel(
+                "Insert" + CMD_COMMANDS + "or" + CMD_HELP + "to show the list of available actions");
         this.insertLabel.setForeground(TerminalColor.FOREGROUND);
         this.insertLabel.setFont(TerminalColor.MAIN_FONT);
         this.insertLabel.setHorizontalAlignment(JLabel.CENTER);
@@ -135,12 +140,11 @@ public final class MainMenuView extends AbstractObservableWithSet<ViewEvent> imp
      * Displays the list of available commands to the user.
      */
     public void showCommands() {
-        this.appendText("\n --- AVAILABLE COMMANDS ---");
-        this.appendText(" > " + CMD_START + "      : begin your geometry bash adventure");
-        this.appendText(" > " + CMD_INVENTORY + "  : check your equipment");
-        this.appendText(" > " + CMD_CLOSE + "/" + CMD_EXIT + " : quit the terminal");
-        this.appendText(" > " + CMD_HELP + "  : show this list");
-        this.appendText(" > " + CMD_MAN_RESOLUTION + "  : display available game resolutions");
+        this.appendText(NEW_LINE + " --- AVAILABLE COMMANDS ---");
+        this.appendText(CMD_PREFIX + CMD_START + "      : begin your geometry bash adventure");
+        this.appendText(CMD_PREFIX + CMD_INVENTORY + "  : check your equipment");
+        this.appendText(CMD_PREFIX + CMD_HELP + "  : show this list");
+        this.appendText(CMD_PREFIX + CMD_MAN_RESOLUTION + "  : display available game resolutions");
         this.appendText("---------------------------");
     }
 
@@ -167,7 +171,7 @@ public final class MainMenuView extends AbstractObservableWithSet<ViewEvent> imp
      * @param coins the number of coins collected during the level
      */
     public void showVictoryMessage(final int coins) {
-        this.appendText("\n LEVEL COMPLETED! YOU WON!");
+        this.appendText(NEW_LINE + " LEVEL COMPLETED! YOU WON!");
         this.appendText(" -----------------------------");
         this.appendText(" total coins collected: " + coins);
         this.appendText(" -----------------------------");
@@ -181,30 +185,31 @@ public final class MainMenuView extends AbstractObservableWithSet<ViewEvent> imp
      * @param command the invalid command entered by the user
      */
     public void showUnknownCommandError(final String command) {
-        this.appendText("\n ERROR: '" + command + "' is not recognized as a command.");
+        this.appendText(NEW_LINE + " ERROR: '" + command + "' is not recognized as a command.");
         this.appendText("     Type" + CMD_HELP + "or" + CMD_COMMANDS + "to see the list of available actions.");
     }
 
     /**
-     * <p>
      * Prints on the terminal a manual-style description of all supported screen
      * resolutions, similar to the Unix {@code man} command.
      */
     public void showManResolution() {
-        appendText("\n" + ARG_RESOLUTION.toUpperCase(Locale.ROOT) + "(1)               Geometry Bash Manual\n");
-        appendText("NAME");
-        appendText("    " + ARG_RESOLUTION + " - show supported screen resolutions\n");
+        appendText(
+                NEW_LINE + " " + ARG_RESOLUTION.toUpperCase(Locale.ROOT) + "(1)               Geometry Bash Manual"
+                        + NEW_LINE);
+        appendText(" NAME");
+        appendText(" " + ARG_RESOLUTION + " - show supported screen resolutions" + NEW_LINE);
 
-        appendText("SYNOPSIS");
-        appendText("    " + CMD_MAN_RESOLUTION + "\n");
+        appendText(" SYNOPSIS");
+        appendText(" " + CMD_MAN_RESOLUTION + NEW_LINE);
 
-        appendText("DESCRIPTION");
-        appendText("    Displays all screen resolutions supported by Geometry Bash.\n");
+        appendText(" DESCRIPTION");
+        appendText(" Displays all screen resolutions supported by Geometry Bash." + NEW_LINE);
 
-        appendText("SUPPORTED RESOLUTIONS");
-        appendText("    " + BIG + "     - 1920 x 1080");
-        appendText("    " + MEDIUM + "  - 1600 x 900");
-        appendText("    " + SMALL + "   - 1024 x 768\n");
+        appendText(" SUPPORTED RESOLUTIONS");
+        appendText(" " + BIG + "     - 1920 x 1080");
+        appendText(" " + MEDIUM + "  - 1600 x 900");
+        appendText(" " + SMALL + "   - 1024 x 768" + NEW_LINE);
 
         appendText("-----------------------------------------------");
     }
@@ -215,11 +220,11 @@ public final class MainMenuView extends AbstractObservableWithSet<ViewEvent> imp
      * @param executionError the description of the error occurred
      */
     public void showGameExecutionError(final String executionError) {
-        this.appendText("\n  CRITICAL ERROR !");
-        this.appendText(" An unexpected issue occurred during the game session:");
-        this.appendText(" > " + executionError);
+        this.appendText(NEW_LINE + "  CRITICAL ERROR !");
+        this.appendText("An unexpected issue occurred during the game session:");
+        this.appendText(CMD_PREFIX + executionError);
         this.appendText(" ----------------------------------------------------");
-        this.appendText(" Please try to restart the game or contact support.");
+        this.appendText("Please try to restart the game or contact support.");
     }
 
     /**
