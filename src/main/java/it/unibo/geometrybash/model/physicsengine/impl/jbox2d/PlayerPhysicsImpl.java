@@ -24,7 +24,7 @@ public class PlayerPhysicsImpl implements PlayerPhysics {
     private static final float JUMP_IMPULSE = 6.5f;
     private static final float BASE_SPEED = 5.0f;
     private final Body body;
-    private boolean groundContacts;
+    private int groundContacts;
 
     /**
      * Creates a new physics component for a player entity.
@@ -33,7 +33,8 @@ public class PlayerPhysicsImpl implements PlayerPhysics {
      */
     protected PlayerPhysicsImpl(final Body body) {
         this.body = Objects.requireNonNull(body);
-        this.groundContacts = true;
+        this.body.setLinearVelocity(new Vec2(BASE_SPEED, 0f));
+        this.groundContacts = 0;
     }
 
     /**
@@ -41,7 +42,7 @@ public class PlayerPhysicsImpl implements PlayerPhysics {
      */
     @Override
     public void applyJump() {
-        if (!this.groundContacts) {
+        if (!isGrounded()) {
             return;
         }
 
@@ -51,7 +52,6 @@ public class PlayerPhysicsImpl implements PlayerPhysics {
         this.body.applyLinearImpulse(
                 new Vec2(0f, JUMP_IMPULSE),
                 this.body.getWorldCenter());
-        this.groundContacts = false;
     }
 
     /**
@@ -104,16 +104,23 @@ public class PlayerPhysicsImpl implements PlayerPhysics {
      * {@inheritDoc}
      */
     @Override
-    public void setNotOnGround() {
-        this.groundContacts = false;
+    public boolean isGrounded() {
+        return this.groundContacts > 0;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void setOnGround() {
-        this.groundContacts = true;
+    public void onGroundContactBegin() {
+        this.groundContacts++;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void onGroundContactEnd() {
+        this.groundContacts = Math.max(0, this.groundContacts - 1);
+    }
 }

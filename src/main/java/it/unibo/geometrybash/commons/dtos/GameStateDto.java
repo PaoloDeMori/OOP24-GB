@@ -15,6 +15,7 @@ import it.unibo.geometrybash.model.Status;
  * @param cameraOffsetX the camera X offset
  * @param score         the current cumulated coins
  * @param gameStatus    the current game's status
+ * @param deltaTime     the currente delta time
  */
 public record GameStateDto(
         PlayerDto player,

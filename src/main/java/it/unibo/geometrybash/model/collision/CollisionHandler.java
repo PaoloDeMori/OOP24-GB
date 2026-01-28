@@ -29,7 +29,7 @@ public class CollisionHandler implements ContactListener {
      * Creates a new CollisionHandler.
      */
     CollisionHandler() {
-        //Default constructor.
+        // Default constructor.
     }
 
     /**
@@ -67,7 +67,7 @@ public class CollisionHandler implements ContactListener {
     private void handleBeginContact(final GameObject<?> source, final GameObject<?> other) {
         if (source instanceof Collidable collidable && other instanceof Player player) {
             if (source instanceof Block) {
-                player.setOnGround();
+                player.notifyGroundContactBegin();
             }
             collidable.onCollision(player);
         }

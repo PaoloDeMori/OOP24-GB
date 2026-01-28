@@ -77,12 +77,30 @@ public interface PlayerPhysics {
     void setUserData(Object userData);
 
     /**
-     * Set internal grounded state at false to indicate that Player is not on ground.
+     * Checks whether the player is currently in contact with the ground.
+     *
+     * @return {@code true} if the player has at least one active ground contact,
+     *         {@code false} otherwise
      */
-    void setNotOnGround();
+    boolean isGrounded();
 
     /**
-     * Set internal grounded state at true to indicate that Player is on ground.
+     * Registers the beginning of a ground contact.
+     *
+     * <p>
+     * Updates the internal ground contact counter used to determine whether the
+     * player is currently grounded.
+     * </p>
      */
-    void setOnGround();
+    void onGroundContactBegin();
+
+    /**
+     * Registers the end of a ground contact.
+     *
+     * <p>
+     * Updates the internal ground contact counter by removing an active ground
+     * contact.
+     * </p>
+     */
+    void onGroundContactEnd();
 }

@@ -107,14 +107,14 @@ public interface Player<S extends Shape> extends GameObject<HitBox> {
     boolean isShielded();
 
     /**
-     * Set physics grounded state at true to indicate that Player is on ground.
+     * Notifies the player that a ground contact has started.
      */
-    void setOnGround();
+    void notifyGroundContactBegin();
 
     /**
-     * Set physics grounded state at false to indicate that Player is not on ground.
+     * Notifies the player that a ground contact has ended.
      */
-    void setNotOnGround();
+    void notifyGroundContactEnd();
 
     /**
      * Returns the currently assigned skin of the player.
@@ -129,4 +129,11 @@ public interface Player<S extends Shape> extends GameObject<HitBox> {
      * @param skin the skin to assign to the player
      */
     void setSkin(Skin skin);
+
+    /**
+     * Returns the actual state of the player.
+     *
+     * @return the string represent the current state of the player
+     */
+    String getState();
 }

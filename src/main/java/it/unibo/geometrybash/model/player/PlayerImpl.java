@@ -32,6 +32,7 @@ public class PlayerImpl extends AbstractGameObject<HitBox> implements PlayerWith
 
     private static final float SIZE = 1.0f;
     private final PowerUpManager powerUpManager;
+    private PlayerState state;
     private PlayerPhysics physics;
     private int coins;
     private Skin skin;
@@ -47,6 +48,8 @@ public class PlayerImpl extends AbstractGameObject<HitBox> implements PlayerWith
         super(position, createHitBox());
         this.powerUpManager = new PowerUpManager();
         this.coins = 0;
+        this.physics = null;
+        this.state = PlayerState.ON_GROUND;
     }
 
     /**
@@ -57,6 +60,11 @@ public class PlayerImpl extends AbstractGameObject<HitBox> implements PlayerWith
         this.powerUpManager.update(deltaTime);
         getNotEmptyPhysics().setVelocity(this.powerUpManager.getSpeedMultiplier());
         this.position = getNotEmptyPhysics().getPosition(hitBox);
+        if (this.physics.isGrounded()) {
+            this.state = PlayerState.ON_GROUND;
+        } else {
+            this.state = PlayerState.JUMPING;
+        }
     }
 
     /**
@@ -171,6 +179,7 @@ public class PlayerImpl extends AbstractGameObject<HitBox> implements PlayerWith
         final PlayerImpl copy = new PlayerImpl(new Vector2(position.x(), position.y()), createHitBox());
         copy.coins = this.coins;
         copy.skin = this.skin;
+        copy.state = this.state;
         return copy;
     }
 
@@ -178,25 +187,25 @@ public class PlayerImpl extends AbstractGameObject<HitBox> implements PlayerWith
      * {@inheritDoc}
      */
     @Override
-    public void setOnGround() {
-        getNotEmptyPhysics().setOnGround();
+    public void notifyGroundContactBegin() {
+        getNotEmptyPhysics().onGroundContactBegin();
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void setNotOnGround() {
-        getNotEmptyPhysics().setNotOnGround();
+    public void notifyGroundContactEnd() {
+        getNotEmptyPhysics().onGroundContactEnd();
     }
 
     /**
      * {@inheritDoc}
      */
-    @SuppressFBWarnings(value = "EI2",
-                        justification = "The reference to PlayerPhysics is intentionally stored as part of a one-time binding. "
-                                + "The method enforces immutability of the association by preventing reassignment "
-                                + "through an explicit state check inside the method. ")
+    @SuppressFBWarnings(value = "EI2", justification =
+            "The reference to PlayerPhysics is intentionally stored as part of a one-time binding. "
+            + "The method enforces immutability of the association by preventing reassignment "
+            + "through an explicit state check inside the method. ")
     @Override
     public void bindPhysics(final PlayerPhysics phy) {
         /*
@@ -208,6 +217,14 @@ public class PlayerImpl extends AbstractGameObject<HitBox> implements PlayerWith
             throw new IllegalStateException("Physics already bound");
         }
         this.physics = Objects.requireNonNull(phy);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getState() {
+        return this.state.getName();
     }
 
     private static HitBox createHitBox() {
