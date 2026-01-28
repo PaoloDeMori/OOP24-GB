@@ -15,7 +15,6 @@ import it.unibo.geometrybash.model.Status;
  * @param cameraOffsetX the camera X offset
  * @param score         the current cumulated coins
  * @param gameStatus    the current game's status
- * @param deltaTime     the currente delta time
  */
 public record GameStateDto(
         PlayerDto player,
@@ -23,8 +22,7 @@ public record GameStateDto(
         List<PowerUpDto> powerUps,
         float cameraOffsetX,
         int score,
-        Status gameStatus,
-        float deltaTime) implements Serializable {
+        Status gameStatus) implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -37,7 +35,6 @@ public record GameStateDto(
      * @param cameraOffsetX the camera X offset
      * @param score         the current score
      * @param gameStatus    the game status
-     * @param deltaTime     the elapsed time since the previous frame, in seconds
      */
     public GameStateDto {
         Objects.requireNonNull(player, "player");

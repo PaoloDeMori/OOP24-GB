@@ -23,7 +23,8 @@ public interface Player<S extends Shape> extends GameObject<HitBox> {
      * Makes the player jump, applying the appropriate vertical impulse.
      *
      * <p>
-     * The movement logic should be delegated to the physics component to update the player's position.
+     * The movement logic should be delegated to the physics component to update the
+     * player's position.
      * </p>
      */
     void jump();
@@ -32,7 +33,8 @@ public interface Player<S extends Shape> extends GameObject<HitBox> {
      * Handles the player death event.
      *
      * <p>
-     * Triggers an immediate respawn at the initial position and resetting all temporary effects.
+     * Triggers an immediate respawn at the initial position and resetting all
+     * temporary effects.
      * </p>
      */
     void die();
@@ -136,7 +138,7 @@ public interface Player<S extends Shape> extends GameObject<HitBox> {
      * @return the string represent the current state of the player
      */
     String getState();
-    
+
     /**
      * Set onDeath param.
      *

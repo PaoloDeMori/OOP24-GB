@@ -230,6 +230,10 @@ public class PlayerImpl extends AbstractGameObject<HitBox> implements PlayerWith
         return this.state.getName();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void setOnDeath(final OnDeathExecute onDeath) {
         this.onDeath = Objects.requireNonNull(onDeath);
     }
