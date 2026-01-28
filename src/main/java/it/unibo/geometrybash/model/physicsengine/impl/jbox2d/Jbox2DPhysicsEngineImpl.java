@@ -9,6 +9,7 @@ import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.World;
 
+import it.unibo.geometrybash.model.collision.CollisionHandler;
 import it.unibo.geometrybash.model.core.GameObject;
 import it.unibo.geometrybash.model.geometry.Vector2;
 import it.unibo.geometrybash.model.obstacle.Obstacle;
@@ -22,19 +23,19 @@ import it.unibo.geometrybash.model.powerup.PowerUp;
 
 /**
  * Implementation of PhysicsEngine using JBox2d.
- * 
+ *
  * @see PhysicsEngine
  */
 public class Jbox2DPhysicsEngineImpl implements PhysicsEngine<Body> {
     /**
      * The gravity of the {@link World}.
      */
-    public static final Vector2 GRAVITY = new Vector2(0f, -9.8f);
+    public static final Vector2 GRAVITY = new Vector2(0f, -25.0f);
     /**
      * The Velocity Iterations to use during the
      * {@link World#step(float, int, int)}.
      */
-    public static final int VELOCITY_ITERATIONS = 3;
+    public static final int VELOCITY_ITERATIONS = 8;
     /**
      * The Position Iterations to use during the
      * {@link World#step(float, int, int)}.
@@ -52,6 +53,7 @@ public class Jbox2DPhysicsEngineImpl implements PhysicsEngine<Body> {
     public Jbox2DPhysicsEngineImpl() {
         this.world = new World(new Vec2(GRAVITY.x(), GRAVITY.y()));
         bF = new BodyFactoryImpl(world);
+        this.world.setContactListener(new CollisionHandler());
     }
 
     /**
@@ -122,6 +124,7 @@ public class Jbox2DPhysicsEngineImpl implements PhysicsEngine<Body> {
     @Override
     public void reset() {
         this.world = new World(new Vec2(GRAVITY.x(), GRAVITY.y()));
+        this.world.setContactListener(new CollisionHandler());
         bF = new BodyFactoryImpl(world);
         this.physicsToModelLink.clear();
         this.toRemove.clear();

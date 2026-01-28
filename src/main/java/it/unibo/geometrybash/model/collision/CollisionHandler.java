@@ -20,15 +20,15 @@ import it.unibo.geometrybash.model.player.Player;
  */
 public class CollisionHandler implements ContactListener {
 
-    // enum Phase {
-    // END,
-    // BEGIN
-    // }
+    enum Phase {
+        END,
+        BEGIN
+    }
 
     /**
      * Creates a new CollisionHandler.
      */
-    CollisionHandler() {
+    public CollisionHandler() {
         // Default constructor.
     }
 
@@ -37,7 +37,7 @@ public class CollisionHandler implements ContactListener {
      */
     @Override
     public void beginContact(final Contact contact) {
-        processContact(contact);
+        processContact(contact, Phase.BEGIN);
     }
 
     /**
@@ -45,18 +45,24 @@ public class CollisionHandler implements ContactListener {
      */
     @Override
     public void endContact(final Contact contact) {
-        processContact(contact);
+        processContact(contact, Phase.END);
     }
 
-    private void processContact(final Contact contact) {
+    private void processContact(final Contact contact, final Phase phase) {
         final GameObject<?> a = getGameObject(contact.getFixtureA());
         final GameObject<?> b = getGameObject(contact.getFixtureB());
 
         if (a == null || b == null) {
             return;
         }
-        handleBeginContact(a, b);
-        handleBeginContact(b, a);
+
+        if (phase == Phase.BEGIN) {
+            handleBeginContact(a, b);
+            handleBeginContact(b, a);
+        } else {
+            handleEndContact(a, b);
+            handleEndContact(b, a);
+        }
     }
 
     private GameObject<?> getGameObject(final Fixture fixture) {
@@ -65,12 +71,25 @@ public class CollisionHandler implements ContactListener {
     }
 
     private void handleBeginContact(final GameObject<?> source, final GameObject<?> other) {
-        if (source instanceof Collidable collidable && other instanceof Player player) {
-            if (source instanceof Block) {
-                player.notifyGroundContactBegin();
-            }
-            collidable.onCollision(player);
-            source.activateContact();
+        if (!(source instanceof Collidable collidable) || !(other instanceof Player player)) {
+            return;
+        }
+
+        if (source instanceof Block) {
+            player.notifyGroundContactBegin();
+        }
+
+        collidable.onCollision(player);
+        source.activateContact();
+    }
+
+    private void handleEndContact(final GameObject<?> source, final GameObject<?> other) {
+        if (!(other instanceof Player player)) {
+            return;
+        }
+
+        if (source instanceof Block) {
+            player.notifyGroundContactEnd();
         }
     }
 

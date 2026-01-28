@@ -65,8 +65,7 @@ public final class SpriteRegistry {
      */
     public BufferedImage playerOuterBase(final SkinDto skin) {
         Objects.requireNonNull(skin, "skin must not be null");
-        Objects.requireNonNull(skin.outerSprite(), "skin.outerSprite must not be null");
-        return tint(assets.getImage(skin.outerSprite()), new Color(skin.primaryColor()));
+        return tint(assets.getImage("images/player/outherLayer.png"), new Color(skin.primaryColor()));
     }
 
     /**
@@ -80,8 +79,7 @@ public final class SpriteRegistry {
      */
     public BufferedImage playerInnerBase(final SkinDto skin) {
         Objects.requireNonNull(skin, "skin must not be null");
-        Objects.requireNonNull(skin.innerSprite(), "ski n.innerSprite must not be null");
-        return tint(assets.getImage(skin.innerSprite()), new Color(skin.secondaryColor()));
+        return tint(assets.getImage("images/player/innerLayer.png"), new Color(skin.secondaryColor()));
     }
 
     private String obstaclePath(final DtoObstaclesType type) {

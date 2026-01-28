@@ -21,7 +21,7 @@ import org.jbox2d.dynamics.Body;
  */
 public class PlayerPhysicsImpl implements PlayerPhysics {
 
-    private static final float JUMP_IMPULSE = 6.5f;
+    private static final float JUMP_IMPULSE = 10.0f;
     private static final float BASE_SPEED = 5.0f;
     private final Body body;
     private int groundContacts;
@@ -76,9 +76,10 @@ public class PlayerPhysicsImpl implements PlayerPhysics {
      */
     @Override
     public void resetBodyTo(final Vector2 position) {
-        this.body.setTransform(new Vec2(position.x(), position.y()), 0f);
-        this.body.setLinearVelocity(new Vec2(0f, 0f));
+        this.body.setLinearVelocity(new Vec2(BASE_SPEED, 0f));
         this.body.setAngularVelocity(0f);
+        this.body.setTransform(new Vec2(position.x(), position.y()), 0f);
+        this.body.setAwake(true);
     }
 
     /**
@@ -122,5 +123,13 @@ public class PlayerPhysicsImpl implements PlayerPhysics {
     @Override
     public void onGroundContactEnd() {
         this.groundContacts = Math.max(0, this.groundContacts - 1);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setActive(final boolean activeState) {
+        this.body.setActive(activeState);
     }
 }

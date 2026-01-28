@@ -17,7 +17,12 @@ public enum PlayerState {
     /**
      * The player is standing or moving while in contact with the ground.
      */
-    ON_GROUND("on ground");
+    ON_GROUND("on ground"),
+
+    /**
+     * The player is dead.
+     */
+    DEAD("dead");
 
     private final String name;
 

@@ -47,7 +47,7 @@ public final class GameModelImpl extends AbstractGameModelWithPhysicsEngine<Body
 
     /**
      * The constructor of this gamemodel implementation.
-     * 
+     *
      * @param rLoader the resource laoder.
      * @param pEF     the factory to create jbox2d entities.
      */
@@ -61,7 +61,7 @@ public final class GameModelImpl extends AbstractGameModelWithPhysicsEngine<Body
 
     /**
      * Method called when the player dies.
-     * 
+     *
      * <p>
      * Linked to the game execution through a functional interface in the player.
      * </p>
@@ -82,7 +82,7 @@ public final class GameModelImpl extends AbstractGameModelWithPhysicsEngine<Body
     /**
      * Method to pass to the selected objects in the level loader for handle state
      * changes.
-     * 
+     *
      * @param gO the object calling this method that lived a state change.
      */
     private void resetStateObjects(final GameObject<?> gO) {
@@ -92,7 +92,7 @@ public final class GameModelImpl extends AbstractGameModelWithPhysicsEngine<Body
     /**
      * Private method to throw and log a default error if a method is called while
      * the finite state machine is in an invalid state.
-     * 
+     *
      * @throws InvalidModelMethodInvocationException if a method is called while
      *                                               the finite state machine is in
      *                                               an invalid state.
@@ -113,7 +113,7 @@ public final class GameModelImpl extends AbstractGameModelWithPhysicsEngine<Body
         switch (state) {
             case Status.NEVERSTARTED:
                 this.levelName = levName;
-                try (InputStream levelIS = rLoader.openStream(levName + ".json")) {
+                try (InputStream levelIS = rLoader.openStream("it/unibo/geometrybash/level/" + levName + ".json")) {
                     this.setPhysicsEngine(physicsFactory);
                     final String exceptionInReadingFileMessage = "Error while creating the "
                             + "level from file in the model's start method";

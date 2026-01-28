@@ -35,10 +35,10 @@ public class PlayerImpl extends AbstractGameObject<HitBox> implements PlayerWith
     private static final double ANGULAR_SPEED_RAD_S = Math.toRadians(720.0);
     private final PowerUpManager powerUpManager;
     private final Vector2 startPos;
+    private Skin skin;
     private PlayerState state;
     private PlayerPhysics physics;
     private int coins;
-    private Skin skin;
     private OnDeathExecute onDeath;
     private double rotationRad;
 
@@ -53,6 +53,7 @@ public class PlayerImpl extends AbstractGameObject<HitBox> implements PlayerWith
         this.startPos = position;
         this.hitBox = createHitBox();
         this.powerUpManager = new PowerUpManager();
+        this.skin = new Skin();
         this.coins = 0;
         this.physics = null;
         this.state = PlayerState.ON_GROUND;
@@ -99,9 +100,13 @@ public class PlayerImpl extends AbstractGameObject<HitBox> implements PlayerWith
      */
     @Override
     public void die() {
+        this.state = PlayerState.DEAD;
         this.coins = 0;
         this.powerUpManager.reset();
+        this.physics.setActive(false);
         respawn(this.startPos);
+        this.physics.setActive(true);
+        this.state = PlayerState.ON_GROUND;
         this.onDeath.onDeath();
     }
 
@@ -154,7 +159,7 @@ public class PlayerImpl extends AbstractGameObject<HitBox> implements PlayerWith
         if (powerUpManager.isShielded()) {
             powerUpManager.consumeShield();
             obstacle.setActive(false);
-        } else {
+        } else if (this.state != PlayerState.DEAD) {
             die();
         }
     }
