@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import it.unibo.geometrybash.commons.UpdateInfoDto;
+import it.unibo.geometrybash.commons.input.InputHandlerFactory;
 import it.unibo.geometrybash.commons.input.StandardViewEventType;
 import it.unibo.geometrybash.commons.pattern.observerpattern.modelobserver.ModelEvent;
 import it.unibo.geometrybash.controller.gameloop.GameLoop;
@@ -15,7 +16,6 @@ import it.unibo.geometrybash.controller.gameloop.exceptions.InvalidGameLoopConfi
 import it.unibo.geometrybash.controller.gameloop.exceptions.InvalidGameLoopStatusException;
 import it.unibo.geometrybash.controller.gameloop.exceptions.NotOnPauseException;
 import it.unibo.geometrybash.controller.gameloop.exceptions.NotStartedException;
-import it.unibo.geometrybash.controller.input.CompositeInputHandler;
 import it.unibo.geometrybash.model.GameModel;
 import it.unibo.geometrybash.model.exceptions.InvalidModelMethodInvocationException;
 import it.unibo.geometrybash.model.physicsengine.exception.ModelExecutionException;
@@ -47,15 +47,18 @@ public abstract class AbstractControllerImpl implements Controller {
      * The constructor of the controller with game model, view and input handler
      * creation delegated.
      * 
-     * @param gameModel       the model of the game
-     * @param view            the main view class of the game
-     * @param gameLoopFactory the factory to init the gameloop.
+     * @param gameModel           the model of the game
+     * @param view                the main view class of the game
+     * @param gameLoopFactory     the factory to init the gameloop.
+     * @param inputHandlerFactory the factory to init the inputHandler.
+     * 
      */
-    public AbstractControllerImpl(final GameModel gameModel, final View view, final GameLoopFactory gameLoopFactory) {
+    public AbstractControllerImpl(final GameModel gameModel, final View view, final GameLoopFactory gameLoopFactory,
+            final InputHandlerFactory inputHandlerFactory) {
         this.gameModel = gameModel;
         this.gameModel.addObserver(this);
         this.view = view;
-        this.inputHandler = new CompositeInputHandler();
+        this.inputHandler = inputHandlerFactory.createInputHandler();
         this.view.addObserver(inputHandler);
         this.gameLoopFactory = gameLoopFactory;
     }
@@ -106,7 +109,9 @@ public abstract class AbstractControllerImpl implements Controller {
             case "close":
             case "quit":
                 try {
-                    gameLoop.stop();
+                    if (gameLoop != null) {
+                        gameLoop.stop();
+                    }
                 } catch (final NotStartedException e) {
                     LOGGER.warn("Gameloop never started");
                 } finally {
