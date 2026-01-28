@@ -1,6 +1,10 @@
 package it.unibo.geometrybash.model.player;
 
+import it.unibo.geometrybash.model.core.GameObject;
+import it.unibo.geometrybash.model.geometry.HitBox;
+import it.unibo.geometrybash.model.geometry.Shape;
 import it.unibo.geometrybash.model.geometry.Vector2;
+import it.unibo.geometrybash.model.obstacle.Spike;
 
 /**
  * Represents the player entity in the game.
@@ -10,15 +14,17 @@ import it.unibo.geometrybash.model.geometry.Vector2;
  * player-controlled
  * entity in game.
  * </p>
+ *
+ * @param <S> the type of shape used for collision detection
  */
-public interface Player {
+public interface Player<S extends Shape> extends GameObject<HitBox> {
 
     /**
      * Makes the player jump, applying the appropriate vertical impulse.
      *
      * <p>
-     * The movement logic should be delegated to the physics component
-     * to update the player's position.
+     * The movement logic should be delegated to the physics component to update the
+     * player's position.
      * </p>
      */
     void jump();
@@ -83,8 +89,10 @@ public interface Player {
      * The player should internally check if any shield is active to absorb the hit,
      * or otherwise trigger the death sequence.
      * </p>
+     *
+     * @param obstacle the spike obstacle whitch collides with player
      */
-    void onSpikeCollision();
+    void onSpikeCollision(Spike obstacle);
 
     /**
      * Returns the current speed multiplier applied to the player.
@@ -101,6 +109,16 @@ public interface Player {
     boolean isShielded();
 
     /**
+     * Notifies the player that a ground contact has started.
+     */
+    void notifyGroundContactBegin();
+
+    /**
+     * Notifies the player that a ground contact has ended.
+     */
+    void notifyGroundContactEnd();
+
+    /**
      * Returns the currently assigned skin of the player.
      *
      * @return the player's skin, or {@code null} if none is set
@@ -113,4 +131,33 @@ public interface Player {
      * @param skin the skin to assign to the player
      */
     void setSkin(Skin skin);
+
+    /**
+     * Returns the actual state of the player.
+     *
+     * @return the string represent the current state of the player
+     */
+    String getState();
+
+    /**
+     * Set onDeath param.
+     *
+     * @param onDeath the functional interface to set
+     */
+    void setOnDeath(OnDeathExecute onDeath);
+
+    /**
+     * Returns the rotation angle computed using the delta time and normalized to a valid range.
+     *
+     * @return the player rotation angle
+     */
+    double getAngularRotation();
+
+    /**
+     * Returns a defensive copy of this Player.
+     *
+     * @return a new Player instance with the same state
+     */
+    @Override
+    Player<HitBox> copy();
 }

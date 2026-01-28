@@ -21,25 +21,33 @@ import it.unibo.geometrybash.commons.pattern.observerpattern.viewobserverpattern
 import it.unibo.geometrybash.commons.pattern.observerpattern.viewobserverpattern.ViewObservable;
 import it.unibo.geometrybash.controller.input.CompositeInputHandler;
 import it.unibo.geometrybash.model.MenuModel;
-import it.unibo.geometrybash.view.assets.ResourceLoader;
-import it.unibo.geometrybash.view.assets.ResourceLoaderImpl;
-import it.unibo.geometrybash.view.assets.TextAssetReader;
+import it.unibo.geometrybash.commons.assets.AudioManager;
+import it.unibo.geometrybash.commons.assets.AudioStore;
+import it.unibo.geometrybash.commons.assets.ResourceLoader;
+import it.unibo.geometrybash.commons.assets.ResourceLoaderImpl;
+import it.unibo.geometrybash.commons.assets.TextAssetReader;
 import it.unibo.geometrybash.view.utilities.TerminalColor;
 
 /**
  * Creates and manages the main menu graphical interface.
  * Handles user input and notifies observers with view events.
- * extends the {@link AbstractObservableWithSet} and implements {@link ViewObservable}
+ * extends the {@link AbstractObservableWithSet} and implements
+ * {@link ViewObservable}
  */
-@SuppressWarnings("checkstyle:LineLength")
 public final class MainMenuView extends AbstractObservableWithSet<ViewEvent> implements ViewObservable {
     /** Prompt displayed before the user input. */
     private static final String PROMPT = "geometrybash@oop24:~# ";
     private final JFrame frame;
     private final JTextArea outputArea;
     private final JTextField inputField;
+    private JTextArea logo;
+    private JLabel insertLabel;
+    private JLabel promptLabel;
     private final TextAssetReader textReader;
     private final ResourceLoader resourceLoader;
+
+    private final AudioStore audioStore;
+    private final AudioManager manage;
 
     /**
      * Initializes the main menu view and its graphical components.
@@ -53,6 +61,8 @@ public final class MainMenuView extends AbstractObservableWithSet<ViewEvent> imp
 
         this.resourceLoader = new ResourceLoaderImpl();
         this.textReader = new TextAssetReader(this.resourceLoader);
+        this.audioStore = new AudioStore(resourceLoader);
+        this.manage = new AudioManager(audioStore);
 
         this.outputArea = createOutputArea();
         this.inputField = createInputField();
@@ -79,20 +89,20 @@ public final class MainMenuView extends AbstractObservableWithSet<ViewEvent> imp
         margin.setBackground(TerminalColor.BACKGROUND);
         header.add(margin, BorderLayout.NORTH);
 
-        final String title = textReader.readAll("it/unibo/view/startMenu/logo.txt");
-        final JTextArea logo = new JTextArea(title);
-        logo.setBackground(TerminalColor.BACKGROUND);
-        logo.setForeground(TerminalColor.FOREGROUND);
-        logo.setFont(TerminalColor.ASCII_FONT);
-        logo.setEditable(false);
-        logo.setFocusable(false);
+        final String title = textReader.readAll("it/unibo/geometrybash/startMenu/logo.txt");
+        this.logo = new JTextArea(title);
+        this.logo.setBackground(TerminalColor.BACKGROUND);
+        this.logo.setForeground(TerminalColor.FOREGROUND);
+        this.logo.setFont(TerminalColor.ASCII_FONT);
+        this.logo.setEditable(false);
+        this.logo.setFocusable(false);
         header.add(logo, BorderLayout.CENTER);
 
-        final JLabel instrLabel = new JLabel("Insert 'commands' or 'help' to show the list of available actions");
-        instrLabel.setForeground(TerminalColor.FOREGROUND);
-        instrLabel.setFont(TerminalColor.MAIN_FONT);
-        instrLabel.setHorizontalAlignment(JLabel.CENTER);
-        header.add(instrLabel, BorderLayout.SOUTH);
+        this.insertLabel = new JLabel("Insert 'commands' or 'help' to show the list of available actions");
+        this.insertLabel.setForeground(TerminalColor.FOREGROUND);
+        this.insertLabel.setFont(TerminalColor.MAIN_FONT);
+        this.insertLabel.setHorizontalAlignment(JLabel.CENTER);
+        header.add(insertLabel, BorderLayout.SOUTH);
         return header;
     }
 
@@ -100,12 +110,42 @@ public final class MainMenuView extends AbstractObservableWithSet<ViewEvent> imp
      * Displays the list of available commands to the user.
      */
     public void showCommands() {
-        this.appendText("--- AVAILABLE COMMANDS ---");
+        this.appendText("\n --- AVAILABLE COMMANDS ---");
         this.appendText(" > start      : begin your geometry bash adventure");
         this.appendText(" > inventory  : check your equipment");
         this.appendText(" > close/exit : quit the terminal");
         this.appendText(" > help/cmds  : show this list");
         this.appendText("---------------------------");
+    }
+
+    /**
+     * Displays pause message in the termina and sets the text color.
+     * this method is called when the player enter in pause state.
+     */
+    public void showPauseMessage() {
+        this.outputArea.setForeground(TerminalColor.PAUSE);
+        this.inputField.setForeground(TerminalColor.PAUSE);
+        this.insertLabel.setForeground(TerminalColor.PAUSE);
+        this.logo.setForeground(TerminalColor.PAUSE);
+        this.promptLabel.setForeground(TerminalColor.PAUSE);
+
+        this.appendText("\n GAME PAUSED");
+        this.appendText(" Type 'resume' to continue your run in Geometry Bash");
+        this.appendText(" ----------------------------------------------------");
+
+    }
+
+    /**
+     * Show the victory message with the total number of coins collected.
+     *
+     * @param coins the number of coins collected during the level
+     */
+    public void showVictoryMessage(final int coins) {
+        this.appendText("\n LEVEL COMPLETED! YOU WON!");
+        this.appendText(" -----------------------------");
+        this.appendText(" total coins collected: " + coins);
+        this.appendText(" -----------------------------");
+        this.appendText(" type 'start' for start new challenge");
     }
 
     /**
@@ -115,7 +155,7 @@ public final class MainMenuView extends AbstractObservableWithSet<ViewEvent> imp
      * @param command the invalid command entered by the user
      */
     public void showUnknownCommandError(final String command) {
-        this.appendText(" ERROR: '" + command + "' is not recognized as a command.");
+        this.appendText("\n ERROR: '" + command + "' is not recognized as a command.");
         this.appendText("     Type 'help' or 'commands' to see the list of available actions.");
     }
 
@@ -157,9 +197,9 @@ public final class MainMenuView extends AbstractObservableWithSet<ViewEvent> imp
         final JPanel footer = new JPanel(new BorderLayout());
         footer.setBackground(TerminalColor.BACKGROUND);
 
-        final JLabel promptLabel = new JLabel(PROMPT);
-        promptLabel.setForeground(TerminalColor.FOREGROUND);
-        promptLabel.setFont(TerminalColor.MAIN_FONT);
+        this.promptLabel = new JLabel(PROMPT);
+        this.promptLabel.setForeground(TerminalColor.FOREGROUND);
+        this.promptLabel.setFont(TerminalColor.MAIN_FONT);
 
         footer.add(promptLabel, BorderLayout.WEST);
         footer.add(this.inputField, BorderLayout.CENTER);
@@ -208,12 +248,15 @@ public final class MainMenuView extends AbstractObservableWithSet<ViewEvent> imp
                     notifyObservers(ViewEvent.createEvent(ViewEventTypeFactory.standard(StandardViewEventType.START)));
                     break;
                 case "inventory":
-                    notifyObservers(ViewEvent.createEvent(ViewEventTypeFactory.standard(StandardViewEventType.INVENTORY)));
+                    notifyObservers(
+                            ViewEvent.createEvent(ViewEventTypeFactory.standard(StandardViewEventType.INVENTORY)));
                     break;
                 case "close":
                 case "exit":
                     notifyObservers(ViewEvent.createEvent(ViewEventTypeFactory.standard(StandardViewEventType.CLOSE)));
                     break;
+                case "resume":
+                    notifyObservers(ViewEvent.createEvent(ViewEventTypeFactory.standard(StandardViewEventType.RESUME)));
                 default:
                     notifyObservers(ViewEvent.createEvent(ViewEventTypeFactory.generic(rawCmd)));
             }
@@ -225,6 +268,7 @@ public final class MainMenuView extends AbstractObservableWithSet<ViewEvent> imp
      * Displays the main menu in full screen mode.
      */
     public void display() {
+        this.manage.loop("it/unibo/geometrybash/audio/menu.wav");
         GraphicsEnvironment.getLocalGraphicsEnvironment()
                 .getDefaultScreenDevice().setFullScreenWindow(frame);
         this.frame.setVisible(true);
@@ -235,6 +279,7 @@ public final class MainMenuView extends AbstractObservableWithSet<ViewEvent> imp
      * Hides the main menu window.
      */
     public void hide() {
+        this.manage.stop("it/unibo/geometrybash/audio/menu.wav");
         this.frame.setVisible(false);
     }
 
@@ -256,15 +301,20 @@ public final class MainMenuView extends AbstractObservableWithSet<ViewEvent> imp
     public static void main(final String[] args) {
         final MainMenuView menu = new MainMenuView();
         final CompositeInputHandler cH = new CompositeInputHandler();
+        final int coinsCollected = 5;
         final MenuModel mm = new MenuModel();
         cH.setGenericCommandHandler(command -> {
             mm.addCommand(command);
             if ("history".equals(command)) {
                 for (final String string : mm.getHistory()) {
-                     menu.appendText(string);
+                    menu.appendText(string);
                 }
             } else if ("help".equals(command) || "commands".equals(command) || "cmds".equals(command)) {
                 menu.showCommands();
+            } else if ("pause".equals(command)) {
+                menu.showPauseMessage();
+            } else if ("victory".equals(command)) {
+                menu.showVictoryMessage(coinsCollected);
             } else {
                 menu.showUnknownCommandError(command);
             }

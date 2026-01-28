@@ -16,17 +16,23 @@ import it.unibo.geometrybash.model.geometry.Vector2;
 public interface GameObject<S extends Shape> {
 
     /**
-     * Returns the current position of the object in the game world.
+     * Returns the position represented by the lower left corner of the object in the game world.
      *
      * @return a {@link Vector2} object representing the object's coordinates
      */
     Vector2 getPosition();
 
     /**
+     * Sets the position represented by the lower left corner of the object in the game world.
+     *
+     * @param vC a {@link Vector2} object representing the object's coordinates
+     */
+    void setPosition(Vector2 vC);
+
+    /**
      * Returns the hitbox of the game object.
      *
-     * @return the {@link Shape} representing this object's hitbox, which
-     *         may be a {@link CircleHitBox} or a {@link HitBox}
+     * @return the {@link Shape} representing this object's hitbox, which may be a {@link CircleHitBox} or a {@link HitBox}
      */
     S getHitBox();
 
@@ -67,4 +73,16 @@ public interface GameObject<S extends Shape> {
      *               {@code false} to mark it as inactive
      */
     void setActive(boolean active);
+
+    /**
+     * Sets the OnStateModifiedContact called if a contact that modifies the state happens.
+     *
+     * @param onState the functional interface calls
+     */
+    void addOnStateModifierContact(OnStateModifiedContact onState);
+
+    /**
+     * Call the method of type {@link OnStateModifiedContact}.
+     */
+    void activateContact();
 }

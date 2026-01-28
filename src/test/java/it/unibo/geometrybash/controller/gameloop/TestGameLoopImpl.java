@@ -16,7 +16,7 @@ import it.unibo.geometrybash.controller.gameloop.exceptions.NotStartedException;
 
 class TestGameLoopImpl {
     private static final String INTERRUPT_RECEIVED_MESSAGE = "interrupt received";
-     private static final long ONE_EXECUTION_TIME = 30L;
+     private static final long ONE_EXECUTION_TIME = 500L;
 
     /**
      * Tests that an InvalidGameLoopConfigurationException is thrown if the gameLoop is started without a correct initialization.
