@@ -54,6 +54,5 @@ public class PlayerView implements Drawable<PlayerDto> {
         } finally {
             g2d.setTransform(oldTx);
         }
-
     }
 }
