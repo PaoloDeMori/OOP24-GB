@@ -35,7 +35,7 @@ public abstract class AbstractControllerImpl implements Controller {
      * Logger instance to handle errors and sending debug information.
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractControllerImpl.class);
-    private static final String LEVEL_NAME = "Primo livello";
+    private static final String LEVEL_NAME = "tempLevel";
 
     private final GameModel gameModel;
     private final View view;
