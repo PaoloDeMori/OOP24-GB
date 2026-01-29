@@ -74,7 +74,7 @@ public final class GameStateMapper {
                 final float cameraX = Math.max(0, playerX - CAMERA_OFFSET_MARGIN);
                 final Level level = model.getLevel();
                 final float winX = level.getWinX();
-                final float progress = winX > 0 ? Math.max(0.0f, Math.min(100.0f, (playerX / winX) * 100.0f)) : 0.0f;
+                final float progress = winX > 0 ? Math.max(0.0f, Math.min(100.0f, playerX / winX * 100.0f)) : 0.0f;
                 final List<GameObject<?>> visibileObjects = level.getGameObjectsInRange(
                                 new Vector2(Math.max(0, playerX - CULLING_X_LEFT), 0),
                                 new Vector2(playerX + CULLING_X_RIGHT, 0));

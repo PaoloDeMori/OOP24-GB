@@ -15,6 +15,7 @@ import it.unibo.geometrybash.model.Status;
  * @param cameraOffsetX the camera X offset
  * @param score         the current cumulated coins
  * @param gameStatus    the current game's status
+ * @param progress      the level progres
  */
 public record GameStateDto(
         PlayerDto player,
@@ -43,6 +44,7 @@ public record GameStateDto(
         Objects.requireNonNull(obstacles, "obstacles");
         Objects.requireNonNull(powerUps, "powerUps");
         Objects.requireNonNull(gameStatus, "gameStatus");
+        Objects.requireNonNull(progress, "progress");
 
         obstacles = List.copyOf(obstacles);
         powerUps = List.copyOf(powerUps);
