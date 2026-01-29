@@ -10,6 +10,7 @@ import it.unibo.geometrybash.commons.dtos.GameStateDto;
 import it.unibo.geometrybash.commons.dtos.ObstacleDto;
 import it.unibo.geometrybash.commons.dtos.PlayerDto;
 import it.unibo.geometrybash.commons.dtos.PowerUpDto;
+import it.unibo.geometrybash.commons.dtos.SkinDto;
 import it.unibo.geometrybash.model.core.GameObject;
 import it.unibo.geometrybash.model.geometry.Vector2;
 import it.unibo.geometrybash.model.level.Level;
@@ -128,7 +129,7 @@ public final class GameStateMapper {
         }
 
         /**
-         * Maps the {@link Player} into its DTO representation.
+         * Maps the {@link Player} into its DTO representation with is skinDto.
          *
          * @param player the player to convert
          * @return the corresponding {@link PlayerDto}
@@ -141,7 +142,9 @@ public final class GameStateMapper {
                                 player.getHitBox().getHeight(),
                                 player.isActive(),
                                 player.isShielded(),
-                                null,
+                                new SkinDto(
+                                                player.getSkin().getInnerColor(),
+                                                player.getSkin().getOuterColor()),
                                 player.getAngularRotation());
         }
 }
