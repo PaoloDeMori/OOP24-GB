@@ -268,6 +268,22 @@ public class PlayerImpl extends AbstractGameObject<HitBox> implements PlayerWith
         return this.rotationRad;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setInnerColor(final int innerColor) {
+        this.skin = this.skin.withColors(innerColor, this.skin.getOuterColor());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setOuterColor(final int outerColor) {
+        this.skin = this.skin.withColors(this.skin.getInnerColor(), outerColor);
+    }
+
     private static HitBox createHitBox() {
         return new HitBox(
                 List.of(new Vector2(0, 0), new Vector2(SIZE, 0), new Vector2(SIZE, SIZE), new Vector2(0, SIZE)));

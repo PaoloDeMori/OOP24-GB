@@ -1,6 +1,6 @@
 package it.unibo.geometrybash.model.powerup;
 
-import it.unibo.geometrybash.model.collision.Collidable;
+import it.unibo.geometrybash.model.core.Collidable;
 import it.unibo.geometrybash.model.geometry.CircleHitBox;
 import it.unibo.geometrybash.model.geometry.Vector2;
 import it.unibo.geometrybash.model.player.Player;

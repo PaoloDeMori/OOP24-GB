@@ -1,4 +1,4 @@
-package it.unibo.geometrybash.model.collision;
+package it.unibo.geometrybash.model.physicsengine.impl.jbox2d;
 
 import org.jbox2d.callbacks.ContactListener;
 import org.jbox2d.dynamics.Fixture;
@@ -6,6 +6,7 @@ import org.jbox2d.dynamics.contacts.Contact;
 import org.jbox2d.collision.Manifold;
 import org.jbox2d.callbacks.ContactImpulse;
 
+import it.unibo.geometrybash.model.core.Collidable;
 import it.unibo.geometrybash.model.core.GameObject;
 import it.unibo.geometrybash.model.obstacle.Block;
 import it.unibo.geometrybash.model.player.Player;

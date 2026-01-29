@@ -147,11 +147,28 @@ public interface Player<S extends Shape> extends GameObject<HitBox> {
     void setOnDeath(OnDeathExecute onDeath);
 
     /**
-     * Returns the rotation angle computed using the delta time and normalized to a valid range.
+     * Returns the rotation angle computed using the delta time and normalized to a
+     * valid range.
      *
      * @return the player rotation angle
      */
     double getAngularRotation();
+
+    /**
+     * Sets the inner color of the player's skin.
+     *
+     * @param innerColor the ARGB color value to use for the inner part of the
+     *                   player
+     */
+    void setInnerColor(int innerColor);
+
+    /**
+     * Sets the outer color of the player's skin.
+     *
+     * @param outerColor the ARGB color value to use for the outer part of the
+     *                   player
+     */
+    void setOuterColor(int outerColor);
 
     /**
      * Returns a defensive copy of this Player.
