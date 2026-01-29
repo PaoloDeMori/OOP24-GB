@@ -27,11 +27,11 @@ public class StaticDeltaTimeControllerImpl extends AbstractControllerImpl {
 
     /**
      * The constructor of this class.
-     * 
+     *
      * @param gameModel del to use as the "brain" of this
-     * 
+     *
      * @param view      omponent to show the gui of this
-     * 
+     *
      */
     public StaticDeltaTimeControllerImpl(final GameModel gameModel, final View view) {
         super(gameModel, view, new GameLoopFixedExecutionTimeFactory(), new InputHandlerFactoryImpl());
@@ -39,7 +39,7 @@ public class StaticDeltaTimeControllerImpl extends AbstractControllerImpl {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * <p>
      * This implementation returns a static delta time.
      * </p>
@@ -84,22 +84,22 @@ public class StaticDeltaTimeControllerImpl extends AbstractControllerImpl {
             @Override
             public void addObserver(Observer<? super ViewEvent> obs) {
             }
-            
+
         };
 
         try {
             GameModel gameModel = new GameModelImpl(new ResourceLoaderImpl(), new JBox2dPhysicsEngineFactory());
             Controller controller = new StaticDeltaTimeControllerImpl(gameModel, view);
-            gameModel.start("tempLevel");
+            //gameModel.start("tempLevel");
             controller.start();
             Thread.sleep(200);
-            System.out.println(controller.getModel().toDto().getStateDto().player().x()+ " y: " + controller.getModel().toDto().getStateDto().player().y());
+            System.out.println("x: " + controller.getModel().toDto().getStateDto().player().x()+ " y: " + controller.getModel().toDto().getStateDto().player().y());
             controller.getModel().toDto().getStateDto().obstacles().forEach(i -> System.out.println("Ostatocolo di tipo " + i.type()+ " alla posizione " + i.x() + " y " + i.y()));
             Thread.sleep(2000);
-            System.out.println(controller.getModel().toDto().getStateDto().player().x()+ " y: " + controller.getModel().toDto().getStateDto().player().y());
+            System.out.println("x: " + controller.getModel().toDto().getStateDto().player().x()+ " y: " + controller.getModel().toDto().getStateDto().player().y());
             controller.getModel().toDto().getStateDto().obstacles().forEach(i -> System.out.println("Ostatocolo di tipo " + i.type()+ " alla posizione " + i.x() + " y " + i.y()));
             Thread.sleep(2000);
-            System.out.println(controller.getModel().toDto().getStateDto().player().x()+ " y: " + controller.getModel().toDto().getStateDto().player().y());
+            System.out.println("x: " + controller.getModel().toDto().getStateDto().player().x()+ " y: " + controller.getModel().toDto().getStateDto().player().y());
             controller.getModel().toDto().getStateDto().obstacles().forEach(i -> System.out.println("Ostatocolo di tipo " + i.type()+ " alla posizione " + i.x() + " y " + i.y() ));
         } catch (ModelExecutionException e) {
             System.out.println("ERRORE");

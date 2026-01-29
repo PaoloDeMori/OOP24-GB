@@ -57,12 +57,18 @@ public class CollisionHandler implements ContactListener {
             return;
         }
 
+        final Player<?> player = a instanceof Player p ? p : b instanceof Player p ? p : null;
+
+        final Collidable collidable = a instanceof Collidable c ? c : b instanceof Collidable c ? c : null;
+
         if (phase == Phase.BEGIN) {
-            handleBeginContact(a, b);
-            handleBeginContact(b, a);
+            if (player != null && collidable != null) {
+                handleBeginContact(player, collidable);
+            }
         } else {
-            handleEndContact(a, b);
-            handleEndContact(b, a);
+            if (player != null && collidable != null) {
+                handleEndContact(player, collidable);
+            }
         }
     }
 
@@ -71,25 +77,25 @@ public class CollisionHandler implements ContactListener {
         return userData instanceof GameObject gameObject ? gameObject : null;
     }
 
-    private void handleBeginContact(final GameObject<?> source, final GameObject<?> other) {
-        if (!(source instanceof Collidable collidable) || !(other instanceof Player player)) {
+    private void handleBeginContact(final Player<?> player, final Collidable collidable) {
+        if (player.isDead()) {
             return;
         }
 
-        if (source instanceof Block) {
+        if (collidable instanceof Block) {
             player.notifyGroundContactBegin();
         }
 
         collidable.onCollision(player);
-        source.activateContact();
+        player.activateContact();
     }
 
-    private void handleEndContact(final GameObject<?> source, final GameObject<?> other) {
-        if (!(other instanceof Player player)) {
+    private void handleEndContact(final Player<?> player, final Collidable collidable) {
+        if (player.isDead()) {
             return;
         }
 
-        if (source instanceof Block) {
+        if (collidable instanceof Block) {
             player.notifyGroundContactEnd();
         }
     }

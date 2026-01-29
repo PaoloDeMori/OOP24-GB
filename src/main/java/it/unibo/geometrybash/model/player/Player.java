@@ -170,6 +170,8 @@ public interface Player<S extends Shape> extends GameObject<HitBox> {
      */
     void setOuterColor(int outerColor);
 
+    boolean isDead();
+
     /**
      * Returns a defensive copy of this Player.
      *

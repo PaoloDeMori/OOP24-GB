@@ -34,7 +34,6 @@ public class PlayerImpl extends AbstractGameObject<HitBox> implements PlayerWith
     private static final double RIGHT_ANGLE_RAD = Math.PI / 2.0;
     private static final double ANGULAR_SPEED_RAD_S = Math.toRadians(720.0);
     private final PowerUpManager powerUpManager;
-    private final Vector2 startPos;
     private Skin skin;
     private PlayerState state;
     private PlayerPhysics physics;
@@ -50,7 +49,6 @@ public class PlayerImpl extends AbstractGameObject<HitBox> implements PlayerWith
      */
     public PlayerImpl(final Vector2 position) {
         super(position);
-        this.startPos = position;
         this.hitBox = createHitBox();
         this.powerUpManager = new PowerUpManager();
         this.skin = new Skin();
@@ -103,10 +101,6 @@ public class PlayerImpl extends AbstractGameObject<HitBox> implements PlayerWith
         this.state = PlayerState.DEAD;
         this.coins = 0;
         this.powerUpManager.reset();
-        this.physics.setActive(false);
-        respawn(this.startPos);
-        this.physics.setActive(true);
-        this.state = PlayerState.ON_GROUND;
         this.onDeath.onDeath();
     }
 
@@ -115,8 +109,11 @@ public class PlayerImpl extends AbstractGameObject<HitBox> implements PlayerWith
      */
     @Override
     public void respawn(final Vector2 position) {
-        getNotEmptyPhysics().resetBodyTo(position);
-        this.position = position;
+        if (this.state.equals(PlayerState.DEAD)) {
+            getNotEmptyPhysics().resetBodyTo(position);
+            this.position = position;
+            this.state = PlayerState.ON_GROUND;
+        }
     }
 
     /**
@@ -227,8 +224,7 @@ public class PlayerImpl extends AbstractGameObject<HitBox> implements PlayerWith
     /**
      * {@inheritDoc}
      */
-    @SuppressFBWarnings(value = "EI2",
-            justification = "The reference to PlayerPhysics is intentionally stored as part of a one-time binding. "
+    @SuppressFBWarnings(value = "EI2", justification = "The reference to PlayerPhysics is intentionally stored as part of a one-time binding. "
             + "The method enforces immutability of the association by preventing reassignment "
             + "through an explicit state check inside the method. ")
     @Override
@@ -293,5 +289,10 @@ public class PlayerImpl extends AbstractGameObject<HitBox> implements PlayerWith
         return Objects.requireNonNull(
                 physics,
                 "Player physics not bound yet");
+    }
+
+    @Override
+    public boolean isDead() {
+        return this.state.equals(PlayerState.DEAD);
     }
 }

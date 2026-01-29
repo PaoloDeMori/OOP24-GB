@@ -46,12 +46,12 @@ public abstract class AbstractControllerImpl implements Controller {
     /**
      * The constructor of the controller with game model, view and input handler
      * creation delegated.
-     * 
+     *
      * @param gameModel           the model of the game
      * @param view                the main view class of the game
      * @param gameLoopFactory     the factory to init the gameloop.
      * @param inputHandlerFactory the factory to init the inputHandler.
-     * 
+     *
      */
     public AbstractControllerImpl(final GameModel gameModel, final View view, final GameLoopFactory gameLoopFactory,
             final InputHandlerFactory inputHandlerFactory) {
@@ -65,7 +65,7 @@ public abstract class AbstractControllerImpl implements Controller {
 
     /**
      * A method that returns the delta time, it can either be static or evluated.
-     * 
+     *
      * @return the delta time.
      */
     protected abstract float evaluateDeltaTime();
@@ -101,7 +101,7 @@ public abstract class AbstractControllerImpl implements Controller {
     /**
      * The actions to execute if a generic command represented as a string is
      * received.
-     * 
+     *
      * @param command the string received.
      */
     private void onGenericCommand(final String command) {
@@ -150,7 +150,7 @@ public abstract class AbstractControllerImpl implements Controller {
 
     /**
      * A utility function to handle a critic error.
-     * 
+     *
      * @param message the message to log and to display
      * @param ex      the exception that caused this method execution
      */
@@ -168,7 +168,7 @@ public abstract class AbstractControllerImpl implements Controller {
 
     /**
      * A method to update the view and handle its exceptions.
-     * 
+     *
      * @param dto the dto used by the view to its update
      */
     private void callViewUpdate(final UpdateInfoDto dto) {
@@ -181,7 +181,7 @@ public abstract class AbstractControllerImpl implements Controller {
 
     /**
      * The method to show a gui with the error and log it.
-     * 
+     *
      * @param message the message to show in the gui and log.
      * @param e       the exception that caused this one.
      */
@@ -236,7 +236,7 @@ public abstract class AbstractControllerImpl implements Controller {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      */
     @Override
     public void update(final ModelEvent event) {

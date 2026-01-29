@@ -57,7 +57,7 @@ dependencies {
 
 application {
     // Define the main class for the application.
-    mainClass.set("it.unibo.geometrybash.view.menus.MainMenuView")
+    mainClass.set("it.unibo.geometrybash.controller.StaticDeltaTimeControllerImpl")
 }
 
 tasks.withType<Test>().configureEach {

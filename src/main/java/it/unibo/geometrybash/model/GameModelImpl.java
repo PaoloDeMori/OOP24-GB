@@ -231,7 +231,7 @@ public final class GameModelImpl extends AbstractGameModelWithPhysicsEngine<Body
         }
 
         this.getPhysicsEngine().updatePhysicsEngine(deltaTime);
-
+        respawnPlayer();
     }
 
     /**
@@ -254,7 +254,7 @@ public final class GameModelImpl extends AbstractGameModelWithPhysicsEngine<Body
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * <p>
      * In this implementation of {@link GameModel} i use this method to call the
      * jump signal in a thread
@@ -267,6 +267,11 @@ public final class GameModelImpl extends AbstractGameModelWithPhysicsEngine<Body
             this.player.jump();
             this.isJumpSignalActive = false;
         }
+    }
+
+    @Override
+    public void respawnPlayer() {
+        player.respawn(this.level.getPlayerStartPosition());
     }
 
 }
