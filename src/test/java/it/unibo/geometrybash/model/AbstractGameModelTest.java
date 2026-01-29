@@ -216,7 +216,12 @@ class AbstractGameModelTest {
         }
 
         @Override
-        public UpdateInfoDto tDto() {
+        public UpdateInfoDto toDto() {
+            throw new UnsupportedOperationException(NOT_NECESSARY_METHOD);
+        }
+
+        @Override
+        protected void beforeGameObjectsUpdate(final float deltaTime) {
             throw new UnsupportedOperationException(NOT_NECESSARY_METHOD);
         }
     }
