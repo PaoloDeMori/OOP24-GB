@@ -109,4 +109,14 @@ public final class LevelImpl implements Level {
         return allObjects;
     }
 
+    /**
+     * {@inheritDoc}.
+     */
+    @Override
+    public float getWinX() {
+        return this.winX;
+    }
+
+
+
 }
