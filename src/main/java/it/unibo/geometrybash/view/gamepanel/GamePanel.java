@@ -1,9 +1,9 @@
 package it.unibo.geometrybash.view.gamepanel;
 
-import javax.swing.JPanel;
+import java.util.Optional;
 
-import it.unibo.geometrybash.commons.dtos.GameStateDto;
+import it.unibo.geometrybash.view.UpdatableWithDto;
 
-public abstract class GamePanel extends JPanel {
-    public abstract void update(GameStateDto gameStateDto);
+public interface GamePanel {
+    public Optional<UpdatableWithDto<?>> getUpdatableWithDto();
 }

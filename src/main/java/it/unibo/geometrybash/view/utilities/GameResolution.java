@@ -20,8 +20,8 @@ public enum GameResolution {
     SMALL(51.2F, 1_024, 768);
 
     private final float ppm;
-    private final int viewPortX;
-    private final int viewPortY;
+    private final int viewPortWidth;
+    private final int viewPortHeight;
 
     /**
      * Set the variable ppm with the correct value.
@@ -30,8 +30,8 @@ public enum GameResolution {
      */
     GameResolution(final float ppm, int x, int y) {
         this.ppm = ppm;
-        this.viewPortX = x;
-        this.viewPortY = y;
+        this.viewPortWidth = x;
+        this.viewPortHeight = y;
     }
 
     /**
@@ -48,8 +48,8 @@ public enum GameResolution {
      * 
      * @return the viewport horizontal dimension.
      */
-    public int getViewPortX() {
-        return this.viewPortX;
+    public int getViewPortWidth() {
+        return this.viewPortWidth;
     }
 
     /**
@@ -58,7 +58,7 @@ public enum GameResolution {
      * @return the viewport horizontal dimension.
      *
      */
-    public int getViewPortY() {
-        return this.viewPortY;
+    public int getViewPortHeight() {
+        return this.viewPortHeight;
     }
 }
