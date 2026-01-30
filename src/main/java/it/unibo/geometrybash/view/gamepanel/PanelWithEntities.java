@@ -5,6 +5,9 @@ import java.awt.Graphics2D;
 
 import javax.swing.JPanel;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import it.unibo.geometrybash.commons.assets.AssetStore;
 import it.unibo.geometrybash.commons.dtos.GameStateDto;
 import it.unibo.geometrybash.view.UpdatableWithDto;
@@ -15,6 +18,9 @@ import it.unibo.geometrybash.view.renderer.LevelView;
 import it.unibo.geometrybash.view.utilities.TerminalColor;
 
 public class PanelWithEntities extends JPanel implements UpdatableWithDto<GameStateDto> {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(PanelWithEntities.class);
+
     private final RenderContext renderContext;
 
     private GameStateDto gameStateDto;
@@ -32,7 +38,10 @@ public class PanelWithEntities extends JPanel implements UpdatableWithDto<GameSt
     protected void paintComponent(Graphics g) {
         Graphics2D graphic = (Graphics2D) g;
         graphic.setBackground(TerminalColor.BACKGROUND);
-        this.levelView.draw((Graphics2D) graphic, renderContext, gameStateDto);
+        if (this.gameStateDto != null) {
+            this.levelView.draw((Graphics2D) graphic, renderContext, gameStateDto);
+        }
+        LOGGER.warn("Panel with entities drawn without any information about world entities");
     }
 
     @Override
