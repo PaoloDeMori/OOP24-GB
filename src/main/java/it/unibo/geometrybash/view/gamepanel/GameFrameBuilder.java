@@ -172,10 +172,8 @@ public class GameFrameBuilder {
     }
 
     public static void main(String[] args) {
-        Camera2D camera = new Camera2D();
-        camera.setOffset(10);
-        GameResolution gameResolution = GameResolution.BIG;
-        camera.setPixelPerMeter(gameResolution);
+        GameResolution gameResolution = GameResolution.SMALL;
+        Camera2D camera = new Camera2D(gameResolution,10);
         camera.setViewportHeight(gameResolution.getViewPortHeight());
         RenderContext renderContext = new RenderContext(camera, gameResolution.getViewPortWidth(),
                 gameResolution.getViewPortHeight());
@@ -187,7 +185,7 @@ public class GameFrameBuilder {
 
         frame.update(
                 new GameStateDto(new PlayerDto(11, 3, 1, 1, true, false, new SkinDto(0XFFFF0000, 0XFF880000), 0),
-                        List.of(new ObstacleDto(10, 3, 1, 1, true, DtoObstaclesType.BLOCK)),
+                        List.of(new ObstacleDto(10, 3, 1, 1, true, DtoObstaclesType.SPIKE)),
                         List.of(new PowerUpDto(21, 3, 1, 1, true, DtoPowerUpType.COIN),
                                 new PowerUpDto(22, 3, 1, 1, true, DtoPowerUpType.SHIELD),
                                 new PowerUpDto(23, 3, 1, 1, true, DtoPowerUpType.SPEED_BOOST)),
