@@ -59,4 +59,19 @@ public interface Level {
      * @return a list of games object.
      */
     List<GameObject<?>> getAllGameObject();
+
+    /**
+     * Retrives the level's x win.
+     *
+     * @return the win x
+     */
+
+    float getWinX();
+
+    /**
+     * the total number of coins in the level.
+     *
+     * @return the number of coins in the level.
+     */
+    int getTotalCoins();
 }

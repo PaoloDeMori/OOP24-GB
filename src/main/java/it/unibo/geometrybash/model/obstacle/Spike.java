@@ -65,7 +65,5 @@ public final class Spike extends AbstractObstacle implements Collidable {
     @Override
     public void onCollision(final Player<?> player) {
         player.onSpikeCollision(this);
-
-        System.out.println("x: "+ player.getPosition().x());
     }
 }

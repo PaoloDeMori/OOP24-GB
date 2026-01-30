@@ -10,6 +10,7 @@ import it.unibo.geometrybash.commons.dtos.GameStateDto;
 import it.unibo.geometrybash.commons.dtos.ObstacleDto;
 import it.unibo.geometrybash.commons.dtos.PlayerDto;
 import it.unibo.geometrybash.commons.dtos.PowerUpDto;
+import it.unibo.geometrybash.commons.dtos.SkinDto;
 import it.unibo.geometrybash.model.core.GameObject;
 import it.unibo.geometrybash.model.geometry.Vector2;
 import it.unibo.geometrybash.model.level.Level;
@@ -71,8 +72,9 @@ public final class GameStateMapper {
                 final float playerX = player.getPosition().x();
 
                 final float cameraX = Math.max(0, playerX - CAMERA_OFFSET_MARGIN);
-
                 final Level level = model.getLevel();
+                final float winX = level.getWinX();
+                final float progress = winX > 0 ? Math.max(0.0f, Math.min(100.0f, playerX / winX * 100.0f)) : 0.0f;
                 final List<GameObject<?>> visibileObjects = level.getGameObjectsInRange(
                                 new Vector2(Math.max(0, playerX - CULLING_X_LEFT), 0),
                                 new Vector2(playerX + CULLING_X_RIGHT, 0));
@@ -90,7 +92,7 @@ public final class GameStateMapper {
                                 .collect(Collectors.toList());
 
                 return new GameStateDto(mapPlayer(player), obstacles, powerUp, cameraX, player.getCoins(),
-                                model.getStatus());
+                                model.getStatus(), progress);
 
         }
 
@@ -128,7 +130,7 @@ public final class GameStateMapper {
         }
 
         /**
-         * Maps the {@link Player} into its DTO representation.
+         * Maps the {@link Player} into its DTO representation with is skinDto.
          *
          * @param player the player to convert
          * @return the corresponding {@link PlayerDto}
@@ -141,7 +143,9 @@ public final class GameStateMapper {
                                 player.getHitBox().getHeight(),
                                 player.isActive(),
                                 player.isShielded(),
-                                null,
+                                new SkinDto(
+                                                player.getSkin().getInnerColor(),
+                                                player.getSkin().getOuterColor()),
                                 player.getAngularRotation());
         }
 }
