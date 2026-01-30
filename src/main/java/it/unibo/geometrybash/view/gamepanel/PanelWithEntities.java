@@ -40,8 +40,9 @@ public class PanelWithEntities extends JPanel implements UpdatableWithDto<GameSt
         graphic.setBackground(TerminalColor.BACKGROUND);
         if (this.gameStateDto != null) {
             this.levelView.draw((Graphics2D) graphic, renderContext, gameStateDto);
+        } else {
+            LOGGER.warn("Panel with entities drawn without any information about world entities");
         }
-        LOGGER.warn("Panel with entities drawn without any information about world entities");
     }
 
     @Override

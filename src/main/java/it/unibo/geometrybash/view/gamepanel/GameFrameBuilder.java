@@ -4,14 +4,29 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
+import java.util.List;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+import it.unibo.geometrybash.commons.assets.AssetStore;
+import it.unibo.geometrybash.commons.assets.ResourceLoaderImpl;
+import it.unibo.geometrybash.commons.dtos.DtoObstaclesType;
+import it.unibo.geometrybash.commons.dtos.DtoPowerUpType;
+import it.unibo.geometrybash.commons.dtos.GameStateDto;
+import it.unibo.geometrybash.commons.dtos.ObstacleDto;
+import it.unibo.geometrybash.commons.dtos.PlayerDto;
+import it.unibo.geometrybash.commons.dtos.PowerUpDto;
+import it.unibo.geometrybash.commons.dtos.SkinDto;
+import it.unibo.geometrybash.model.Status;
+import it.unibo.geometrybash.view.core.Camera2D;
+import it.unibo.geometrybash.view.core.RenderContext;
 import it.unibo.geometrybash.view.utilities.GameResolution;
 import it.unibo.geometrybash.view.utilities.TerminalColor;
+
 
 public class GameFrameBuilder {
 
@@ -87,6 +102,29 @@ public class GameFrameBuilder {
         mainFrame.setLocationRelativeTo(null);
 
         return mainFrame;
+
+    }
+
+    public static void main(String[] args) {
+        Camera2D camera = new Camera2D();
+        camera.setOffset(10);
+        GameResolution gameResolution = GameResolution.SMALL;
+        camera.setViewportHeight(gameResolution.getViewPortHeight());
+        RenderContext renderContext = new RenderContext(camera, gameResolution.getViewPortWidth(),
+                gameResolution.getViewPortHeight());
+
+        AssetStore assetStore = new AssetStore(new ResourceLoaderImpl());
+
+        PanelWithEntities panelwithEntities = new PanelWithEntities(renderContext, assetStore);
+
+        JFrame frame = new GameFrameBuilder().setGameTitle("Geometry-Bash").setResizable(false)
+                .setResolution(gameResolution).setMainPanel(panelwithEntities).build();
+
+        panelwithEntities.update(
+                new GameStateDto(new PlayerDto(11, 3, 1, 1, true, false, new SkinDto(0XFFFF0000, 0XFF880000), 0),
+                        List.of(new ObstacleDto(10, 3, 1, 1, true, DtoObstaclesType.BLOCK)),
+                        List.of(new PowerUpDto(20, 3, 1, 1, true, DtoPowerUpType.COIN)), 10f, 20, Status.PLAYING, 50));
+        frame.setVisible(true);
 
     }
 
