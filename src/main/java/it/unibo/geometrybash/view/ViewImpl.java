@@ -113,7 +113,7 @@ public class ViewImpl extends AbstractObservableWithSet<ViewEvent> implements Vi
      */
     @Override
     public void victory(final int coins, final int totalCoins) {
-        this.menuView.showVictoryMessage(coins);
+        this.menuView.showVictoryMessage(coins, totalCoins);
     }
 
     /**
