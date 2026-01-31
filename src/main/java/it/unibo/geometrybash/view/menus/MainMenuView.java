@@ -23,6 +23,9 @@ import it.unibo.geometrybash.commons.assets.AudioManager;
 import it.unibo.geometrybash.commons.assets.AudioStore;
 import it.unibo.geometrybash.commons.assets.ResourceLoader;
 import it.unibo.geometrybash.commons.assets.TextAssetReader;
+import it.unibo.geometrybash.view.utilities.DefaultStyle;
+import it.unibo.geometrybash.view.utilities.PauseStyle;
+import it.unibo.geometrybash.view.utilities.MenuStyle;
 import it.unibo.geometrybash.view.utilities.TerminalColor;
 
 /**
@@ -85,6 +88,9 @@ public final class MainMenuView extends AbstractObservableWithSet<ViewEvent> imp
     private final AudioStore audioStore;
     private final AudioManager manage;
 
+    private final MenuStyle defaultStyle = new DefaultStyle();
+    private final MenuStyle pauseStyle = new PauseStyle();
+
     /**
      * Initializes the main menu view and its graphical components.
      *
@@ -109,6 +115,27 @@ public final class MainMenuView extends AbstractObservableWithSet<ViewEvent> imp
         this.frame.add(createFooterInputPanel(), BorderLayout.SOUTH);
 
         setupInputListener();
+        this.applyStyle(this.defaultStyle);
+    }
+
+    /**
+     * Applies the styling to all graphical component.
+     *
+     * @param style the styling strategy to apply.
+     */
+    private void applyStyle(final MenuStyle style) {
+        this.outputArea.setForeground(style.getTextColor());
+        this.outputArea.setBackground(style.getBackgroundColor());
+        this.inputField.setForeground(style.getTextColor());
+        this.inputField.setBackground(style.getBackgroundColor());
+        this.inputField.setCaretColor(style.getAccentColor());
+        this.logo.setForeground(style.getTextColor());
+        this.logo.setBackground(style.getBackgroundColor());
+        this.insertLabel.setForeground(style.getTextColor());
+        this.promptLabel.setForeground(style.getTextColor());
+        this.promptLabel.setText(style.getPrompt());
+        this.promptLabel.getParent().setBackground(style.getBackgroundColor());
+        this.frame.getContentPane().setBackground(style.getBackgroundColor());
     }
 
     /**
@@ -128,16 +155,13 @@ public final class MainMenuView extends AbstractObservableWithSet<ViewEvent> imp
 
         final String title = textReader.readAll("it/unibo/geometrybash/startMenu/logo.txt");
         this.logo = new JTextArea(title);
-        this.logo.setBackground(TerminalColor.BACKGROUND);
-        this.logo.setForeground(TerminalColor.FOREGROUND);
         this.logo.setFont(TerminalColor.ASCII_FONT);
         this.logo.setEditable(false);
         this.logo.setFocusable(false);
         header.add(logo, BorderLayout.CENTER);
 
         this.insertLabel = new JLabel(
-                "Insert" + CMD_COMMANDS + "or" + CMD_HELP + "to show the list of available actions");
-        this.insertLabel.setForeground(TerminalColor.FOREGROUND);
+                "Insert " + CMD_COMMANDS + " or " + CMD_HELP + " to show the list of available actions");
         this.insertLabel.setFont(TerminalColor.MAIN_FONT);
         this.insertLabel.setHorizontalAlignment(JLabel.CENTER);
         header.add(insertLabel, BorderLayout.SOUTH);
@@ -161,14 +185,9 @@ public final class MainMenuView extends AbstractObservableWithSet<ViewEvent> imp
      * this method is called when the player enter in pause state.
      */
     public void showPauseMessage() {
-        this.outputArea.setForeground(TerminalColor.PAUSE);
-        this.inputField.setForeground(TerminalColor.PAUSE);
-        this.insertLabel.setForeground(TerminalColor.PAUSE);
-        this.logo.setForeground(TerminalColor.PAUSE);
-        this.promptLabel.setForeground(TerminalColor.PAUSE);
-
+        this.applyStyle(this.pauseStyle);
         this.appendText("\n GAME PAUSED");
-        this.appendText(" Type" + CMD_RESUME + "to continue your run in Geometry Bash");
+        this.appendText(" Type " + CMD_RESUME + " to continue your run in Geometry Bash");
         this.appendText(" ----------------------------------------------------");
 
     }
@@ -184,7 +203,7 @@ public final class MainMenuView extends AbstractObservableWithSet<ViewEvent> imp
         this.appendText(" -----------------------------");
         this.appendText(" you have collected " + playerCoins + " out of " + totalCoins + " avaible coins!");
         this.appendText(" -----------------------------");
-        this.appendText(" type" + CMD_START + "for start new challenge");
+        this.appendText(" type " + CMD_START + " for start new challenge");
     }
 
     /**
@@ -269,8 +288,6 @@ public final class MainMenuView extends AbstractObservableWithSet<ViewEvent> imp
      */
     private JTextArea createOutputArea() {
         final JTextArea area = new JTextArea();
-        area.setBackground(TerminalColor.BACKGROUND);
-        area.setForeground(TerminalColor.FOREGROUND);
         area.setFont(TerminalColor.MAIN_FONT);
         area.setEditable(false);
         area.setLineWrap(true);
@@ -285,10 +302,8 @@ public final class MainMenuView extends AbstractObservableWithSet<ViewEvent> imp
      */
     private JPanel createFooterInputPanel() {
         final JPanel footer = new JPanel(new BorderLayout());
-        footer.setBackground(TerminalColor.BACKGROUND);
 
         this.promptLabel = new JLabel(PROMPT);
-        this.promptLabel.setForeground(TerminalColor.FOREGROUND);
         this.promptLabel.setFont(TerminalColor.MAIN_FONT);
 
         footer.add(promptLabel, BorderLayout.WEST);
@@ -304,10 +319,7 @@ public final class MainMenuView extends AbstractObservableWithSet<ViewEvent> imp
      */
     private JTextField createInputField() {
         final JTextField field = new JTextField();
-        field.setBackground(TerminalColor.BACKGROUND);
-        field.setForeground(TerminalColor.FOREGROUND);
         field.setFont(TerminalColor.MAIN_FONT);
-        field.setCaretColor(TerminalColor.CARET);
         field.setBorder(null);
         return field;
     }
@@ -393,6 +405,13 @@ public final class MainMenuView extends AbstractObservableWithSet<ViewEvent> imp
     public void appendText(final String text) {
         this.outputArea.append(text + "\n");
         this.outputArea.setCaretPosition(outputArea.getDocument().getLength());
+    }
+
+    /**
+     * Restores the normal terminal style.
+     */
+    public void resumeFromPause() {
+        this.applyStyle(this.defaultStyle);
     }
 
 }
