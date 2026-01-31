@@ -21,7 +21,7 @@ import org.jbox2d.dynamics.Body;
  */
 public class PlayerPhysicsImpl implements PlayerPhysics {
 
-    private static final float JUMP_IMPULSE = 10.0f;
+    private static final float JUMP_IMPULSE = 15.0f;
     private static final float BASE_SPEED = 5.0f;
     private final Body body;
     private int groundContacts;
@@ -80,6 +80,7 @@ public class PlayerPhysicsImpl implements PlayerPhysics {
         this.body.setAngularVelocity(0f);
         this.body.setTransform(new Vec2(position.x(), position.y()), 0f);
         this.body.setAwake(true);
+        this.groundContacts=0;
     }
 
     /**
