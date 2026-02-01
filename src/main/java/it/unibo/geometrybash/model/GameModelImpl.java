@@ -139,6 +139,7 @@ public final class GameModelImpl extends AbstractGameModelWithPhysicsEngine<Body
                     final Vector2 playerStartPosition = level.getPlayerStartPosition();
                     player = new PlayerImpl(playerStartPosition);
                     player.setOnDeath(this::onPlayerDeath);
+                    player.setOnSpecialObjectCollision(this::onPlayerCollisionWithBehaviour);
                     this.getPhysicsEngine().addPlayer(player);
                     this.addUpdatableGameObjects((PlayerImpl) player);
 
