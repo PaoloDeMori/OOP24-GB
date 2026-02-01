@@ -36,8 +36,6 @@ public final class MainMenuView extends AbstractObservableWithSet<ViewEvent> imp
     private static final String PROMPT = "geometrybash@oop24:~# ";
     /** Command to start the game session. */
     private static final String CMD_START = "start";
-    /** Command to open user's inventory. */
-    private static final String CMD_INVENTORY = "inventory";
     /** Command to close the application. */
     private static final String CMD_CLOSE = "close";
     /** Command to close the application. */
@@ -58,6 +56,18 @@ public final class MainMenuView extends AbstractObservableWithSet<ViewEvent> imp
     private static final String MEDIUM = "medium";
     /** Command for set the 1024x768 resolution. */
     private static final String SMALL = "small";
+    /** Command to display avaible colors. */
+    private static final String CMD_COLORS = "colors";
+    /** Command to set the player's color. */
+    private static final String CMD_SET_COLOR = "setcolor";
+    /** Flag for set the player's inner color. */
+    private static final String FLAG_INNER = "-inner";
+    /** Flag for set the player's outer color. */
+    private static final String FLAG_OUTER = "-outer";
+    /** List of avaible colors for the terminal display. */
+    private static final String[] AVAIBLE_COLORS = {
+            "RED", "BLUE", "GREE", "YELLOW", "WHITE",
+    };
     /** Prefix for command list items. */
     private static final String CMD_PREFIX = " > ";
     /** Command for create new line. */
@@ -126,7 +136,7 @@ public final class MainMenuView extends AbstractObservableWithSet<ViewEvent> imp
         header.add(logo, BorderLayout.CENTER);
 
         this.insertLabel = new JLabel(
-                "Insert" + CMD_COMMANDS + "or" + CMD_HELP + "to show the list of available actions");
+                "Insert " + CMD_COMMANDS + " or " + CMD_HELP + " to show the list of available actions");
         this.insertLabel.setForeground(TerminalColor.FOREGROUND);
         this.insertLabel.setFont(TerminalColor.MAIN_FONT);
         this.insertLabel.setHorizontalAlignment(JLabel.CENTER);
@@ -140,9 +150,9 @@ public final class MainMenuView extends AbstractObservableWithSet<ViewEvent> imp
     public void showCommands() {
         this.appendText(NEW_LINE + " --- AVAILABLE COMMANDS ---");
         this.appendText(CMD_PREFIX + CMD_START + "      : begin your geometry bash adventure");
-        this.appendText(CMD_PREFIX + CMD_INVENTORY + "  : check your equipment");
         this.appendText(CMD_PREFIX + CMD_HELP + "  : show this list");
         this.appendText(CMD_PREFIX + CMD_MAN_RESOLUTION + "  : display available game resolutions");
+        this.appendText(CMD_PREFIX + CMD_COLORS + "  : show customization colors");
         this.appendText("---------------------------");
     }
 
@@ -166,14 +176,28 @@ public final class MainMenuView extends AbstractObservableWithSet<ViewEvent> imp
     /**
      * Show the victory message with the total number of coins collected.
      *
-     * @param coins the number of coins collected during the level
+     * @param playerCoins the number of coins collected during the level
+     * @param totalCoins the total number of coins in the level
      */
-    public void showVictoryMessage(final int coins) {
+    public void showVictoryMessage(final int playerCoins, final int totalCoins) {
         this.appendText(NEW_LINE + " LEVEL COMPLETED! YOU WON!");
         this.appendText(" -----------------------------");
-        this.appendText(" total coins collected: " + coins);
+        this.appendText(" you have collected " + playerCoins + " out of " + totalCoins + " avaible coins!");
         this.appendText(" -----------------------------");
         this.appendText(" type" + CMD_START + "for start new challenge");
+    }
+
+    /**
+     * Shows all the colors available that can be used to customize the player.
+     */
+    public void showAvailableColors() {
+        this.appendText(NEW_LINE + " AVAIBLE CUSTOMIZAION COLOR");
+        for (final String color : AVAIBLE_COLORS) {
+            this.appendText(CMD_PREFIX + color);
+        }
+        this.appendText(" -----------------------------");
+        this.appendText(" Usage: " + CMD_SET_COLOR + " [" + FLAG_INNER + "|" + FLAG_OUTER + "] -<color>");
+        this.appendText(" Example: " + CMD_SET_COLOR + " " + FLAG_INNER + " -red");
     }
 
     /**
@@ -309,13 +333,14 @@ public final class MainMenuView extends AbstractObservableWithSet<ViewEvent> imp
         final String rawCmd = inputField.getText().trim();
         if (!rawCmd.isEmpty()) {
             final String cmd = rawCmd.toLowerCase(Locale.ROOT);
-            switch (cmd) {
+            final String firstCommand = cmd.split(" ")[0];
+            switch (firstCommand) {
                 case CMD_START:
                     notifyObservers(ViewEvent.createEvent(ViewEventTypeFactory.standard(StandardViewEventType.START)));
                     break;
-                case CMD_INVENTORY:
-                    notifyObservers(
-                            ViewEvent.createEvent(ViewEventTypeFactory.standard(StandardViewEventType.INVENTORY)));
+                case CMD_HELP:
+                case CMD_COMMANDS:
+                    this.showCommands();
                     break;
                 case CMD_CLOSE:
                 case CMD_EXIT:
@@ -323,6 +348,17 @@ public final class MainMenuView extends AbstractObservableWithSet<ViewEvent> imp
                     break;
                 case CMD_RESUME:
                     notifyObservers(ViewEvent.createEvent(ViewEventTypeFactory.standard(StandardViewEventType.RESUME)));
+                    break;
+                case CMD_COLORS:
+                    this.showAvailableColors();
+                    break;
+                case "man":
+                    if (CMD_MAN_RESOLUTION.equals(cmd)) {
+                        this.showManResolution();
+                    } else {
+                        this.showUnknownCommandError(rawCmd);
+                    }
+                    break;
                 default:
                     notifyObservers(ViewEvent.createEvent(ViewEventTypeFactory.generic(rawCmd)));
             }
@@ -360,4 +396,3 @@ public final class MainMenuView extends AbstractObservableWithSet<ViewEvent> imp
     }
 
 }
-

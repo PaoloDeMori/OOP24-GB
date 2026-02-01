@@ -19,11 +19,11 @@ import it.unibo.geometrybash.controller.input.InputHandlerFactory;
 import it.unibo.geometrybash.model.GameModel;
 import it.unibo.geometrybash.model.exceptions.InvalidModelMethodInvocationException;
 import it.unibo.geometrybash.model.physicsengine.exception.ModelExecutionException;
-import it.unibo.geometrybash.view.ErrorMessageView;
 import it.unibo.geometrybash.view.View;
 import it.unibo.geometrybash.view.ViewScene;
 import it.unibo.geometrybash.view.exceptions.ExecutionWithIllegalThreadException;
 import it.unibo.geometrybash.view.exceptions.NotStartedViewException;
+import it.unibo.geometrybash.view.utilities.GameResolution;
 import it.unibo.geometrybash.controller.gameloop.GameLoopFactory;
 
 /**
@@ -42,6 +42,7 @@ public abstract class AbstractControllerImpl implements Controller {
     private final InputHandler inputHandler;
     private GameLoop gameLoop;
     private final GameLoopFactory gameLoopFactory;
+    private final GameResolution gameResolution = GameResolution.MEDIUM;
 
     /**
      * The constructor of the controller with game model, view and input handler
@@ -79,6 +80,7 @@ public abstract class AbstractControllerImpl implements Controller {
         this.inputHandler.setActionForEvent(StandardViewEventType.START, this::startLevel);
         this.inputHandler.setActionForEvent(StandardViewEventType.RESTART, this::gameRestart);
         this.inputHandler.setActionForEvent(StandardViewEventType.RESUME, this::gameResume);
+        this.inputHandler.setActionForEvent(StandardViewEventType.CLOSE, this::onClose);
         this.inputHandler.setGenericCommandHandler(this::onGenericCommand);
     }
 
@@ -98,6 +100,10 @@ public abstract class AbstractControllerImpl implements Controller {
         this.gameModel.jumpSignal();
     }
 
+    private void onClose() {
+        safeClosing();
+    }
+
     /**
      * The actions to execute if a generic command represented as a string is
      * received.
@@ -106,19 +112,6 @@ public abstract class AbstractControllerImpl implements Controller {
      */
     private void onGenericCommand(final String command) {
         switch (command) {
-            case "close":
-            case "quit":
-                try {
-                    if (gameLoop != null) {
-                        gameLoop.stop();
-                    }
-                } catch (final NotStartedException e) {
-                    LOGGER.warn("Gameloop never started");
-                } finally {
-                    LOGGER.info("Chiusura del gioco");
-                    safeClosing();
-                }
-                break;
             case "resolution -big":
                 // TODO
                 break;
@@ -186,7 +179,7 @@ public abstract class AbstractControllerImpl implements Controller {
      * @param e       the exception that caused this one.
      */
     private void errorMessage(final String message, final Optional<Exception> e) {
-        ErrorMessageView.showError(message);
+        view.showCommandsError(message);
         if (e.isPresent()) {
             LOGGER.error(message, e);
         } else {
@@ -202,6 +195,7 @@ public abstract class AbstractControllerImpl implements Controller {
             gameModel.resume();
             gameLoopSetting();
             gameLoop.resume();
+            view.changeView(ViewScene.IN_GAME);
         } catch (final NotOnPauseException | NotStartedException | InvalidModelMethodInvocationException e) {
             handleError("Error while resuming the game", Optional.of(e));
         }
@@ -215,6 +209,7 @@ public abstract class AbstractControllerImpl implements Controller {
             gameLoopSetting();
             gameLoop.pause();
             gameModel.pause();
+            view.changeView(ViewScene.PAUSE);
         } catch (final InvalidGameLoopStatusException | InvalidModelMethodInvocationException e) {
             handleError("Error while resuming the thread", Optional.of(e));
         }
@@ -226,9 +221,10 @@ public abstract class AbstractControllerImpl implements Controller {
     private void gameRestart() {
         try {
             gameLoopSetting();
-            this.gameLoop.start();
             this.gameModel.restart();
-        } catch (final InvalidGameLoopStatusException | InvalidGameLoopConfigurationException
+            this.gameLoop.resume();
+            this.view.changeView(ViewScene.IN_GAME);
+        } catch (final InvalidGameLoopStatusException
                 | InvalidModelMethodInvocationException | ModelExecutionException e) {
             handleError("Error while restarting the match", Optional.of(e));
         }
@@ -242,8 +238,24 @@ public abstract class AbstractControllerImpl implements Controller {
     public void update(final ModelEvent event) {
         switch (event.getType()) {
             case VICTORY:
-                view.changeView(ViewScene.START_MENU);
-                handleError("Errore durante l'update della partita", Optional.empty());
+                try {
+                    gameLoopSetting();
+                    gameLoop.stop();
+                } catch (NotStartedException e) {
+                    LOGGER.info("Safe thread interrupted safely");
+
+                } finally {
+                    SwingUtilities.invokeLater(() -> {
+                        try {
+                            view.victory(getModel().getPlayer().getCoins(), this.getModel().getLevel().getTotalCoins());
+                            view.changeView(ViewScene.START_MENU);
+
+                        } catch (ModelExecutionException e) {
+                            LOGGER.error("Impossible to retrieve coins");
+                            view.victory(0, 0);
+                        }
+                    });
+                }
                 break;
             case GAMEOVER:
                 break;
@@ -266,6 +278,8 @@ public abstract class AbstractControllerImpl implements Controller {
         try {
             gameLoopSetting();
             gameModel.start(LEVEL_NAME);
+            view.init(gameResolution);
+            view.changeView(ViewScene.IN_GAME);
             gameLoop.start();
         } catch (InvalidGameLoopStatusException | InvalidGameLoopConfigurationException | ModelExecutionException
                 | InvalidModelMethodInvocationException e) {
@@ -287,16 +301,23 @@ public abstract class AbstractControllerImpl implements Controller {
     @Override
     public void start() {
         this.initInputHandler();
-        this.view.changeView(ViewScene.START_MENU);
+        try {
+            this.view.show();
+        } catch (NotStartedViewException e) {
+            LOGGER.error("impossible to start the view", e);
+        }
     }
 
     private void safeClosing() {
         try {
-            gameLoop.stop();
+            if (this.gameLoop != null) {
+                this.gameLoop.stop();
+            }
         } catch (final NotStartedException e) {
-            LOGGER.info("The safe thread interruption wasn't necessary");
+            LOGGER.info("Safe thread interrupted safely");
         } finally {
             this.view.disposeView();
+            System.exit(0);
         }
     }
 
