@@ -80,8 +80,4 @@ class PlayerImplTest {
         this.physics = new MockPlayerPhysics();
         this.player.bindPhysics(physics);
     }
-
-    
-
-
 }

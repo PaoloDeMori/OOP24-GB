@@ -31,7 +31,6 @@ public class PlayerImpl extends AbstractGameObject<HitBox> implements PlayerWith
 
     private static final float SIZE = 1.0f;
     private static final double TWO_PI = Math.PI * 2.0;
-    private static final double RIGHT_ANGLE_RAD = Math.PI / 2.0;
     private static final double ANGULAR_SPEED_RAD_S = Math.toRadians(720.0);
     private final PowerUpManager powerUpManager;
     private Skin skin;
@@ -40,6 +39,8 @@ public class PlayerImpl extends AbstractGameObject<HitBox> implements PlayerWith
     private int coins;
     private OnDeathExecute onDeath;
     private double rotationRad;
+    private final int numVertices;
+    private final double stepAngle;
 
     /**
      * Creates a new {@code PlayerImpl} instance with a position, hitbox, and
@@ -55,6 +56,8 @@ public class PlayerImpl extends AbstractGameObject<HitBox> implements PlayerWith
         this.coins = 0;
         this.physics = null;
         this.dead = false;
+        this.numVertices = this.hitBox.getVertices().size();
+        this.stepAngle = TWO_PI / numVertices;
     }
 
     /**
@@ -65,22 +68,27 @@ public class PlayerImpl extends AbstractGameObject<HitBox> implements PlayerWith
         this.powerUpManager.update(deltaTime);
         getNotEmptyPhysics().setVelocity(this.powerUpManager.getSpeedMultiplier());
         this.position = getNotEmptyPhysics().getPosition(hitBox);
+
         if (!this.physics.isGrounded()) {
             // player rotate with a angular rotation of 4PI/s
             rotationRad += ANGULAR_SPEED_RAD_S * deltaTime;
-            // normalize angle to the [0, 2PI) range
-            rotationRad %= TWO_PI;
+            rotationRad = normalizeAngle(rotationRad);
         } else {
-            // take the nearest approximation of possible orientation value
-            final double step = Math.round(rotationRad / RIGHT_ANGLE_RAD);
-            double snapped = step * RIGHT_ANGLE_RAD;
-            snapped %= TWO_PI;
-            // if snapped is negative shift it to the equivalent positive angle
-            if (snapped < 0) {
-                snapped += TWO_PI;
-            }
-            rotationRad = snapped;
+            rotationRad = normalizeAngle(rotationRad);
+            // take the nearest approximation of possible orientation values (multiples of
+            // stepAngle)
+            final double k = Math.round(rotationRad / stepAngle);
+            rotationRad = k * stepAngle;
         }
+    }
+
+    // normalize angle to the [0, 2PI) range
+    private double normalizeAngle(double angle) {
+        angle %= TWO_PI;
+        if (angle < 0) {
+            angle += TWO_PI;
+        }
+        return angle;
     }
 
     /**

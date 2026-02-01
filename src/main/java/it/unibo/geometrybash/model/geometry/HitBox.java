@@ -2,9 +2,20 @@ package it.unibo.geometrybash.model.geometry;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.IntStream;
+
+import it.unibo.geometrybash.model.geometry.exception.InvalidHitBoxConfiguration;
 
 /**
  * The HitBox class represents a polygonal shape defined by a list of vertices.
+ *
+ * <p>
+ * A HitBox is defined by a list of vertices in a two-dimensional space.
+ * It is assumed that the polygon is convex and that its vertices are
+ * provided in counter-clockwise order. These assumptions are required
+ * to ensure the correctness of the geometric validation and computations
+ * performed by this class.
+ * </p>
  */
 public final class HitBox implements Shape {
     /**
@@ -29,10 +40,7 @@ public final class HitBox implements Shape {
      *                                  {@value #MIN_VERTEX} vertices
      */
     public HitBox(final List<Vector2> vertices) {
-        if (vertices.size() < MIN_VERTEX) {
-            throw new IllegalArgumentException(
-                    "A HitBox must have at least " + MIN_VERTEX + " vertices");
-        }
+        isValidHitBox(vertices);
         this.vertices = List.copyOf(vertices);
     }
 
@@ -80,5 +88,78 @@ public final class HitBox implements Shape {
         }
 
         return max - min;
+    }
+
+    private void isValidHitBox(final List<Vector2> verteces) {
+        if (verteces.isEmpty()) {
+            throw new InvalidHitBoxConfiguration("Vertices list is empty.");
+        }
+
+        if (verteces.size() < MIN_VERTEX) {
+            throw new InvalidHitBoxConfiguration("A HitBox must have at least 3 vertices.");
+        }
+
+        if (verteces.stream().anyMatch(v -> v == null || !Float.isFinite(v.x()) || !Float.isFinite(v.y()))) {
+            throw new InvalidHitBoxConfiguration("HitBox contains invalid vertices");
+        }
+
+        if (verteces.stream().distinct().count() != verteces.size()) {
+            throw new InvalidHitBoxConfiguration("Duplicate vertices found.");
+        }
+
+        /*
+         * If all determinants have the same sign, the HitBox represents a convex
+         * polygon; otherwise, it is concave.
+         */
+        List<Float> crosses = getCrossesList(this.vertices);
+        boolean sign = crosses.getFirst() > 0;
+        if (crosses.stream().anyMatch(c -> (c > 0) != sign)) {
+            throw new InvalidHitBoxConfiguration("Concave HitBox are not supported.");
+        }
+
+        // test poligono regolare
+        float referenceSide = distanceFromVertices(vertices.get(0), vertices.get(1));
+        IntStream.range(0, verteces.size())
+                .mapToObj(i -> distanceFromVertices(
+                        vertices.get(i),
+                        vertices.get((i + 1) % verteces.size())))
+                .filter(side -> Math.abs(side - referenceSide) > 1e-5)
+                .findAny()
+                .ifPresent(side -> {
+                    throw new InvalidHitBoxConfiguration(
+                            "HitBox is not a regular polygon (unequal sides).");
+                });
+    }
+
+    private List<Float> getCrossesList(final List<Vector2> verticesList) {
+        int n = verticesList.size();
+        return IntStream.range(0, n)
+                .mapToObj(i -> {
+                    Vector2 p0 = verticesList.get(i);
+                    Vector2 p1 = verticesList.get((i + 1) % n);
+                    Vector2 p2 = verticesList.get((i + 2) % n);
+
+                    Vector2 e1 = vectorBetweenConsecutiveVertex(p1, p0);
+                    Vector2 e2 = vectorBetweenConsecutiveVertex(p2, p1);
+
+                    return crossProductFromVertex(e1, e2);
+                })
+                .toList();
+    }
+
+    private Vector2 vectorBetweenConsecutiveVertex(final Vector2 v, final Vector2 u) {
+        return new Vector2(
+                v.x() - u.x(),
+                v.y() - u.y());
+    }
+
+    private float crossProductFromVertex(final Vector2 v, final Vector2 u) {
+        return v.x() * u.y() - v.y() * u.x();
+    }
+
+    private static float distanceFromVertices(Vector2 a, Vector2 b) {
+        float dx = a.x() - b.x();
+        float dy = a.y() - b.y();
+        return (float) Math.sqrt(dx * dx + dy * dy);
     }
 }
