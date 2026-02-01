@@ -143,5 +143,4 @@ public final class HitBox implements Shape {
     private float crossProductFromVertex(final Vector2 v, final Vector2 u) {
         return v.x() * u.y() - v.y() * u.x();
     }
-
 }
