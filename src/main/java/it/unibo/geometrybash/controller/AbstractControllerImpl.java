@@ -1,5 +1,6 @@
 package it.unibo.geometrybash.controller;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 import javax.swing.SwingUtilities;
@@ -15,6 +16,7 @@ import it.unibo.geometrybash.commons.assets.ResourceLoader;
 import it.unibo.geometrybash.commons.input.StandardViewEventType;
 import it.unibo.geometrybash.commons.pattern.observerpattern.modelobserver.ModelEvent;
 import it.unibo.geometrybash.controller.gameloop.GameLoop;
+import it.unibo.geometrybash.controller.gameloop.GameLoopFactory;
 import it.unibo.geometrybash.controller.gameloop.exceptions.InvalidGameLoopConfigurationException;
 import it.unibo.geometrybash.controller.gameloop.exceptions.InvalidGameLoopStatusException;
 import it.unibo.geometrybash.controller.gameloop.exceptions.NotOnPauseException;
@@ -27,8 +29,8 @@ import it.unibo.geometrybash.view.View;
 import it.unibo.geometrybash.view.ViewScene;
 import it.unibo.geometrybash.view.exceptions.ExecutionWithIllegalThreadException;
 import it.unibo.geometrybash.view.exceptions.NotStartedViewException;
+import it.unibo.geometrybash.view.menus.MainMenuView;
 import it.unibo.geometrybash.view.utilities.GameResolution;
-import it.unibo.geometrybash.controller.gameloop.GameLoopFactory;
 
 /**
  * Abstract Implementation of the controller interface with an undefined method
@@ -130,12 +132,45 @@ public abstract class AbstractControllerImpl implements Controller {
                 break;
             case "setcolor -inner -purple":
                 System.out.println("OKOK");
-                this.getModel().setPlayerColor(0XFFFF00FF);
+                this.getModel().setPlayerInnerColor(0XFFFF00FF);
                 break;
             default:
                 break;
         }
 
+    }
+
+    private boolean checkCommandParsing(String command) {
+        if (MainMenuView.CMD_SET_COLOR.equals(command.substring(0, MainMenuView.CMD_SET_COLOR.length()))) {
+            if (MainMenuView.FLAG_INNER.equals(
+                    command.substring(MainMenuView.CMD_SET_COLOR.length() + 1, MainMenuView.FLAG_INNER.length()))) {
+                String color = command.substring(
+                        MainMenuView.CMD_SET_COLOR.length() + 1 + MainMenuView.FLAG_INNER.length() + 1);
+                if (Arrays.stream(MainMenuView.AVAILABLE_COLORS).anyMatch(x -> x.equalsIgnoreCase(color))) {
+                    switch (color) {
+                        case "red":
+                            this.gameModel.setPlayerInnerColor(0XFFFF0000);
+                            break;
+                        case "blue":
+                            this.gameModel.setPlayerInnerColor(0XFFFF0000);
+                            break;
+                        case "green":
+                            this.gameModel.setPlayerInnerColor(0XFF00FF00);
+                            break;
+                        case "yellow":
+                            this.gameModel.setPlayerInnerColor(0XFFFFD700);
+                            break;
+                        case "white":
+                            this.gameModel.setPlayerInnerColor(0XFFFFFFFF);
+                            break;
+                        default:
+                            return false;
+                    }
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /**

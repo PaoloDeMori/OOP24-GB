@@ -299,7 +299,7 @@ public final class GameModelImpl extends AbstractGameModelWithPhysicsEngine<Body
         }
     }
 
-    public void setPlayerColor(int color) {
+    public void setPlayerInnerColor(int color) {
         this.setInnerColor=color;
     }
 

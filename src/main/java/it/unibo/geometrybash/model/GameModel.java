@@ -100,5 +100,5 @@ public interface GameModel extends GameState, ModelObservable {
      */
     void respawnPlayer();
 
-    void setPlayerColor(int color);
+    void setPlayerInnerColor(int color);
 }

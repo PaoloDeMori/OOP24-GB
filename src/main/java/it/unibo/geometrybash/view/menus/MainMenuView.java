@@ -68,8 +68,8 @@ public final class MainMenuView extends AbstractObservableWithSet<ViewEvent> imp
     /** Flag for set the player's outer color. */
     public static final String FLAG_OUTER = "-outer";
     /** List of avaible colors for the terminal display. */
-    public static final String[] AVAIBLE_COLORS = {
-            "RED", "BLUE", "GREE", "YELLOW", "WHITE",
+    public static final String[] AVAILABLE_COLORS = {
+            "RED", "BLUE", "GREEN", "YELLOW", "WHITE",
     };
     /** Prefix for command list items. */
     private static final String CMD_PREFIX = " > ";
@@ -206,7 +206,7 @@ public final class MainMenuView extends AbstractObservableWithSet<ViewEvent> imp
      */
     public void showAvailableColors() {
         this.appendText(NEW_LINE + " AVAIBLE CUSTOMIZAION COLOR");
-        for (final String color : AVAIBLE_COLORS) {
+        for (final String color : AVAILABLE_COLORS) {
             this.appendText(CMD_PREFIX + color);
         }
         this.appendText(" -----------------------------");
