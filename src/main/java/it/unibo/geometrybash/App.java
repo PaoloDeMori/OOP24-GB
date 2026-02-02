@@ -19,7 +19,7 @@ public class App {
         JBox2dPhysicsEngineFactory physicsEngineFactory = new JBox2dPhysicsEngineFactory();
         View view = new ViewImpl(resourceLoader, assetStore);
         GameModel gameModel = new GameModelImpl(resourceLoader,physicsEngineFactory);
-        Controller controller = new StaticDeltaTimeControllerImpl(gameModel, view);
+        Controller controller = new StaticDeltaTimeControllerImpl(gameModel, view,resourceLoader);
         controller.start();
     }
 }

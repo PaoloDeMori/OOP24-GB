@@ -45,6 +45,7 @@ public final class GameModelImpl extends AbstractGameModelWithPhysicsEngine<Body
     private final List<GameObject<?>> changedStateObjects;
     private final GameStateMapper gameStateMapper;
     private volatile boolean isJumpSignalActive;
+    private int setInnerColor = 0xFFFF0000;
 
     /**
      * The constructor of this gamemodel implementation.
@@ -77,7 +78,7 @@ public final class GameModelImpl extends AbstractGameModelWithPhysicsEngine<Body
      * The behaviour to specify in the player to save the game object in the list
      * of changed objects.
      * 
-     * @param object the object to add. 
+     * @param object the object to add.
      */
     private void onPlayerCollisionWithBehaviour(GameObject<?> object) {
         this.changedStateObjects.add(object);
@@ -140,6 +141,7 @@ public final class GameModelImpl extends AbstractGameModelWithPhysicsEngine<Body
                     player = new PlayerImpl(playerStartPosition);
                     player.setOnDeath(this::onPlayerDeath);
                     player.setOnSpecialObjectCollision(this::onPlayerCollisionWithBehaviour);
+                    player.setInnerColor(setInnerColor);
                     this.getPhysicsEngine().addPlayer(player);
                     this.addUpdatableGameObjects((PlayerImpl) player);
 
@@ -295,6 +297,10 @@ public final class GameModelImpl extends AbstractGameModelWithPhysicsEngine<Body
         if (player != null && level != null) {
             player.respawn(this.level.getPlayerStartPosition());
         }
+    }
+
+    public void setPlayerColor(int color) {
+        this.setInnerColor=color;
     }
 
 }

@@ -50,7 +50,7 @@ public class ViewImpl extends AbstractObservableWithSet<ViewEvent> implements Vi
     public void init(final GameResolution resolution) {
         this.renderContext = new RenderContext(new Camera2D(resolution, 0), resolution.getViewPortWidth(),
                 resolution.getViewPortHeight());
-        this.gamePanel.init(renderContext, assetStore, TITLE_GAME);
+        this.gamePanel.init(renderContext, assetStore, TITLE_GAME,resolution);
     }
 
     /**

@@ -99,4 +99,6 @@ public interface GameModel extends GameState, ModelObservable {
      * The method that resets the player to its start position.
      */
     void respawnPlayer();
+
+    void setPlayerColor(int color);
 }

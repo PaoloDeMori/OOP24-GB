@@ -8,6 +8,7 @@ import it.unibo.geometrybash.view.UpdatableWithDto;
 import it.unibo.geometrybash.view.core.RenderContext;
 import it.unibo.geometrybash.view.userinteraction.SwingKeyboardListener;
 import it.unibo.geometrybash.view.userinteraction.SwingStrategyWithObservable;
+import it.unibo.geometrybash.view.utilities.GameResolution;
 import it.unibo.geometrybash.view.utilities.TerminalColor;
 
 public class GamePanel extends AbstractObservableWithSet<ViewEvent> implements UpdatableWithDto<GameStateDto> {
@@ -22,11 +23,12 @@ public class GamePanel extends AbstractObservableWithSet<ViewEvent> implements U
 
     }
 
-    public void init(RenderContext renderContext, AssetStore assetStore, String gameTitle) {
+    public void init(RenderContext renderContext, AssetStore assetStore, String gameTitle, GameResolution gameResolution) {
         this.gameFrame = new GameFrameBuilder()
                 .setMainPanel(this.panelsFactory, renderContext, assetStore)
                 .setBackGroundColor(TerminalColor.BACKGROUND)
                 .setGameTitle(gameTitle)
+                .setResolution(gameResolution)
                 .build();
         this.gameFrame.addKeyListener(
                 this.swingKeyboardListener);

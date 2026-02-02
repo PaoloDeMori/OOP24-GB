@@ -9,6 +9,9 @@ import org.slf4j.LoggerFactory;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import it.unibo.geometrybash.commons.UpdateInfoDto;
+import it.unibo.geometrybash.commons.assets.AudioManager;
+import it.unibo.geometrybash.commons.assets.AudioStore;
+import it.unibo.geometrybash.commons.assets.ResourceLoader;
 import it.unibo.geometrybash.commons.input.StandardViewEventType;
 import it.unibo.geometrybash.commons.pattern.observerpattern.modelobserver.ModelEvent;
 import it.unibo.geometrybash.controller.gameloop.GameLoop;
@@ -21,6 +24,7 @@ import it.unibo.geometrybash.model.GameModel;
 import it.unibo.geometrybash.model.exceptions.InvalidModelMethodInvocationException;
 import it.unibo.geometrybash.model.physicsengine.exception.ModelExecutionException;
 import it.unibo.geometrybash.view.View;
+import it.unibo.geometrybash.view.menus.MainMenuView;
 import it.unibo.geometrybash.view.ViewScene;
 import it.unibo.geometrybash.view.exceptions.ExecutionWithIllegalThreadException;
 import it.unibo.geometrybash.view.exceptions.NotStartedViewException;
@@ -43,7 +47,8 @@ public abstract class AbstractControllerImpl implements Controller {
     private final InputHandler inputHandler;
     private GameLoop gameLoop;
     private final GameLoopFactory gameLoopFactory;
-    private final GameResolution gameResolution = GameResolution.MEDIUM;
+    private GameResolution gameResolution = GameResolution.MEDIUM;
+    private AudioManager audioManager;
 
     /**
      * The constructor of the controller with game model, view and input handler
@@ -56,13 +61,15 @@ public abstract class AbstractControllerImpl implements Controller {
      *
      */
     public AbstractControllerImpl(final GameModel gameModel, final View view, final GameLoopFactory gameLoopFactory,
-            final InputHandlerFactory inputHandlerFactory) {
+            final InputHandlerFactory inputHandlerFactory, ResourceLoader resourceLoader) {
         this.gameModel = gameModel;
         this.gameModel.addObserver(this);
         this.view = view;
         this.inputHandler = inputHandlerFactory.createInputHandler();
         this.view.addObserver(inputHandler);
         this.gameLoopFactory = gameLoopFactory;
+        AudioStore audioStore = new AudioStore(resourceLoader);
+        this.audioManager = new AudioManager(audioStore);
     }
 
     /**
@@ -114,13 +121,24 @@ public abstract class AbstractControllerImpl implements Controller {
     private void onGenericCommand(final String command) {
         switch (command) {
             case "resolution -big":
-                // TODO
+                this.gameResolution = GameResolution.BIG;
+                break;
+            case "resolution -medium":
+                this.gameResolution = GameResolution.MEDIUM;
+                break;
+            case "resolution -small":
+                this.gameResolution = GameResolution.SMALL;
+                break;
+            case "setcolor -inner -purple":
+                System.out.println("OKOK");
+                this.getModel().setPlayerColor(0XFFFF00FF);
                 break;
             default:
                 break;
         }
 
     }
+
 
     /**
      * The action to execute on every frame refresh.
@@ -193,6 +211,8 @@ public abstract class AbstractControllerImpl implements Controller {
      */
     private void gameResume() {
         try {
+            audioManager.stop("it/unibo/geometrybash/audio/menu.wav");
+            audioManager.loop("it/unibo/geometrybash/audio/level1.wav");
             gameModel.resume();
             gameLoopSetting();
             gameLoop.resume();
@@ -207,6 +227,8 @@ public abstract class AbstractControllerImpl implements Controller {
      */
     private void gamePause() {
         try {
+            audioManager.stop("it/unibo/geometrybash/audio/level1.wav");
+            audioManager.loop("it/unibo/geometrybash/audio/menu.wav");
             gameLoopSetting();
             gameLoop.pause();
             gameModel.pause();
@@ -221,6 +243,8 @@ public abstract class AbstractControllerImpl implements Controller {
      */
     private void gameRestart() {
         try {
+            audioManager.stop("it/unibo/geometrybash/audio/menu.wav");
+            audioManager.loop("it/unibo/geometrybash/audio/level1.wav");
             gameLoopSetting();
             this.gameModel.restart();
             this.gameLoop.resume();
@@ -259,6 +283,8 @@ public abstract class AbstractControllerImpl implements Controller {
                 }
                 break;
             case GAMEOVER:
+                audioManager.stop("it/unibo/geometrybash/audio/level1.wav");
+                audioManager.loop("it/unibo/geometrybash/audio/level1.wav");
                 break;
         }
     }
@@ -277,6 +303,8 @@ public abstract class AbstractControllerImpl implements Controller {
      */
     private void startLevel() {
         try {
+            audioManager.stop("it/unibo/geometrybash/audio/menu.wav");
+            audioManager.loop("it/unibo/geometrybash/audio/level1.wav");
             gameLoopSetting();
             gameModel.start(LEVEL_NAME);
             view.init(gameResolution);
@@ -301,6 +329,7 @@ public abstract class AbstractControllerImpl implements Controller {
      */
     @Override
     public void start() {
+        audioManager.loop("it/unibo/geometrybash/audio/menu.wav");
         this.initInputHandler();
         try {
             this.view.show();
