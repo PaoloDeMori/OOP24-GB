@@ -19,8 +19,6 @@ import it.unibo.geometrybash.commons.input.ViewEventTypeFactory;
 import it.unibo.geometrybash.commons.pattern.observerpattern.AbstractObservableWithSet;
 import it.unibo.geometrybash.commons.pattern.observerpattern.viewobserverpattern.ViewEvent;
 import it.unibo.geometrybash.commons.pattern.observerpattern.viewobserverpattern.ViewObservable;
-import it.unibo.geometrybash.commons.assets.AudioManager;
-import it.unibo.geometrybash.commons.assets.AudioStore;
 import it.unibo.geometrybash.commons.assets.ResourceLoader;
 import it.unibo.geometrybash.commons.assets.TextAssetReader;
 import it.unibo.geometrybash.view.utilities.DefaultStyle;
@@ -41,6 +39,8 @@ public final class MainMenuView extends AbstractObservableWithSet<ViewEvent> imp
     private static final String CMD_START = "start";
     /** Command to close the application. */
     private static final String CMD_CLOSE = "close";
+    /** Command to restar the level. */
+    private static final String CMD_RESTART = "restart";
     /** Command to close the application. */
     private static final String CMD_EXIT = "exit";
     /** Command to resume the game from pause state. */
@@ -85,9 +85,6 @@ public final class MainMenuView extends AbstractObservableWithSet<ViewEvent> imp
     private final TextAssetReader textReader;
     private final ResourceLoader resourceLoader;
 
-    private final AudioStore audioStore;
-    private final AudioManager manage;
-
     private final MenuStyle defaultStyle = new DefaultStyle();
     private final MenuStyle pauseStyle = new PauseStyle();
 
@@ -104,9 +101,6 @@ public final class MainMenuView extends AbstractObservableWithSet<ViewEvent> imp
         this.frame.setLayout(new BorderLayout());
         this.resourceLoader = resourceLoader;
         this.textReader = new TextAssetReader(this.resourceLoader);
-        this.audioStore = new AudioStore(resourceLoader);
-        this.manage = new AudioManager(audioStore);
-
         this.outputArea = createOutputArea();
         this.inputField = createInputField();
 
@@ -196,7 +190,7 @@ public final class MainMenuView extends AbstractObservableWithSet<ViewEvent> imp
      * Show the victory message with the total number of coins collected.
      *
      * @param playerCoins the number of coins collected during the level
-     * @param totalCoins the total number of coins in the level
+     * @param totalCoins  the total number of coins in the level
      */
     public void showVictoryMessage(final int playerCoins, final int totalCoins) {
         this.appendText(NEW_LINE + " LEVEL COMPLETED! YOU WON!");
@@ -350,6 +344,10 @@ public final class MainMenuView extends AbstractObservableWithSet<ViewEvent> imp
                 case CMD_START:
                     notifyObservers(ViewEvent.createEvent(ViewEventTypeFactory.standard(StandardViewEventType.START)));
                     break;
+                case CMD_RESTART:
+                    notifyObservers(
+                            ViewEvent.createEvent(ViewEventTypeFactory.standard(StandardViewEventType.RESTART)));
+                    break;
                 case CMD_HELP:
                 case CMD_COMMANDS:
                     this.showCommands();
@@ -382,7 +380,6 @@ public final class MainMenuView extends AbstractObservableWithSet<ViewEvent> imp
      * Displays the main menu in full screen mode.
      */
     public void display() {
-        this.manage.loop("it/unibo/geometrybash/audio/menu.wav");
         GraphicsEnvironment.getLocalGraphicsEnvironment()
                 .getDefaultScreenDevice().setFullScreenWindow(frame);
         this.frame.setVisible(true);
@@ -393,8 +390,14 @@ public final class MainMenuView extends AbstractObservableWithSet<ViewEvent> imp
      * Hides the main menu window.
      */
     public void hide() {
-        this.manage.stop("it/unibo/geometrybash/audio/menu.wav");
         this.frame.setVisible(false);
+    }
+
+    /**
+     * Release all the screen resources used by main menu.
+     */
+    public void dispose() {
+        this.frame.dispose();
     }
 
     /**
