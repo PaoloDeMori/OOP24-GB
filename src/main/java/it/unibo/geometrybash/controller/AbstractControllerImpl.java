@@ -24,7 +24,6 @@ import it.unibo.geometrybash.model.GameModel;
 import it.unibo.geometrybash.model.exceptions.InvalidModelMethodInvocationException;
 import it.unibo.geometrybash.model.physicsengine.exception.ModelExecutionException;
 import it.unibo.geometrybash.view.View;
-import it.unibo.geometrybash.view.menus.MainMenuView;
 import it.unibo.geometrybash.view.ViewScene;
 import it.unibo.geometrybash.view.exceptions.ExecutionWithIllegalThreadException;
 import it.unibo.geometrybash.view.exceptions.NotStartedViewException;
@@ -139,7 +138,6 @@ public abstract class AbstractControllerImpl implements Controller {
 
     }
 
-
     /**
      * The action to execute on every frame refresh.
      */
@@ -173,7 +171,7 @@ public abstract class AbstractControllerImpl implements Controller {
         } catch (final NotStartedException e) {
             LOGGER.info("The safe thread interruption wasn't necessary");
         } finally {
-            errorMessage(message, ex);
+            SwingUtilities.invokeLater(() -> errorMessage(message, ex));
         }
 
     }
@@ -198,7 +196,8 @@ public abstract class AbstractControllerImpl implements Controller {
      * @param e       the exception that caused this one.
      */
     private void errorMessage(final String message, final Optional<Exception> e) {
-        view.showCommandsError(message);
+        view.showExecutionError(message);
+        view.changeView(ViewScene.START_MENU);
         if (e.isPresent()) {
             LOGGER.error(message, e);
         } else {
@@ -226,6 +225,8 @@ public abstract class AbstractControllerImpl implements Controller {
      * A utility method to pause the game.
      */
     private void gamePause() {
+        handleError("ERRORE MATTO", Optional.of(new RuntimeException("pizza")));
+
         try {
             audioManager.stop("it/unibo/geometrybash/audio/level1.wav");
             audioManager.loop("it/unibo/geometrybash/audio/menu.wav");
@@ -236,6 +237,7 @@ public abstract class AbstractControllerImpl implements Controller {
         } catch (final InvalidGameLoopStatusException | InvalidModelMethodInvocationException e) {
             handleError("Error while resuming the thread", Optional.of(e));
         }
+
     }
 
     /**
