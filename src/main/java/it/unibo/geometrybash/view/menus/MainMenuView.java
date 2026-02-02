@@ -6,6 +6,7 @@ import java.awt.GraphicsEnvironment;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -63,14 +64,19 @@ public final class MainMenuView extends AbstractObservableWithSet<ViewEvent> imp
     public static final String CMD_COLORS = "colors";
     /** Command to set the player's color. */
     public static final String CMD_SET_COLOR = "setcolor";
+    /** characters for parameters representation. */
+    public static final String STANDARD_SEPARATOR = "-";
     /** Flag for set the player's inner color. */
-    public static final String FLAG_INNER = "-inner";
+    public static final String FLAG_INNER = STANDARD_SEPARATOR + "inner";
     /** Flag for set the player's outer color. */
-    public static final String FLAG_OUTER = "-outer";
+    public static final String FLAG_OUTER = STANDARD_SEPARATOR + "outer";
     /** List of avaible colors for the terminal display. */
-    public static final String[] AVAILABLE_COLORS = {
-            "RED", "BLUE", "GREEN", "YELLOW", "WHITE",
-    };
+    public static final Map<String, Integer> AVAILABLE_COLORS = Map.of(
+            "red", 0xFFFF0000,
+            "blue", 0xFF0000FF,
+            "green", 0xFF00FF00,
+            "yellow", 0xFFFFD700,
+            "white", 0xFFFFFFFF);
     /** Prefix for command list items. */
     private static final String CMD_PREFIX = " > ";
     /** Command for create new line. */
@@ -206,8 +212,8 @@ public final class MainMenuView extends AbstractObservableWithSet<ViewEvent> imp
      */
     public void showAvailableColors() {
         this.appendText(NEW_LINE + " AVAIBLE CUSTOMIZAION COLOR");
-        for (final String color : AVAILABLE_COLORS) {
-            this.appendText(CMD_PREFIX + color);
+        for (final String color : AVAILABLE_COLORS.keySet()) {
+            this.appendText(CMD_PREFIX + color.toUpperCase());
         }
         this.appendText(" -----------------------------");
         this.appendText(" Usage: " + CMD_SET_COLOR + " [" + FLAG_INNER + "|" + FLAG_OUTER + "] -<color>");
