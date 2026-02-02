@@ -141,6 +141,13 @@ public abstract class AbstractControllerImpl implements Controller {
     }
 
     private boolean checkCommandParsing(String command) {
+
+        String[] parts = command.split(" ");
+
+        if (parts.length != 3) {
+            return false;
+        }
+
         if (MainMenuView.CMD_SET_COLOR.equals(command.substring(0, MainMenuView.CMD_SET_COLOR.length()))) {
             if (MainMenuView.FLAG_INNER.equals(
                     command.substring(MainMenuView.CMD_SET_COLOR.length() + 1, MainMenuView.FLAG_INNER.length()))) {
@@ -260,8 +267,6 @@ public abstract class AbstractControllerImpl implements Controller {
      * A utility method to pause the game.
      */
     private void gamePause() {
-        handleError("ERRORE MATTO", Optional.of(new RuntimeException("pizza")));
-
         try {
             audioManager.stop("it/unibo/geometrybash/audio/level1.wav");
             audioManager.loop("it/unibo/geometrybash/audio/menu.wav");
