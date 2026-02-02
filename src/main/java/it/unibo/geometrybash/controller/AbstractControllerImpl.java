@@ -22,6 +22,8 @@ import it.unibo.geometrybash.controller.gameloop.exceptions.NotOnPauseException;
 import it.unibo.geometrybash.controller.gameloop.exceptions.NotStartedException;
 import it.unibo.geometrybash.controller.input.InputHandlerFactory;
 import it.unibo.geometrybash.model.GameModel;
+import it.unibo.geometrybash.model.MenuModel;
+import it.unibo.geometrybash.model.Status;
 import it.unibo.geometrybash.model.exceptions.InvalidModelMethodInvocationException;
 import it.unibo.geometrybash.model.physicsengine.exception.ModelExecutionException;
 import it.unibo.geometrybash.view.View;
@@ -42,6 +44,10 @@ public abstract class AbstractControllerImpl implements Controller {
     private static final String LEVEL_NAME = "tempLevel";
     private static final String MENU_MUSIC = "it/unibo/geometrybash/audio/menu.wav";
     private static final String LEVEL_MUSIC = "it/unibo/geometrybash/audio/level1.wav";
+    private static final String ON_HISTORY_DESCRIPTION = "LIST OF FUNCTIONING COMMANDS USED:";
+    private static final String ON_CORRECT_RESOLUTION_CHANGE = "\"Correctly set size.\"";
+    private static final String ON_CORRECT_COLOR_UPDATE = "\"Correctly updated color.\"";
+    private static final String HISTORY_COMMAND = "history";
 
     private final GameModel gameModel;
     private final View view;
@@ -50,6 +56,7 @@ public abstract class AbstractControllerImpl implements Controller {
     private final GameLoopFactory gameLoopFactory;
     private GameResolution gameResolution = GameResolution.MEDIUM;
     private AudioManager audioManager;
+    private MenuModel menuModel;
 
     /**
      * The constructor of the controller with game model, view and input handler
@@ -59,10 +66,13 @@ public abstract class AbstractControllerImpl implements Controller {
      * @param view                the main view class of the game
      * @param gameLoopFactory     the factory to init the gameloop.
      * @param inputHandlerFactory the factory to init the inputHandler.
+     * @param menuModel           the model class instance responsible of handling
+     *                            the history command.
      *
      */
     public AbstractControllerImpl(final GameModel gameModel, final View view, final GameLoopFactory gameLoopFactory,
-            final InputHandlerFactory inputHandlerFactory, ResourceLoader resourceLoader) {
+            final InputHandlerFactory inputHandlerFactory, final ResourceLoader resourceLoader,
+            final MenuModel menuModel) {
         this.gameModel = gameModel;
         this.gameModel.addObserver(this);
         this.view = view;
@@ -71,10 +81,11 @@ public abstract class AbstractControllerImpl implements Controller {
         this.gameLoopFactory = gameLoopFactory;
         AudioStore audioStore = new AudioStore(resourceLoader);
         this.audioManager = new AudioManager(audioStore);
+        this.menuModel = menuModel;
     }
 
     /**
-     * A method that returns the delta time, it can either be static or evluated.
+     * A method that returns the delta time, it can either be static or evaluated.
      *
      * @return the delta time.
      */
@@ -120,16 +131,87 @@ public abstract class AbstractControllerImpl implements Controller {
      * @param command the string received.
      */
     private void onGenericCommand(final String command) {
+        if (onColorCommand(command)) {
+            return;
+        }
+
+        if (onResizeCommand(command)) {
+            return;
+        }
+
+        if (onHistoryCommand(command)) {
+            return;
+        }
+
+        view.showCommandsError(command);
+    }
+
+    /**
+     * Private method to evaluate a genericcommand, if the command is the correct
+     * command to
+     * change the player color, this method changes it and return true, otherwise
+     * return false.
+     * 
+     * @param command the received command
+     * @return true if the command is is the correct
+     *         command to
+     *         change the player color false otherwise.
+     */
+    private boolean onColorCommand(String command) {
         if (GenericCommands.checkSetPlayerColorCommand(command, (c) -> {
             this.gameModel.setPlayerInnerColor(c.intValue());
         }, (c) -> {
-            this.gameModel.setPlayerInnerColor(c.intValue());
+            this.gameModel.setPlayerOuterColor(c.intValue());
         })) {
-            this.view.appendText("Correctly upadated color.");
+            this.menuModel.addCommand(command);
+            this.view.appendText(ON_CORRECT_COLOR_UPDATE);
+            return true;
         }
-        if (GenericCommands.checkResolutionCommand(command).isPresent()) {
-            this.view.appendText("Correctly set size.");
+        return false;
+    }
+
+    /**
+     * Private method to evaluate a genericcommand, if the command is the correct
+     * command to
+     * change the GamePanel size, this method changes it and return true, otherwise
+     * return false.
+     * 
+     * @param command the received command
+     * @return true if the command is is the correct
+     *         command to
+     *         change the game panel resolution false otherwise.
+     */
+    private boolean onResizeCommand(String command) {
+        Optional<GameResolution> resolution = GenericCommands.checkResolutionCommand(command);
+        if (resolution.isPresent()) {
+            this.gameResolution = resolution.get();
+            this.view.appendText(ON_CORRECT_RESOLUTION_CHANGE);
+            this.menuModel.addCommand(command);
+            return true;
         }
+        return false;
+    }
+
+    /**
+     * Private method to evaluate a genericcommand, if the command is the correct
+     * command to
+     * retrieve the History of size, this method changes it and return true,
+     * otherwise
+     * return false.
+     * 
+     * @param command the received command
+     * @return true if the command is is the correct
+     *         command to
+     *         change the game panel resolution false otherwise.
+     */
+    private boolean onHistoryCommand(String command) {
+        if (command.equals(HISTORY_COMMAND)) {
+            view.appendText(ON_HISTORY_DESCRIPTION);
+            menuModel.getHistory().stream().forEach(i -> view.appendText(i));
+            menuModel.addCommand(command);
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -220,12 +302,17 @@ public abstract class AbstractControllerImpl implements Controller {
      */
     private void gamePause() {
         try {
-            audioManager.stop(LEVEL_MUSIC);
-            audioManager.loop(MENU_MUSIC);
-            gameLoopSetting();
-            gameLoop.pause();
-            gameModel.pause();
-            view.changeView(ViewScene.PAUSE);
+            if (this.gameModel.getStatus().equals(Status.ONPAUSE)) {
+                audioManager.stop(LEVEL_MUSIC);
+                audioManager.loop(MENU_MUSIC);
+                gameLoopSetting();
+                gameLoop.pause();
+                gameModel.pause();
+                view.changeView(ViewScene.PAUSE);
+            } else {
+                this.view.showExecutionError(
+                        "Please to start the game type \"start\", \"resume\" is a command to use while on pause to resume the game");
+            }
         } catch (final InvalidGameLoopStatusException | InvalidModelMethodInvocationException e) {
             handleError("Error while resuming the thread", Optional.of(e));
         }
@@ -237,12 +324,17 @@ public abstract class AbstractControllerImpl implements Controller {
      */
     private void gameRestart() {
         try {
-            audioManager.stop(MENU_MUSIC);
-            audioManager.loop(LEVEL_MUSIC);
-            gameLoopSetting();
-            this.gameModel.restart();
-            this.gameLoop.resume();
-            this.view.changeView(ViewScene.IN_GAME);
+            if (this.gameModel.getStatus().equals(Status.ONPAUSE)) {
+                audioManager.stop(MENU_MUSIC);
+                audioManager.loop(LEVEL_MUSIC);
+                gameLoopSetting();
+                this.gameModel.restart();
+                this.gameLoop.resume();
+                this.view.changeView(ViewScene.IN_GAME);
+            } else {
+                this.view.showExecutionError(
+                        "Please to start the game type \"start\", \"restart\" is a command to use while on pause to restart the game");
+            }
         } catch (final InvalidGameLoopStatusException
                 | InvalidModelMethodInvocationException | ModelExecutionException e) {
             handleError("Error while restarting the match", Optional.of(e));
@@ -297,13 +389,18 @@ public abstract class AbstractControllerImpl implements Controller {
      */
     private void startLevel() {
         try {
-            audioManager.stop(MENU_MUSIC);
-            audioManager.loop(LEVEL_MUSIC);
-            gameLoopSetting();
-            gameModel.start(LEVEL_NAME);
-            view.init(gameResolution);
-            view.changeView(ViewScene.IN_GAME);
-            gameLoop.start();
+            if (this.gameModel.getStatus().equals(Status.NEVERSTARTED)) {
+                audioManager.stop(MENU_MUSIC);
+                audioManager.loop(LEVEL_MUSIC);
+                gameLoopSetting();
+                gameModel.start(LEVEL_NAME);
+                view.init(gameResolution);
+                view.changeView(ViewScene.IN_GAME);
+                gameLoop.start();
+            } else {
+                this.view.showExecutionError(
+                        "Please to restart the game type \"restart\", if you want to resume it jsut type \"resume\"");
+            }
         } catch (InvalidGameLoopStatusException | InvalidGameLoopConfigurationException | ModelExecutionException
                 | InvalidModelMethodInvocationException e) {
             handleError(LEVEL_NAME, Optional.of(e));

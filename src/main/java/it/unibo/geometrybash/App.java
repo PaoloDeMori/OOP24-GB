@@ -7,6 +7,7 @@ import it.unibo.geometrybash.controller.StaticDeltaTimeControllerImpl;
 import it.unibo.geometrybash.controller.Controller;
 import it.unibo.geometrybash.model.GameModel;
 import it.unibo.geometrybash.model.GameModelImpl;
+import it.unibo.geometrybash.model.MenuModel;
 import it.unibo.geometrybash.model.physicsengine.impl.jbox2d.JBox2dPhysicsEngineFactory;
 import it.unibo.geometrybash.view.ViewImpl;
 import it.unibo.geometrybash.view.View;
@@ -19,7 +20,7 @@ public class App {
         JBox2dPhysicsEngineFactory physicsEngineFactory = new JBox2dPhysicsEngineFactory();
         View view = new ViewImpl(resourceLoader, assetStore);
         GameModel gameModel = new GameModelImpl(resourceLoader,physicsEngineFactory);
-        Controller controller = new StaticDeltaTimeControllerImpl(gameModel, view,resourceLoader);
+        Controller controller = new StaticDeltaTimeControllerImpl(gameModel, view,resourceLoader, new MenuModel());
         controller.start();
     }
 }

@@ -103,7 +103,7 @@ public final class GenericCommands {
      * @return the correct {@link GameResolution} representation.
      */
     public static Optional<GameResolution> checkResolutionCommand(String command) {
-        if (command.contains(command)) {
+        if (commandToGameResolution.keySet().contains(command)) {
             return Optional.of(commandToGameResolution.get(command));
         } else {
             return Optional.empty();
@@ -112,15 +112,15 @@ public final class GenericCommands {
     }
 
     private static String getBigResolutionCommand() {
-        return MainMenuView.ARG_RESOLUTION + " -" + MainMenuView.BIG;
+        return MainMenuView.ARG_RESOLUTION + " " + MainMenuView.STANDARD_SEPARATOR + MainMenuView.BIG;
     }
 
     private static String getMediumResolutionCommand() {
-        return MainMenuView.ARG_RESOLUTION + " -" + MainMenuView.MEDIUM;
+        return MainMenuView.ARG_RESOLUTION + " " + MainMenuView.STANDARD_SEPARATOR + MainMenuView.MEDIUM;
     }
 
     private static String getSmallResolutionCommand() {
-        return MainMenuView.ARG_RESOLUTION + " -" + MainMenuView.SMALL;
+        return MainMenuView.ARG_RESOLUTION + " " + MainMenuView.STANDARD_SEPARATOR + MainMenuView.SMALL;
     }
 
 }
