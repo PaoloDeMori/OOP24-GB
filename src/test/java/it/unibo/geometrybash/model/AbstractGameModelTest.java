@@ -231,9 +231,7 @@ class AbstractGameModelTest {
         }
 
         @Override
-        public void setPlayerColor(int color) {
-            // TODO Auto-generated method stub
-            throw new UnsupportedOperationException("Unimplemented method 'setPlayerColor'");
+        public void setPlayerInnerColor(int color) {
         }
     }
 }
