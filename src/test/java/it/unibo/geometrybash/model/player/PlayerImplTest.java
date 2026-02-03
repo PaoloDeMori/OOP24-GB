@@ -17,79 +17,6 @@ import it.unibo.geometrybash.model.physicsengine.PlayerPhysics;
 import it.unibo.geometrybash.model.powerup.Coin;
 import it.unibo.geometrybash.model.powerup.ShieldPowerUp;
 
-final class MockPlayerPhysics implements PlayerPhysics {
-
-    private static final String NOT_NECESSARY_METHOD = "this method is not tested here";
-    private static final float BASE_SPEED = 5.0f;
-    private Vector2 velocity;
-    private boolean grounded;
-    private Vector2 position;
-
-    MockPlayerPhysics() {
-        this.velocity = new Vector2(BASE_SPEED, 0f);
-        this.grounded = true;
-        this.position = new Vector2(0f, 0f);
-    }
-
-    public void setGrounded(final boolean grounded) {
-        this.grounded = grounded;
-    }
-
-    public void setPosition(final Vector2 newPosition) {
-        this.position = newPosition;
-    }
-
-    @Override
-    public void applyJump() {
-        throw new UnsupportedOperationException(NOT_NECESSARY_METHOD);
-    }
-
-    @Override
-    public void setVelocity(final float multiplier) {
-        this.velocity = new Vector2(BASE_SPEED * multiplier, velocity.y());
-    }
-
-    @Override
-    public Vector2 getVelocity() {
-        return velocity;
-    }
-
-    @Override
-    public void resetBodyTo(final Vector2 pos) {
-        this.position = pos;
-    }
-
-    @Override
-    public Vector2 getPosition(final HitBox hB) {
-        return this.position;
-    }
-
-    @Override
-    public void setUserData(final Object userData) {
-        throw new UnsupportedOperationException(NOT_NECESSARY_METHOD);
-    }
-
-    @Override
-    public boolean isGrounded() {
-        return this.grounded;
-    }
-
-    @Override
-    public void onGroundContactBegin() {
-        throw new UnsupportedOperationException(NOT_NECESSARY_METHOD);
-    }
-
-    @Override
-    public void onGroundContactEnd() {
-        throw new UnsupportedOperationException(NOT_NECESSARY_METHOD);
-    }
-
-    @Override
-    public void setActive(boolean activeState) {
-        throw new UnsupportedOperationException(NOT_NECESSARY_METHOD);
-    }
-}
-
 class PlayerImplTest {
 
     private static final float INIT_POSITION = 5.0f;
@@ -97,15 +24,17 @@ class PlayerImplTest {
     private static final float SIZE = 1.0f;
     private static final float DT = 1 / 60f;
     private static final double EPS = 1e-6;
-    private static final int[] POLYGONS = { 3, 4, 5, 6, 8, 12 };
+    private static final int NUMBER_VERTICES_SQUARE = 4;
+    private static final int NUMBER_VERTICES_EXAGON = 6;
+    private static final int[] POLYGONS = {3, 4, 5, 6, 8, 12 };
     private PlayerImpl player;
     private MockPlayerPhysics physics;
     private HitBox hitBox;
     private double stepAngle;
 
     @BeforeEach
-    void setup() {
-        createPlayerWithGenericPolygon(4);
+    void initStandardPlayer() {
+        createPlayerWithGenericPolygon(NUMBER_VERTICES_SQUARE);
     }
 
     private void createPlayerWithGenericPolygon(final int numOfVertices) {
@@ -201,7 +130,7 @@ class PlayerImplTest {
 
     @Test
     void testAngularRotationIsAlwaysNormalized() {
-        createPlayerWithGenericPolygon(6);
+        createPlayerWithGenericPolygon(NUMBER_VERTICES_EXAGON);
         physics.setGrounded(false);
         player.update(2.0f);
         final double angle = player.getAngularRotation();
@@ -230,7 +159,7 @@ class PlayerImplTest {
 
     @Test
     void testDieCallsOnDeathCallback() {
-        final boolean[] called = { false };
+        final boolean[] called = {false};
         player.setOnDeath(() -> called[0] = true);
         player.die();
         assertTrue(called[0]);
@@ -238,10 +167,83 @@ class PlayerImplTest {
 
     @Test
     void testOnSpecialObjectCollisionIsCalledOnShield() {
-        final int[] called = { 0 };
+        final int[] called = {0};
         player.setOnSpecialObjectCollision(o -> called[0]++);
         final GameObject<?> shield = new ShieldPowerUp(new Vector2(INIT_POSITION, INIT_POSITION));
         player.onShieldCollected(shield);
         assertEquals(1, called[0]);
+    }
+
+    final class MockPlayerPhysics implements PlayerPhysics {
+
+        private static final String NOT_NECESSARY_METHOD = "this method is not tested here";
+        private static final float BASE_SPEED = 5.0f;
+        private Vector2 velocity;
+        private boolean grounded;
+        private Vector2 position;
+
+        MockPlayerPhysics() {
+            this.velocity = new Vector2(BASE_SPEED, 0f);
+            this.grounded = true;
+            this.position = new Vector2(0f, 0f);
+        }
+
+        public void setGrounded(final boolean grounded) {
+            this.grounded = grounded;
+        }
+
+        public void setPosition(final Vector2 newPosition) {
+            this.position = newPosition;
+        }
+
+        @Override
+        public void applyJump() {
+            throw new UnsupportedOperationException(NOT_NECESSARY_METHOD);
+        }
+
+        @Override
+        public void setVelocity(final float multiplier) {
+            this.velocity = new Vector2(BASE_SPEED * multiplier, velocity.y());
+        }
+
+        @Override
+        public Vector2 getVelocity() {
+            return velocity;
+        }
+
+        @Override
+        public void resetBodyTo(final Vector2 pos) {
+            this.position = pos;
+        }
+
+        @Override
+        public Vector2 getPosition(final HitBox hB) {
+            return this.position;
+        }
+
+        @Override
+        public void setUserData(final Object userData) {
+            throw new UnsupportedOperationException(NOT_NECESSARY_METHOD);
+        }
+
+        @Override
+        public boolean isGrounded() {
+            return this.grounded;
+        }
+
+        @Override
+        public void onGroundContactBegin() {
+            throw new UnsupportedOperationException(NOT_NECESSARY_METHOD);
+        }
+
+        @Override
+        public void onGroundContactEnd() {
+            throw new UnsupportedOperationException(NOT_NECESSARY_METHOD);
+        }
+
+        @Override
+        public void setActive(final boolean activeState) {
+            throw new UnsupportedOperationException(NOT_NECESSARY_METHOD);
+        }
     }
 }

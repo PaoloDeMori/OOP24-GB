@@ -51,6 +51,7 @@ public interface Player<S extends Shape> extends GameObject<HitBox> {
     /**
      * Increments the number of collected coins by a given value.
      *
+     * @param coin the power up that collides with the player
      * @param value the number of coins to add
      */
     void addCoin(GameObject<?> coin, int value);

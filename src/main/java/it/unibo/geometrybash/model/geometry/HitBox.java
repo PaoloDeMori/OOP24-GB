@@ -34,10 +34,8 @@ public final class HitBox implements Shape {
     /**
      * Constructs a HitBox with a list of vertices.
      *
-     * @param vertices the list of vertices; must contain at least
-     *                 {@value #MIN_VERTEX} points
-     * @throws IllegalArgumentException if the list contains fewer than
-     *                                  {@value #MIN_VERTEX} vertices
+     * @param vertices the list of vertices
+     * @throws InvalidHitBoxConfiguration if the hitbox configuration is invalid
      */
     public HitBox(final List<Vector2> vertices) {
         isValidHitBox(vertices);
