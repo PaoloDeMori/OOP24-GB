@@ -14,6 +14,7 @@ import it.unibo.geometrybash.model.core.GameObject;
 import it.unibo.geometrybash.model.geometry.HitBox;
 import it.unibo.geometrybash.model.geometry.Vector2;
 import it.unibo.geometrybash.model.physicsengine.PlayerPhysics;
+import it.unibo.geometrybash.model.powerup.Coin;
 import it.unibo.geometrybash.model.powerup.ShieldPowerUp;
 
 final class MockPlayerPhysics implements PlayerPhysics {
@@ -220,7 +221,8 @@ class PlayerImplTest {
 
     @Test
     void testResetPowerUpAndCoinsWhenPlayerDie() {
-        player.addCoin(10);
+        final GameObject<?> coin = new Coin(new Vector2(INIT_POSITION, INIT_POSITION));
+        player.addCoin(coin, 10);
         player.die();
         assertEquals(0, player.getCoins());
         assertTrue(player.isDead());
@@ -238,7 +240,7 @@ class PlayerImplTest {
     void testOnSpecialObjectCollisionIsCalledOnShield() {
         final int[] called = { 0 };
         player.setOnSpecialObjectCollision(o -> called[0]++);
-        final GameObject<?> shield = new ShieldPowerUp(new Vector2(INIT_POSITION, DT));
+        final GameObject<?> shield = new ShieldPowerUp(new Vector2(INIT_POSITION, INIT_POSITION));
         player.onShieldCollected(shield);
         assertEquals(1, called[0]);
     }
