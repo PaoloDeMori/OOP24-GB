@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 
+import it.unibo.geometrybash.model.MenuModel;
 import it.unibo.geometrybash.view.menus.MainMenuView;
 import it.unibo.geometrybash.view.utilities.GameResolution;
 
@@ -52,7 +53,7 @@ public final class GenericCommands {
                 setter = setterOuter;
             }
             final String color = parts[2].replace("-", "").toLowerCase(Locale.ROOT);
-            if (MainMenuView.AVAILABLE_COLORS.keySet().stream().anyMatch(x -> x.equalsIgnoreCase(color))) {
+            if (MenuModel.AVAILABLE_COLORS.keySet().stream().anyMatch(x -> x.equalsIgnoreCase(color))) {
                 final Optional<Integer> rgbaColor = stringColorToRgba(color);
                 if (rgbaColor.isPresent()) {
                     setter.accept(rgbaColor.get());
@@ -72,8 +73,8 @@ public final class GenericCommands {
      *         returns an Optional wrapping a color.
      */
     private static Optional<Integer> stringColorToRgba(final String color) {
-        if (MainMenuView.AVAILABLE_COLORS.keySet().contains(color)) {
-            return Optional.of(MainMenuView.AVAILABLE_COLORS.get(color));
+        if (MenuModel.AVAILABLE_COLORS.keySet().contains(color)) {
+            return Optional.of(MenuModel.AVAILABLE_COLORS.get(color));
         } else {
             return Optional.empty();
         }

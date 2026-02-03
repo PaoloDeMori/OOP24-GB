@@ -9,8 +9,6 @@ import java.util.Map;
  */
 public final class MenuModel {
 
-    public static final List<String> LEVELS_NAME_LIST = List.of("Level1", "DemoLevel");
-
     /** List of available colors for the terminal display. */
     public static final Map<String, Integer> AVAILABLE_COLORS = Map.of(
             "red", 0xFFFF0000,
@@ -18,6 +16,8 @@ public final class MenuModel {
             "green", 0xFF00FF00,
             "yellow", 0xFFFFD700,
             "white", 0xFFFFFFFF);
+
+    public static final List<String> LEVELS_NAME_LIST = List.of("Level1", "DemoLevel");
 
     /**
      * Stores the history of user commands.

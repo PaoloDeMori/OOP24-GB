@@ -210,6 +210,9 @@ public final class MainMenuView extends AbstractObservableWithSet<ViewEvent> imp
 
     /**
      * Shows all the colors available that can be used to customize the player.
+     * 
+     * @param availableColors a map that links the availble colors for the player
+     *                        with their hexadecimal value.
      */
     public void showAvailableColors(final Map<String, Integer> availableColors) {
         this.appendText(NEW_LINE + " AVAILABLE CUSTOMIZAION COLOR");
