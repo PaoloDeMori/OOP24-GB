@@ -8,6 +8,8 @@ import java.util.List;
  */
 public final class MenuModel {
 
+    private static final List<String> LEVELS_NAME_LIST = List.of("Level1", "DemoLevel");
+
     /**
      * Stores the history of user commands.
      */
@@ -38,4 +40,12 @@ public final class MenuModel {
         return new LinkedList<>(this.history);
     }
 
+    /**
+     * Returns a copy of the level's names.
+     *
+     * @return the list of level's names.
+     */
+    public List<String> getLevelsNames() {
+        return new LinkedList<>(LEVELS_NAME_LIST);
+    }
 }
