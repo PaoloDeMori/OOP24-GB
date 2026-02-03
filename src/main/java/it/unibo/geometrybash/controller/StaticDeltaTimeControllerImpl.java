@@ -4,7 +4,6 @@ import it.unibo.geometrybash.commons.assets.ResourceLoader;
 import it.unibo.geometrybash.controller.gameloop.GameLoopFixedExecutionTimeFactory;
 import it.unibo.geometrybash.controller.input.InputHandlerFactoryImpl;
 import it.unibo.geometrybash.model.GameModel;
-import it.unibo.geometrybash.model.MenuModel;
 import it.unibo.geometrybash.view.View;
 
 /**
@@ -26,14 +25,11 @@ public class StaticDeltaTimeControllerImpl extends AbstractControllerImpl {
      * 
      * @param resourceLoader the object responsible to retrieve resources.
      * 
-     * @param menuModel      the class instance of the model responsible to handle
-     *                       the history command from the view.
      *
      */
-    public StaticDeltaTimeControllerImpl(final GameModel gameModel, final View view, ResourceLoader resourceLoader,
-            MenuModel menuModel) {
-        super(gameModel, view, new GameLoopFixedExecutionTimeFactory(), new InputHandlerFactoryImpl(), resourceLoader,
-                menuModel);
+    public StaticDeltaTimeControllerImpl(final GameModel gameModel, final View view,
+            final ResourceLoader resourceLoader) {
+        super(gameModel, view, new GameLoopFixedExecutionTimeFactory(), new InputHandlerFactoryImpl(), resourceLoader);
     }
 
     /**

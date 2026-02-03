@@ -213,7 +213,7 @@ public final class MainMenuView extends AbstractObservableWithSet<ViewEvent> imp
     public void showAvailableColors() {
         this.appendText(NEW_LINE + " AVAIBLE CUSTOMIZAION COLOR");
         for (final String color : AVAILABLE_COLORS.keySet()) {
-            this.appendText(CMD_PREFIX + color.toUpperCase());
+            this.appendText(CMD_PREFIX + color.toUpperCase(Locale.ROOT));
         }
         this.appendText(" -----------------------------");
         this.appendText(" Usage: " + CMD_SET_COLOR + " [" + FLAG_INNER + "|" + FLAG_OUTER + "] -<color>");

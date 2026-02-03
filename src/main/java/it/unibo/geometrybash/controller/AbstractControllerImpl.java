@@ -55,8 +55,8 @@ public abstract class AbstractControllerImpl implements Controller {
     private GameLoop gameLoop;
     private final GameLoopFactory gameLoopFactory;
     private GameResolution gameResolution = GameResolution.MEDIUM;
-    private AudioManager audioManager;
-    private MenuModel menuModel;
+    private final AudioManager audioManager;
+    private final MenuModel menuModel;
 
     /**
      * The constructor of the controller with game model, view and input handler
@@ -66,22 +66,24 @@ public abstract class AbstractControllerImpl implements Controller {
      * @param view                the main view class of the game
      * @param gameLoopFactory     the factory to init the gameloop.
      * @param inputHandlerFactory the factory to init the inputHandler.
-     * @param menuModel           the model class instance responsible of handling
-     *                            the history command.
-     *
+     * @param resourceLoader      the object used to retrieve resources.
+     * 
      */
+
+    @SuppressFBWarnings(value = "EI2", justification = ""
+            + "I'm delegating the creation of many classes to improve the reusability of this class."
+            + "Im using interfaces to give the parameter's classes default behaviour ")
     public AbstractControllerImpl(final GameModel gameModel, final View view, final GameLoopFactory gameLoopFactory,
-            final InputHandlerFactory inputHandlerFactory, final ResourceLoader resourceLoader,
-            final MenuModel menuModel) {
+            final InputHandlerFactory inputHandlerFactory, final ResourceLoader resourceLoader) {
         this.gameModel = gameModel;
         this.gameModel.addObserver(this);
         this.view = view;
         this.inputHandler = inputHandlerFactory.createInputHandler();
         this.view.addObserver(inputHandler);
         this.gameLoopFactory = gameLoopFactory;
-        AudioStore audioStore = new AudioStore(resourceLoader);
+        final AudioStore audioStore = new AudioStore(resourceLoader);
         this.audioManager = new AudioManager(audioStore);
-        this.menuModel = menuModel;
+        this.menuModel = new MenuModel();
     }
 
     /**
@@ -157,12 +159,13 @@ public abstract class AbstractControllerImpl implements Controller {
      *         command to
      *         change the player color false otherwise.
      */
-    private boolean onColorCommand(String command) {
-        if (GenericCommands.checkSetPlayerColorCommand(command, (c) -> {
-            this.gameModel.setPlayerInnerColor(c.intValue());
-        }, (c) -> {
-            this.gameModel.setPlayerOuterColor(c.intValue());
-        })) {
+    private boolean onColorCommand(final String command) {
+        if (GenericCommands.checkSetPlayerColorCommand(command, c -> this.gameModel.setPlayerInnerColor(c), // NOPMD
+                // suppressed because using this.gameModel::setPlayerInnerColor doesn't
+                // explicitly handle the cast int->integer
+                c -> this.gameModel.setPlayerOuterColor(c))) { // NOPMD
+            // suppressed because using this.gameModel::setPlayerOuterColor doesn't
+            // explicitly handle the cast int->integer
             this.menuModel.addCommand(command);
             this.view.appendText(ON_CORRECT_COLOR_UPDATE);
             return true;
@@ -181,8 +184,8 @@ public abstract class AbstractControllerImpl implements Controller {
      *         command to
      *         change the game panel resolution false otherwise.
      */
-    private boolean onResizeCommand(String command) {
-        Optional<GameResolution> resolution = GenericCommands.checkResolutionCommand(command);
+    private boolean onResizeCommand(final String command) {
+        final Optional<GameResolution> resolution = GenericCommands.checkResolutionCommand(command);
         if (resolution.isPresent()) {
             this.gameResolution = resolution.get();
             this.view.appendText(ON_CORRECT_RESOLUTION_CHANGE);
@@ -204,10 +207,10 @@ public abstract class AbstractControllerImpl implements Controller {
      *         command to
      *         change the game panel resolution false otherwise.
      */
-    private boolean onHistoryCommand(String command) {
-        if (command.equals(HISTORY_COMMAND)) {
+    private boolean onHistoryCommand(final String command) {
+        if (HISTORY_COMMAND.equals(command)) {
             view.appendText(ON_HISTORY_DESCRIPTION);
-            menuModel.getHistory().stream().forEach(i -> view.appendText(i));
+            menuModel.getHistory().stream().forEach(this.view::appendText);
             menuModel.addCommand(command);
             return true;
         }
@@ -311,7 +314,8 @@ public abstract class AbstractControllerImpl implements Controller {
                 view.changeView(ViewScene.PAUSE);
             } else {
                 this.view.showExecutionError(
-                        "Please to start the game type \"start\", \"resume\" is a command to use while on pause to resume the game");
+                        "Please to start the game type \"start\","
+                                + " \"resume\" is a command to use while on pause to resume the game");
             }
         } catch (final InvalidGameLoopStatusException | InvalidModelMethodInvocationException e) {
             handleError("Error while resuming the thread", Optional.of(e));
@@ -333,7 +337,8 @@ public abstract class AbstractControllerImpl implements Controller {
                 this.view.changeView(ViewScene.IN_GAME);
             } else {
                 this.view.showExecutionError(
-                        "Please to start the game type \"start\", \"restart\" is a command to use while on pause to restart the game");
+                        "Please to start the game type \"start\", "
+                                + "\"restart\" is a command to use while on pause to restart the game");
             }
         } catch (final InvalidGameLoopStatusException
                 | InvalidModelMethodInvocationException | ModelExecutionException e) {
@@ -352,16 +357,17 @@ public abstract class AbstractControllerImpl implements Controller {
                 try {
                     gameLoopSetting();
                     gameLoop.stop();
-                } catch (NotStartedException e) {
+                } catch (final NotStartedException e) {
                     LOGGER.info("Safe thread interrupted safely");
 
                 } finally {
                     SwingUtilities.invokeLater(() -> {
                         try {
-                            view.victory(getModel().getPlayer().getCoins(), this.getModel().getLevel().getTotalCoins());
+                            view.victory(this.gameModel.getPlayer().getCoins(),
+                                    this.gameModel.getLevel().getTotalCoins());
                             view.changeView(ViewScene.START_MENU);
 
-                        } catch (ModelExecutionException e) {
+                        } catch (final ModelExecutionException e) {
                             LOGGER.error("Impossible to retrieve coins");
                             view.victory(0, 0);
                         }
@@ -373,14 +379,6 @@ public abstract class AbstractControllerImpl implements Controller {
                 audioManager.loop(LEVEL_MUSIC);
                 break;
         }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public GameModel getModel() {
-        return this.gameModel;
     }
 
     /**
@@ -411,20 +409,12 @@ public abstract class AbstractControllerImpl implements Controller {
      * {@inheritDoc}
      */
     @Override
-    public View getView() {
-        return this.view;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public void start() {
         audioManager.loop(MENU_MUSIC);
         this.initInputHandler();
         try {
             this.view.show();
-        } catch (NotStartedViewException e) {
+        } catch (final NotStartedViewException e) {
             LOGGER.error("impossible to start the view", e);
         }
     }
@@ -443,6 +433,14 @@ public abstract class AbstractControllerImpl implements Controller {
             this.view.disposeView();
             System.exit(0);
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Status getModelStatus() {
+        return this.gameModel.getStatus();
     }
 
 }

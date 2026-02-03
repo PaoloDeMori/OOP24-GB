@@ -100,8 +100,18 @@ public interface GameModel extends GameState, ModelObservable {
      */
     void respawnPlayer();
 
+    /**
+     * Sets the color of the inner layer of the player.
+     * 
+     * @param color the color to use.
+     */
     void setPlayerInnerColor(int color);
 
+    /**
+     * Sets the color of the inner layer of the player.
+     * 
+     * @param color the color to use.
+     */
     void setPlayerOuterColor(int color);
 
 }

@@ -1,5 +1,6 @@
 package it.unibo.geometrybash.controller;
 
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -17,6 +18,10 @@ public final class GenericCommands {
             getMediumResolutionCommand(), GameResolution.MEDIUM,
             getSmallResolutionCommand(), GameResolution.BIG);
 
+    private GenericCommands() {
+        // impossible to create this class because this is a helper class.
+    }
+
     /**
      * Check if the string is a command to set the color of the player, if so this
      * methods calls the right method.
@@ -27,26 +32,26 @@ public final class GenericCommands {
      * accepts the setter outer consumer.
      * </p>
      * 
-     * @param command        the command.
-     * @param setterInner    the method to call to apply changes if the command is a
-     *                       correctly formatted command to set the inner color.
-     * @param setterOuterthe method to call to apply changes if the command is a
-     *                       correctly formatted command to set the inner color.
+     * @param command     the command.
+     * @param setterInner the method to call to apply changes if the command is a
+     *                    correctly formatted command to set the inner color.
+     * @param setterOuter the method to call to apply changes if the command is a
+     *                    correctly formatted command to set the inner color.
      * @return true if the command was correctly formatted, false otherwise.
      */
     public static boolean checkSetPlayerColorCommand(final String command, final Consumer<Integer> setterInner,
             final Consumer<Integer> setterOuter) {
 
-        String[] parts = command.split(" ");
+        final String[] parts = command.split(" ");
         final Consumer<Integer> setter;
 
         if (isSetColorCommand(parts)) {
-            if (parts[1].equals(MainMenuView.FLAG_INNER)) {
+            if (MainMenuView.FLAG_INNER.equals(parts[1])) {
                 setter = setterInner;
             } else {
                 setter = setterOuter;
             }
-            final String color = parts[2].replace("-", "").toLowerCase();
+            final String color = parts[2].replace("-", "").toLowerCase(Locale.ROOT);
             if (MainMenuView.AVAILABLE_COLORS.keySet().stream().anyMatch(x -> x.equalsIgnoreCase(color))) {
                 final Optional<Integer> rgbaColor = stringColorToRgba(color);
                 if (rgbaColor.isPresent()) {
@@ -85,14 +90,11 @@ public final class GenericCommands {
      *              representation.
      * @return true if the command can be a setColor command.
      */
-    private static boolean isSetColorCommand(String[] parts) {
+    private static boolean isSetColorCommand(final String[] parts) {
 
-        if (parts.length != 3 || !parts[0].equals(MainMenuView.CMD_SET_COLOR)
-                || ((!parts[1].equals(MainMenuView.FLAG_INNER)) && (!parts[1].equals(MainMenuView.FLAG_OUTER)))) {
-            return false;
-        }
+        return parts.length != 3 || !MainMenuView.CMD_SET_COLOR.equals(parts[0])
+                || !MainMenuView.FLAG_INNER.equals(parts[1]) && !MainMenuView.FLAG_OUTER.equals(parts[1]);
 
-        return true;
     }
 
     /**
@@ -102,7 +104,7 @@ public final class GenericCommands {
      * @param command the command received.
      * @return the correct {@link GameResolution} representation.
      */
-    public static Optional<GameResolution> checkResolutionCommand(String command) {
+    public static Optional<GameResolution> checkResolutionCommand(final String command) {
         if (commandToGameResolution.keySet().contains(command)) {
             return Optional.of(commandToGameResolution.get(command));
         } else {

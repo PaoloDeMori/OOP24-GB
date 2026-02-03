@@ -10,7 +10,7 @@ import it.unibo.geometrybash.view.core.Camera2D;
 import it.unibo.geometrybash.view.core.RenderContext;
 import it.unibo.geometrybash.view.exceptions.ExecutionWithIllegalThreadException;
 import it.unibo.geometrybash.view.exceptions.NotStartedViewException;
-import it.unibo.geometrybash.view.gamepanel.GamePanel;
+import it.unibo.geometrybash.view.gamepanel.GamePanelImpl;
 import it.unibo.geometrybash.view.gamepanel.PanelsFactory;
 import it.unibo.geometrybash.view.gamepanel.PanelsFactoryImpl;
 import it.unibo.geometrybash.view.menus.MainMenuView;
@@ -26,21 +26,21 @@ public class ViewImpl extends AbstractObservableWithSet<ViewEvent> implements Vi
     private final AssetStore assetStore;
     private final MainMenuView menuView;
     private final PanelsFactory panelsFactory;
-    private GamePanel gamePanel;
+    private final GamePanelImpl gamePanel;
     private RenderContext renderContext;
 
     /**
      * The constructor of the view of the game.
      *
-     * @param resourceLoader the object used to retrieve resources
-     * @param assetStore     the object that retrieves resources
+     * @param resourceLoader the object used to retrieve resources.
+     * @param assetStore     the object that retrieves resources.
      */
     public ViewImpl(final ResourceLoader resourceLoader, final AssetStore assetStore) {
         this.resourceLoader = resourceLoader;
         this.assetStore = assetStore;
         this.menuView = new MainMenuView(this.resourceLoader);
         this.panelsFactory = new PanelsFactoryImpl();
-        this.gamePanel = new GamePanel(panelsFactory);
+        this.gamePanel = new GamePanelImpl(panelsFactory);
     }
 
     /**
@@ -50,7 +50,7 @@ public class ViewImpl extends AbstractObservableWithSet<ViewEvent> implements Vi
     public void init(final GameResolution resolution) {
         this.renderContext = new RenderContext(new Camera2D(resolution, 0), resolution.getViewPortWidth(),
                 resolution.getViewPortHeight());
-        this.gamePanel.init(renderContext, assetStore, TITLE_GAME,resolution);
+        this.gamePanel.init(renderContext, assetStore, TITLE_GAME, resolution);
     }
 
     /**
@@ -148,14 +148,14 @@ public class ViewImpl extends AbstractObservableWithSet<ViewEvent> implements Vi
     }
 
     @Override
-    public void addObserver(Observer<? super ViewEvent> obs) {
+    public void addObserver(final Observer<? super ViewEvent> obs) {
         super.addObserver(obs);
         this.gamePanel.addObserver(obs);
         this.menuView.addObserver(obs);
     }
 
     @Override
-    public void appendText(String text){
+    public void appendText(final String text) {
         this.menuView.appendText(text);
     }
 }
