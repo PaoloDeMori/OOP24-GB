@@ -190,6 +190,9 @@ public abstract class AbstractControllerImpl implements Controller {
             this.gameResolution = resolution.get();
             this.view.appendText(ON_CORRECT_RESOLUTION_CHANGE);
             this.menuModel.addCommand(command);
+            if (this.gameModel.getStatus().equals(Status.ONPAUSE)) {
+                this.view.init(gameResolution);
+            }
             return true;
         }
         return false;
@@ -289,12 +292,18 @@ public abstract class AbstractControllerImpl implements Controller {
      */
     private void gameResume() {
         try {
-            audioManager.stop(MENU_MUSIC);
-            audioManager.loop(LEVEL_MUSIC);
-            gameModel.resume();
-            gameLoopSetting();
-            gameLoop.resume();
-            view.changeView(ViewScene.IN_GAME);
+            if (this.gameModel.getStatus().equals(Status.ONPAUSE)) {
+                audioManager.stop(MENU_MUSIC);
+                audioManager.loop(LEVEL_MUSIC);
+                gameModel.resume();
+                gameLoopSetting();
+                gameLoop.resume();
+                view.changeView(ViewScene.IN_GAME);
+            } else {
+                this.view.showExecutionError(
+                        "Please to start the game type \"start\","
+                                + " \"resume\" is a command to use while on pause to resume the game");
+            }
         } catch (final NotOnPauseException | NotStartedException | InvalidModelMethodInvocationException e) {
             handleError("Error while resuming the game", Optional.of(e));
         }
@@ -305,18 +314,13 @@ public abstract class AbstractControllerImpl implements Controller {
      */
     private void gamePause() {
         try {
-            if (this.gameModel.getStatus().equals(Status.ONPAUSE)) {
-                audioManager.stop(LEVEL_MUSIC);
-                audioManager.loop(MENU_MUSIC);
-                gameLoopSetting();
-                gameLoop.pause();
-                gameModel.pause();
-                view.changeView(ViewScene.PAUSE);
-            } else {
-                this.view.showExecutionError(
-                        "Please to start the game type \"start\","
-                                + " \"resume\" is a command to use while on pause to resume the game");
-            }
+            audioManager.stop(LEVEL_MUSIC);
+            audioManager.loop(MENU_MUSIC);
+            gameLoopSetting();
+            gameLoop.pause();
+            gameModel.pause();
+            view.changeView(ViewScene.PAUSE);
+
         } catch (final InvalidGameLoopStatusException | InvalidModelMethodInvocationException e) {
             handleError("Error while resuming the thread", Optional.of(e));
         }
@@ -441,6 +445,22 @@ public abstract class AbstractControllerImpl implements Controller {
     @Override
     public Status getModelStatus() {
         return this.gameModel.getStatus();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isTheModelSet() {
+        return this.gameModel != null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isTheViewSet() {
+        return this.view != null;
     }
 
 }

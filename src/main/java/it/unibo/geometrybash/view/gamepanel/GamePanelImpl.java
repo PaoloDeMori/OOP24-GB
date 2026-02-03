@@ -13,7 +13,7 @@ import it.unibo.geometrybash.view.utilities.TerminalColor;
 
 /**
  * Implemantation of the {@link GamePanel} interface, using {@link GameFrame}
- * as game window and {@link PhysicsFactory} to create the main panel.
+ * as game window and {@link PanelsFactory} to create the main panel.
  * 
  * @see GameFrameBuilder
  */

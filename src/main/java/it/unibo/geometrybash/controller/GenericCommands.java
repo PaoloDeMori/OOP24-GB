@@ -16,7 +16,7 @@ public final class GenericCommands {
     private static Map<String, GameResolution> commandToGameResolution = Map.of(getBigResolutionCommand(),
             GameResolution.BIG,
             getMediumResolutionCommand(), GameResolution.MEDIUM,
-            getSmallResolutionCommand(), GameResolution.BIG);
+            getSmallResolutionCommand(), GameResolution.SMALL);
 
     private GenericCommands() {
         // impossible to create this class because this is a helper class.
@@ -92,8 +92,8 @@ public final class GenericCommands {
      */
     private static boolean isSetColorCommand(final String[] parts) {
 
-        return parts.length != 3 || !MainMenuView.CMD_SET_COLOR.equals(parts[0])
-                || !MainMenuView.FLAG_INNER.equals(parts[1]) && !MainMenuView.FLAG_OUTER.equals(parts[1]);
+        return parts.length == 3 && MainMenuView.CMD_SET_COLOR.equals(parts[0])
+                && (MainMenuView.FLAG_INNER.equals(parts[1]) || MainMenuView.FLAG_OUTER.equals(parts[1]));
 
     }
 

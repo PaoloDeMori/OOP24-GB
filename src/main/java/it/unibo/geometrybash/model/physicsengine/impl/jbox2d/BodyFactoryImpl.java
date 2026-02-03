@@ -28,15 +28,15 @@ public class BodyFactoryImpl implements BodyFactory<Body> {
     /**
      * The default friction value.
      */
-    public static final float STANDARD_FRICTION = 0.0f;
+    private static final float STANDARD_FRICTION = JBox2DValues.STANDARD_FRICTION;
     /**
      * The default restitution value.
      */
-    public static final float STANDARD_RESTITUTION = 0.0f;
+    private static final float STANDARD_RESTITUTION = JBox2DValues.STANDARD_RESTITUTION;
 
-    private static final float PLAYER_STANDARD_DENSITY = 1.0f;
+    private static final float PLAYER_STANDARD_DENSITY = JBox2DValues.PLAYER_STANDARD_DENSITY;
 
-    private static final float PLAYER_STANDARD_FRICTION = -0.1f;
+    private static final float PLAYER_STANDARD_FRICTION = JBox2DValues.PLAYER_STANDARD_FRICTION;
 
     private final World world;
 

@@ -22,4 +22,18 @@ public interface Controller extends ModelObserver {
      * Starts the game.
      */
     void start();
+
+    /**
+     * Checks if the view is set.
+     * 
+     * @return true if the view is set, false otherwise.
+     */
+    boolean isTheViewSet();
+
+    /**
+     * Checks if the model is set.
+     * 
+     * @return true if the view is set, false otherwise.
+     */
+    boolean isTheModelSet();
 }
