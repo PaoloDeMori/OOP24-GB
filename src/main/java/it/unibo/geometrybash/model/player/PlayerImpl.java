@@ -118,12 +118,12 @@ public class PlayerImpl extends AbstractGameObject<HitBox> implements PlayerWith
     }
 
     // normalize angle to the [0, 2PI) range
-    private double normalizeAngle(double angle) {
-        angle %= TWO_PI;
-        if (angle < 0) {
-            angle += TWO_PI;
+    private double normalizeAngle(final double angle) {
+        double normalized = angle % TWO_PI;
+        if (normalized < 0) {
+            normalized += TWO_PI;
         }
-        return angle;
+        return normalized;
     }
 
     /**

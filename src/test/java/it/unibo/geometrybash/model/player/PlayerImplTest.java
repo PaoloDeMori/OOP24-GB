@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.stream.IntStream;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -42,7 +44,7 @@ final class MockPlayerPhysics implements PlayerPhysics {
     }
 
     @Override
-    public void setVelocity(float multiplier) {
+    public void setVelocity(final float multiplier) {
         this.velocity = new Vector2(BASE_SPEED * multiplier, velocity.y());
     }
 
@@ -52,17 +54,17 @@ final class MockPlayerPhysics implements PlayerPhysics {
     }
 
     @Override
-    public void resetBodyTo(Vector2 pos) {
+    public void resetBodyTo(final Vector2 pos) {
         this.position = pos;
     }
 
     @Override
-    public Vector2 getPosition(HitBox hB) {
+    public Vector2 getPosition(final HitBox hB) {
         return this.position;
     }
 
     @Override
-    public void setUserData(Object userData) {
+    public void setUserData(final Object userData) {
         throw new UnsupportedOperationException(NOT_NECESSARY_METHOD);
     }
 
@@ -125,9 +127,9 @@ class PlayerImplTest {
      * @return representing a regular polygon
      */
     private static HitBox regularPolygonHitBox(final int n) {
-        final var vertices = java.util.stream.IntStream.range(0, n)
+        final var vertices = IntStream.range(0, n)
                 .mapToObj(i -> {
-                    double a = (2.0 * Math.PI * i) / n;
+                    final double a = 2.0 * Math.PI * i / n;
                     return new Vector2((float) (SIZE * Math.cos(a)), (float) (SIZE * Math.sin(a)));
                 })
                 .toList();
@@ -147,7 +149,7 @@ class PlayerImplTest {
 
     @Test
     void testSnapsWhenPlayerIsOnAir() {
-        for (int n : POLYGONS) {
+        for (final int n : POLYGONS) {
             createPlayerWithGenericPolygon(n);
             this.physics.setGrounded(false);
             final double before = this.player.getAngularRotation();
@@ -160,12 +162,12 @@ class PlayerImplTest {
 
     @Test
     void testRotationSnapsToNearestStepOnGround() {
-        for (int n : POLYGONS) {
+        for (final int n : POLYGONS) {
             createPlayerWithGenericPolygon(n);
             this.physics.setGrounded(false);
             // Drive the rotation to a value strictly greater than half of stepAngle,
             // ensuring that the nearest-multiple snapping selects the upper multiple.
-            final float dtToHalfStep = (float) ((0.6 * this.stepAngle) / Math.toRadians(720.0));
+            final float dtToHalfStep = (float) (0.6 * this.stepAngle / Math.toRadians(720.0));
             this.player.update(dtToHalfStep);
             this.physics.setGrounded(true);
             this.player.update(0.0f);
@@ -178,11 +180,11 @@ class PlayerImplTest {
 
     @Test
     void testGroundedRotationWhenIsInPlaying() {
-        for (int n : POLYGONS) {
+        for (final int n : POLYGONS) {
             createPlayerWithGenericPolygon(n);
             this.physics.setGrounded(false);
             final double omega = Math.toRadians(720.0);
-            final float dtToUnaligned = (float) ((0.6 * this.stepAngle) / omega);
+            final float dtToUnaligned = (float) (0.6 * this.stepAngle / omega);
             this.player.update(dtToUnaligned);
             this.physics.setGrounded(true);
             this.player.update(DT);
@@ -201,7 +203,7 @@ class PlayerImplTest {
         createPlayerWithGenericPolygon(6);
         physics.setGrounded(false);
         player.update(2.0f);
-        double angle = player.getAngularRotation();
+        final double angle = player.getAngularRotation();
         assertTrue(angle >= 0 && angle < TWO_PI);
     }
 
@@ -221,7 +223,7 @@ class PlayerImplTest {
         player.addCoin(10);
         player.die();
         assertEquals(0, player.getCoins());
-        assertEquals(true, player.isDead());
+        assertTrue(player.isDead());
     }
 
     @Test
@@ -229,14 +231,14 @@ class PlayerImplTest {
         final boolean[] called = { false };
         player.setOnDeath(() -> called[0] = true);
         player.die();
-        assertEquals(true, called[0]);
+        assertTrue(called[0]);
     }
 
     @Test
     void testOnSpecialObjectCollisionIsCalledOnShield() {
         final int[] called = { 0 };
         player.setOnSpecialObjectCollision(o -> called[0]++);
-        GameObject<?> shield = new ShieldPowerUp(new Vector2(INIT_POSITION, DT));
+        final GameObject<?> shield = new ShieldPowerUp(new Vector2(INIT_POSITION, DT));
         player.onShieldCollected(shield);
         assertEquals(1, called[0]);
     }

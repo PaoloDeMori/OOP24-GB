@@ -26,7 +26,7 @@ public class ViewImpl extends AbstractObservableWithSet<ViewEvent> implements Vi
     private final AssetStore assetStore;
     private final MainMenuView menuView;
     private final PanelsFactory panelsFactory;
-    private GamePanel gamePanel;
+    private final GamePanel gamePanel;
     private RenderContext renderContext;
 
     /**
@@ -147,15 +147,21 @@ public class ViewImpl extends AbstractObservableWithSet<ViewEvent> implements Vi
         this.menuView.showGameExecutionError(executionError);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void addObserver(Observer<? super ViewEvent> obs) {
+    public void addObserver(final Observer<? super ViewEvent> obs) {
         super.addObserver(obs);
         this.gamePanel.addObserver(obs);
         this.menuView.addObserver(obs);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void appendText(String text){
+    public void appendText(final String text) {
         this.menuView.appendText(text);
     }
 }

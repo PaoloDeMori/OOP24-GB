@@ -67,7 +67,7 @@ public interface Player<S extends Shape> extends GameObject<HitBox> {
      *
      * @param onSpecialObjectCollision the consumer that accepts the object with a peculiar behavior
      */
-    void setOnSpecialObjectCollision(final Consumer<GameObject<?>> onSpecialObjectCollision);
+    void setOnSpecialObjectCollision(Consumer<GameObject<?>> onSpecialObjectCollision);
 
     /**
      * Activates a shield effect for the player.
@@ -88,6 +88,7 @@ public interface Player<S extends Shape> extends GameObject<HitBox> {
      * This method should delegate the effect to the internal power-up manager.
      * </p>
      *
+     * @param speedBoost the speedboost powerup whitch collides with player
      * @param multiplier the speed multiplier
      * @param duration   the duration of the effect in seconds
      */
