@@ -365,6 +365,8 @@ public abstract class AbstractControllerImpl implements Controller {
                     LOGGER.info("Safe thread interrupted safely");
 
                 } finally {
+                    audioManager.stop(LEVEL_MUSIC);
+                    audioManager.loop(MENU_MUSIC);
                     SwingUtilities.invokeLater(() -> {
                         try {
                             view.victory(this.gameModel.getPlayer().getCoins(),
@@ -401,7 +403,7 @@ public abstract class AbstractControllerImpl implements Controller {
                 gameLoop.start();
             } else {
                 this.view.showExecutionError(
-                        "Please to restart the game type \"restart\", if you want to resume it jsut type \"resume\"");
+                        "Please to restart the game type \"restart\", if you want to resume it just type \"resume\"");
             }
         } catch (InvalidGameLoopStatusException | InvalidGameLoopConfigurationException | ModelExecutionException
                 | InvalidModelMethodInvocationException e) {
