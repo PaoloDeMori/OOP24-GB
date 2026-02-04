@@ -1,5 +1,8 @@
 package it.unibo.geometrybash.view;
 
+import java.util.List;
+import java.util.Map;
+
 import it.unibo.geometrybash.commons.UpdateInfoDto;
 import it.unibo.geometrybash.commons.assets.AssetStore;
 import it.unibo.geometrybash.commons.assets.ResourceLoader;
@@ -163,5 +166,21 @@ public class ViewImpl extends AbstractObservableWithSet<ViewEvent> implements Vi
     @Override
     public void appendText(final String text) {
         this.menuView.appendText(text);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void showLevels(final List<String> levels) {
+        this.menuView.showListLevelsNames(levels);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void showColors(final Map<String, Integer> colors) {
+        this.menuView.showAvailableColors(colors);
     }
 }

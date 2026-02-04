@@ -232,12 +232,12 @@ class AbstractGameModelTest {
 
         @Override
         public void setPlayerInnerColor(final int color) {
+            throw new UnsupportedOperationException(NOT_NECESSARY_METHOD);
         }
 
         @Override
         public void setPlayerOuterColor(final int color) {
-            // TODO Auto-generated method stub
-            throw new UnsupportedOperationException("Unimplemented method 'setPlayerOuterColor'");
+            throw new UnsupportedOperationException(NOT_NECESSARY_METHOD);
         }
     }
 }

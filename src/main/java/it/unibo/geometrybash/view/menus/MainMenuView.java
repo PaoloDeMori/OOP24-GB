@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.GraphicsEnvironment;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -60,28 +61,26 @@ public final class MainMenuView extends AbstractObservableWithSet<ViewEvent> imp
     public static final String MEDIUM = "medium";
     /** Command for set the 1024x768 resolution. */
     public static final String SMALL = "small";
-    /** Command to display avaible colors. */
+    /** Command to display available colors. */
     public static final String CMD_COLORS = "colors";
+    /** Command to display availabe levels. */
+    public static final String CMD_LEVELS = "levels";
     /** Command to set the player's color. */
     public static final String CMD_SET_COLOR = "setcolor";
+    /** Command to set the level. */
+    public static final String CMD_SET_LEVEL = "setlevel";
     /** characters for parameters representation. */
     public static final String STANDARD_SEPARATOR = "-";
     /** Flag for set the player's inner color. */
     public static final String FLAG_INNER = STANDARD_SEPARATOR + "inner";
     /** Flag for set the player's outer color. */
     public static final String FLAG_OUTER = STANDARD_SEPARATOR + "outer";
-    /** List of avaible colors for the terminal display. */
-    public static final Map<String, Integer> AVAILABLE_COLORS = Map.of(
-            "red", 0xFFFF0000,
-            "blue", 0xFF0000FF,
-            "green", 0xFF00FF00,
-            "yellow", 0xFFFFD700,
-            "white", 0xFFFFFFFF);
     /** Prefix for command list items. */
     private static final String CMD_PREFIX = " > ";
     /** Command for create new line. */
     private static final String NEW_LINE = "\n";
-
+    /** Line separator. */
+    private static final String LINE_SEPARATOR = " -----------------------------";
     private final JFrame frame;
     private final JTextArea outputArea;
     private final JTextField inputField;
@@ -178,6 +177,7 @@ public final class MainMenuView extends AbstractObservableWithSet<ViewEvent> imp
         this.appendText(CMD_PREFIX + CMD_HELP + "  : show this list");
         this.appendText(CMD_PREFIX + CMD_MAN_RESOLUTION + "  : display available game resolutions");
         this.appendText(CMD_PREFIX + CMD_COLORS + "  : show customization colors");
+        this.appendText(CMD_PREFIX + CMD_LEVELS + "  : show the available levels");
         this.appendText("---------------------------");
     }
 
@@ -202,21 +202,24 @@ public final class MainMenuView extends AbstractObservableWithSet<ViewEvent> imp
     public void showVictoryMessage(final int playerCoins, final int totalCoins) {
         this.applyStyle(defaultStyle);
         this.appendText(NEW_LINE + " LEVEL COMPLETED! YOU WON!");
-        this.appendText(" -----------------------------");
-        this.appendText(" you have collected " + playerCoins + " out of " + totalCoins + " avaible coins!");
-        this.appendText(" -----------------------------");
+        this.appendText(LINE_SEPARATOR);
+        this.appendText(" you have collected " + playerCoins + " out of " + totalCoins + " available coins!");
+        this.appendText(LINE_SEPARATOR);
         this.appendText(" type " + CMD_START + " for start new challenge");
     }
 
     /**
      * Shows all the colors available that can be used to customize the player.
+     *
+     * @param availableColors a map that links the availble colors for the player
+     *                        with their hexadecimal value.
      */
-    public void showAvailableColors() {
-        this.appendText(NEW_LINE + " AVAIBLE CUSTOMIZAION COLOR");
-        for (final String color : AVAILABLE_COLORS.keySet()) {
+    public void showAvailableColors(final Map<String, Integer> availableColors) {
+        this.appendText(NEW_LINE + " AVAILABLE CUSTOMIZATION COLOR");
+        for (final String color : availableColors.keySet()) {
             this.appendText(CMD_PREFIX + color.toUpperCase(Locale.ROOT));
         }
-        this.appendText(" -----------------------------");
+        this.appendText(LINE_SEPARATOR);
         this.appendText(" Usage: " + CMD_SET_COLOR + " [" + FLAG_INNER + "|" + FLAG_OUTER + "] -<color>");
         this.appendText(" Example: " + CMD_SET_COLOR + " " + FLAG_INNER + " -red");
     }
@@ -255,6 +258,21 @@ public final class MainMenuView extends AbstractObservableWithSet<ViewEvent> imp
         appendText(" " + SMALL + "   - 1024 x 768" + NEW_LINE);
 
         appendText("-----------------------------------------------");
+    }
+
+    /**
+     * Shows all the levels available that can be played by the user.
+     *
+     * @param levelsNames the list level's name.
+     */
+    public void showListLevelsNames(final List<String> levelsNames) {
+        this.appendText(NEW_LINE + " AVAILABLE LEVELS ");
+        for (final String level : levelsNames) {
+            this.appendText(CMD_PREFIX + levelsNames.indexOf(level) + " " + level.toUpperCase(Locale.ROOT));
+        }
+        this.appendText(LINE_SEPARATOR);
+        this.appendText(" Usage: " + CMD_SET_LEVEL + " " + STANDARD_SEPARATOR + "<index>");
+        this.appendText(" Example: " + CMD_SET_LEVEL + " " + STANDARD_SEPARATOR + "1");
     }
 
     /**
@@ -367,9 +385,6 @@ public final class MainMenuView extends AbstractObservableWithSet<ViewEvent> imp
                 case CMD_RESUME:
                     notifyObservers(ViewEvent.createEvent(ViewEventTypeFactory.standard(StandardViewEventType.RESUME)));
                     break;
-                case CMD_COLORS:
-                    this.showAvailableColors();
-                    break;
                 case "man":
                     if (CMD_MAN_RESOLUTION.equals(cmd)) {
                         this.showManResolution();
@@ -378,7 +393,7 @@ public final class MainMenuView extends AbstractObservableWithSet<ViewEvent> imp
                     }
                     break;
                 default:
-                    notifyObservers(ViewEvent.createEvent(ViewEventTypeFactory.generic(rawCmd)));
+                    notifyObservers(ViewEvent.createEvent(ViewEventTypeFactory.generic(cmd)));
             }
             inputField.setText("");
         }

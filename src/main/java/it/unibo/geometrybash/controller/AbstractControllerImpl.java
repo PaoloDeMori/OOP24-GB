@@ -9,9 +9,6 @@ import org.slf4j.LoggerFactory;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import it.unibo.geometrybash.commons.UpdateInfoDto;
-import it.unibo.geometrybash.commons.assets.AudioManager;
-import it.unibo.geometrybash.commons.assets.AudioStore;
-import it.unibo.geometrybash.commons.assets.ResourceLoader;
 import it.unibo.geometrybash.commons.input.StandardViewEventType;
 import it.unibo.geometrybash.commons.pattern.observerpattern.modelobserver.ModelEvent;
 import it.unibo.geometrybash.controller.gameloop.GameLoop;
@@ -30,6 +27,7 @@ import it.unibo.geometrybash.view.View;
 import it.unibo.geometrybash.view.ViewScene;
 import it.unibo.geometrybash.view.exceptions.ExecutionWithIllegalThreadException;
 import it.unibo.geometrybash.view.exceptions.NotStartedViewException;
+import it.unibo.geometrybash.view.menus.MainMenuView;
 import it.unibo.geometrybash.view.utilities.GameResolution;
 
 /**
@@ -41,13 +39,17 @@ public abstract class AbstractControllerImpl implements Controller {
      * Logger instance to handle errors and sending debug information.
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractControllerImpl.class);
-    private static final String LEVEL_NAME = "tempLevel";
-    private static final String MENU_MUSIC = "it/unibo/geometrybash/audio/menu.wav";
-    private static final String LEVEL_MUSIC = "it/unibo/geometrybash/audio/level1.wav";
     private static final String ON_HISTORY_DESCRIPTION = "LIST OF FUNCTIONING COMMANDS USED:";
+    private static final String ON_LEVEL_CHANGED = "Level correctly set! :)";
+
     private static final String ON_CORRECT_RESOLUTION_CHANGE = "\"Correctly set size.\"";
     private static final String ON_CORRECT_COLOR_UPDATE = "\"Correctly updated color.\"";
     private static final String HISTORY_COMMAND = "history";
+
+    private static final String ON_MUSIC_ERROR = "The game is running without music, "
+            + "because an error occured while loading the audiofiles";
+
+    private static final String DEBUG_MESSAGE = "For debug porpuses->";
 
     private final GameModel gameModel;
     private final View view;
@@ -55,18 +57,19 @@ public abstract class AbstractControllerImpl implements Controller {
     private GameLoop gameLoop;
     private final GameLoopFactory gameLoopFactory;
     private GameResolution gameResolution = GameResolution.MEDIUM;
-    private final AudioManager audioManager;
+    private final ControllerAudioScheduler audioScheduler;
     private final MenuModel menuModel;
+    private String levelName = MenuModel.LEVELS_NAME_LIST.get(0);
 
     /**
      * The constructor of the controller with game model, view and input handler
      * creation delegated.
      *
-     * @param gameModel           the model of the game
-     * @param view                the main view class of the game
-     * @param gameLoopFactory     the factory to init the gameloop.
-     * @param inputHandlerFactory the factory to init the inputHandler.
-     * @param resourceLoader      the object used to retrieve resources.
+     * @param gameModel                the model of the game
+     * @param view                     the main view class of the game
+     * @param gameLoopFactory          the factory to init the gameloop.
+     * @param inputHandlerFactory      the factory to init the inputHandler.
+     * @param controllerAudioScheduler the object used to handle the music.
      * 
      */
 
@@ -74,15 +77,14 @@ public abstract class AbstractControllerImpl implements Controller {
             + "I'm delegating the creation of many classes to improve the reusability of this class."
             + "Im using interfaces to give the parameter's classes default behaviour ")
     public AbstractControllerImpl(final GameModel gameModel, final View view, final GameLoopFactory gameLoopFactory,
-            final InputHandlerFactory inputHandlerFactory, final ResourceLoader resourceLoader) {
+            final InputHandlerFactory inputHandlerFactory, final ControllerAudioScheduler controllerAudioScheduler) {
         this.gameModel = gameModel;
         this.gameModel.addObserver(this);
         this.view = view;
         this.inputHandler = inputHandlerFactory.createInputHandler();
         this.view.addObserver(inputHandler);
         this.gameLoopFactory = gameLoopFactory;
-        final AudioStore audioStore = new AudioStore(resourceLoader);
-        this.audioManager = new AudioManager(audioStore);
+        this.audioScheduler = controllerAudioScheduler;
         this.menuModel = new MenuModel();
     }
 
@@ -142,6 +144,15 @@ public abstract class AbstractControllerImpl implements Controller {
         }
 
         if (onHistoryCommand(command)) {
+            return;
+        }
+        if (onSetLevelCommand(command)) {
+            return;
+        }
+        if (onLevelsCommand(command)) {
+            return;
+        }
+        if (onColorsCommand(command)) {
             return;
         }
 
@@ -221,6 +232,81 @@ public abstract class AbstractControllerImpl implements Controller {
     }
 
     /**
+     * Private method to evaluate a genericcommand, if the command is the correct
+     * command to
+     * retrieve the list of levels, this method shows it in the view and return
+     * true,
+     * otherwise
+     * return false.
+     * 
+     * @param command the received command
+     * @return true if the command is is the correct
+     *         command to
+     *         show the levels list false otherwise.
+     */
+    private boolean onLevelsCommand(final String command) {
+        if (MainMenuView.CMD_LEVELS.equals(command)) {
+            view.showLevels(MenuModel.LEVELS_NAME_LIST);
+            menuModel.addCommand(command);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Private method to evaluate a generic command, if the command is the correct
+     * command to
+     * retrieve the map of colors, this method shows it in the view and return
+     * true,
+     * otherwise
+     * return false.
+     * 
+     * <p>
+     * THis method shows a map that links color names with their hexadecimal rgba
+     * representation.
+     * </p>
+     * 
+     * @param command the received command
+     * @return true if the command is is the correct
+     *         command to
+     *         show the colors map false otherwise.
+     */
+    private boolean onColorsCommand(final String command) {
+        if (MainMenuView.CMD_COLORS.equals(command)) {
+            view.showColors(MenuModel.AVAILABLE_COLORS);
+            menuModel.addCommand(command);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Private method to evaluate a genericcommand, if the command is the correct
+     * command to
+     * change the level, this method changes it and return true,
+     * otherwise
+     * return false.
+     * 
+     * @param command the received command
+     * @return true if the command is is the correct
+     *         command to
+     *         change the level false otherwise.
+     */
+    private boolean onSetLevelCommand(final String command) {
+        final Optional<Integer> value = GenericCommands.checkSelectLevelCommand(command);
+        if (value.isPresent() && MenuModel.LEVELS_NAME_LIST.size() >= value.get()
+                && value.get() >= 0
+                && this.gameModel.getStatus().equals(Status.NEVERSTARTED)) {
+            this.levelName = MenuModel.LEVELS_NAME_LIST.get(value.get());
+            menuModel.addCommand(command);
+            view.appendText(ON_LEVEL_CHANGED + "level's name -> " + levelName);
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
      * The action to execute on every frame refresh.
      */
     private void onEveryFrame() {
@@ -288,13 +374,63 @@ public abstract class AbstractControllerImpl implements Controller {
     }
 
     /**
+     * Handle the possible exception thrown by the {@link audioScheduler}.
+     */
+    private void fromMenuToGameMusic() {
+        try {
+            this.audioScheduler.fromMenuToGame();
+        } catch (final ImpossibleToReproduceMusicException e) {
+            try {
+                this.audioScheduler.firstStart();
+                this.audioScheduler.fromMenuToGame();
+            } catch (final ImpossibleToReproduceMusicException ex) {
+                LOGGER.info(ON_MUSIC_ERROR);
+                LOGGER.debug(DEBUG_MESSAGE, e);
+            }
+        }
+    }
+
+    /**
+     * Handle the possible exception thrown by the {@link audioScheduler}.
+     */
+    private void fromGameToMenuMusic() {
+        try {
+            this.audioScheduler.fromGameToMenu();
+        } catch (final ImpossibleToReproduceMusicException e) {
+            try {
+                this.audioScheduler.firstStart();
+                this.audioScheduler.fromGameToMenu();
+            } catch (final ImpossibleToReproduceMusicException ex) {
+                LOGGER.info(ON_MUSIC_ERROR);
+                LOGGER.debug(DEBUG_MESSAGE, e);
+            }
+        }
+    }
+
+    /**
+     * Handle the possible exception thrown by the {@link audioScheduler}.
+     */
+    private void restartMusic() {
+        try {
+            this.audioScheduler.restartLevelMusic();
+        } catch (final ImpossibleToReproduceMusicException e) {
+            try {
+                this.audioScheduler.firstStart();
+                this.audioScheduler.restartLevelMusic();
+            } catch (final ImpossibleToReproduceMusicException ex) {
+                LOGGER.info(ON_MUSIC_ERROR);
+                LOGGER.debug(DEBUG_MESSAGE, e);
+            }
+        }
+    }
+
+    /**
      * A utility method to resume the game.
      */
     private void gameResume() {
         try {
             if (this.gameModel.getStatus().equals(Status.ONPAUSE)) {
-                audioManager.stop(MENU_MUSIC);
-                audioManager.loop(LEVEL_MUSIC);
+                fromMenuToGameMusic();
                 gameModel.resume();
                 gameLoopSetting();
                 gameLoop.resume();
@@ -314,8 +450,7 @@ public abstract class AbstractControllerImpl implements Controller {
      */
     private void gamePause() {
         try {
-            audioManager.stop(LEVEL_MUSIC);
-            audioManager.loop(MENU_MUSIC);
+            this.fromGameToMenuMusic();
             gameLoopSetting();
             gameLoop.pause();
             gameModel.pause();
@@ -333,8 +468,7 @@ public abstract class AbstractControllerImpl implements Controller {
     private void gameRestart() {
         try {
             if (this.gameModel.getStatus().equals(Status.ONPAUSE)) {
-                audioManager.stop(MENU_MUSIC);
-                audioManager.loop(LEVEL_MUSIC);
+                this.fromMenuToGameMusic();
                 gameLoopSetting();
                 this.gameModel.restart();
                 this.gameLoop.resume();
@@ -365,6 +499,7 @@ public abstract class AbstractControllerImpl implements Controller {
                     LOGGER.info("Safe thread interrupted safely");
 
                 } finally {
+                    this.fromGameToMenuMusic();
                     SwingUtilities.invokeLater(() -> {
                         try {
                             view.victory(this.gameModel.getPlayer().getCoins(),
@@ -379,8 +514,7 @@ public abstract class AbstractControllerImpl implements Controller {
                 }
                 break;
             case GAMEOVER:
-                audioManager.stop(LEVEL_MUSIC);
-                audioManager.loop(LEVEL_MUSIC);
+                this.restartMusic();
                 break;
         }
     }
@@ -392,20 +526,19 @@ public abstract class AbstractControllerImpl implements Controller {
     private void startLevel() {
         try {
             if (this.gameModel.getStatus().equals(Status.NEVERSTARTED)) {
-                audioManager.stop(MENU_MUSIC);
-                audioManager.loop(LEVEL_MUSIC);
+                this.fromMenuToGameMusic();
                 gameLoopSetting();
-                gameModel.start(LEVEL_NAME);
+                gameModel.start(levelName);
                 view.init(gameResolution);
                 view.changeView(ViewScene.IN_GAME);
                 gameLoop.start();
             } else {
                 this.view.showExecutionError(
-                        "Please to restart the game type \"restart\", if you want to resume it jsut type \"resume\"");
+                        "Please to restart the game type \"restart\", if you want to resume it just type \"resume\"");
             }
         } catch (InvalidGameLoopStatusException | InvalidGameLoopConfigurationException | ModelExecutionException
                 | InvalidModelMethodInvocationException e) {
-            handleError(LEVEL_NAME, Optional.of(e));
+            handleError(levelName, Optional.of(e));
         }
     }
 
@@ -414,7 +547,12 @@ public abstract class AbstractControllerImpl implements Controller {
      */
     @Override
     public void start() {
-        audioManager.loop(MENU_MUSIC);
+        try {
+            this.audioScheduler.firstStart();
+        } catch (final ImpossibleToReproduceMusicException e) {
+            LOGGER.info("Impossible to init the music loader. the game starts without the music");
+            LOGGER.debug(DEBUG_MESSAGE, e);
+        }
         this.initInputHandler();
         try {
             this.view.show();
