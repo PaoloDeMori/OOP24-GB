@@ -62,7 +62,6 @@ public class PlayerPhysicsImpl implements PlayerPhysics {
     @Override
     public void setVelocity(final float multiplier) {
         final float currentSpeed = BASE_SPEED * multiplier;
-
         if (lastPosition != null && Math.abs(this.body.getPosition().x - lastPosition.x) < TOLLERANCE && isGrounded()) {
             counter++;
             if (counter > 2) {
