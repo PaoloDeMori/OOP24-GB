@@ -103,7 +103,7 @@ public abstract class AbstractControllerImpl implements Controller {
         this.inputHandler.setOnMenuKeyPressed(this::gamePause);
         this.inputHandler.setActionForEvent(StandardViewEventType.START, this::startLevel);
         this.inputHandler.setActionForEvent(StandardViewEventType.RESTART, this::gameRestart);
-        this.inputHandler.setActionForEvent(StandardViewEventType.RESUME, this::gameResume);
+        this.inputHandler.setOnResumeKeyPressed(this::gameResume);
         this.inputHandler.setActionForEvent(StandardViewEventType.CLOSE, this::onClose);
         this.inputHandler.setGenericCommandHandler(this::onGenericCommand);
     }
