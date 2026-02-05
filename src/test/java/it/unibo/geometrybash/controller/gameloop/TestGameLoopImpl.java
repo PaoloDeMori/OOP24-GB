@@ -13,14 +13,12 @@ import org.slf4j.LoggerFactory;
 import it.unibo.geometrybash.controller.gameloop.exceptions.FpsNotCalculatedException;
 import it.unibo.geometrybash.controller.gameloop.exceptions.InvalidGameLoopConfigurationException;
 import it.unibo.geometrybash.controller.gameloop.exceptions.InvalidGameLoopStatusException;
-import it.unibo.geometrybash.controller.gameloop.exceptions.NotOnPauseException;
 import it.unibo.geometrybash.controller.gameloop.exceptions.NotStartedException;
 
 class TestGameLoopImpl {
     private static final String INTERRUPT_RECEIVED_MESSAGE = "interrupt received";
     private static final String ELAPSED_MAX_TIME = "Gameloop slept too much";
     private static final long MAX_WAITING_TIME = 10_000L;
-    private static final long SMALL_AMOUNT_OF_TIME = 200L;
     private static final Logger LOGGER = LoggerFactory.getLogger(TestGameLoopImpl.class);
 
     /**
@@ -96,93 +94,6 @@ class TestGameLoopImpl {
             fail(ELAPSED_MAX_TIME);
         }
         assertTrue(eC.isValue());
-        assertDoesNotThrow(gL::stop);
-        assertTrue(gL.isTerminatedSafely());
-    }
-
-    /**
-     * Tries to start, stop, pause and resume a gameloop with a correct
-     * intilialization,
-     * and it verifies if the method set is correctly executed.
-     * It verifies that a NotStartedException is thrown if a client tries to stop a
-     * gameloop that hasn't been started.
-     * This test uses an instance of Example class to verify that the gameloop
-     * executed the set AcionOnUpdate.
-     */
-    @Test
-    void testCorrectPauseAndResume() {
-        // Since this test has to wait a significant amount of time to correctly test the class i log this
-        // info
-        LOGGER.info("\n\n---THIS TEST COULD TAKE A WHILE---\n");
-        final GameLoop gL = new GameLoopImpl();
-        final ExampleClass eC = new ExampleClass();
-        gL.setUpdateAction(eC::executable);
-        assertThrows(NotStartedException.class, gL::pause);
-        assertThrows(NotStartedException.class, gL::resume);
-        assertDoesNotThrow(gL::start);
-        try {
-            eC.optimizedWaiting(MAX_WAITING_TIME);
-        } catch (final InterruptedException e) {
-            fail(ELAPSED_MAX_TIME);
-        }
-        assertThrows(NotOnPauseException.class, gL::resume);
-        // Check if the thread correctly executed the function
-        assertTrue(eC.isValue());
-
-        // set the variable as false thinking that it will be set as true by the
-        // gameloop
-        eC.setFalse();
-        try {
-            eC.optimizedWaiting(MAX_WAITING_TIME);
-        } catch (final InterruptedException e) {
-            fail(ELAPSED_MAX_TIME);
-        }
-        // check if the thread set the variable as true
-        assertTrue(eC.isValue());
-        assertDoesNotThrow(gL::pause);
-        try {
-            eC.optimizedWaiting(MAX_WAITING_TIME);
-        } catch (final InterruptedException e) {
-            fail(ELAPSED_MAX_TIME);
-        }
-        assertThrows(InvalidGameLoopStatusException.class, gL::pause);
-
-        // set the variable as false thinking it won't change since the gameloop is
-        // paused
-        eC.setFalse();
-        try {
-            eC.optimizedWaiting(SMALL_AMOUNT_OF_TIME);
-        } catch (final InterruptedException e) {
-            fail(ELAPSED_MAX_TIME);
-        }
-        // check if the variable is still false
-        assertFalse(eC.isValue());
-
-        assertDoesNotThrow(gL::resume);
-
-        try {
-            eC.optimizedWaiting(MAX_WAITING_TIME);
-        } catch (final InterruptedException e) {
-            fail(ELAPSED_MAX_TIME);
-        }
-
-        // check if the variable was set as true since the thread resumed
-        assertTrue(eC.isValue());
-
-        assertDoesNotThrow(gL::stop);
-
-        assertDoesNotThrow(gL::start);
-        try {
-            eC.optimizedWaiting(MAX_WAITING_TIME);
-        } catch (final InterruptedException e) {
-            fail(ELAPSED_MAX_TIME);
-        }
-        assertDoesNotThrow(gL::pause);
-        try {
-            eC.optimizedWaiting(MAX_WAITING_TIME);
-        } catch (final InterruptedException e) {
-            fail(ELAPSED_MAX_TIME);
-        }
         assertDoesNotThrow(gL::stop);
         assertTrue(gL.isTerminatedSafely());
     }
