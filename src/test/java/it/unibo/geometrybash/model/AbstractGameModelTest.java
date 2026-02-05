@@ -221,11 +221,6 @@ class AbstractGameModelTest {
         }
 
         @Override
-        protected void beforeGameObjectsUpdate(final float deltaTime) {
-            throw new UnsupportedOperationException(NOT_NECESSARY_METHOD);
-        }
-
-        @Override
         public void respawnPlayer() {
             throw new UnsupportedOperationException(NOT_NECESSARY_METHOD);
         }

@@ -294,7 +294,7 @@ public abstract class AbstractControllerImpl implements Controller {
      */
     private boolean onSetLevelCommand(final String command) {
         final Optional<Integer> value = GenericCommands.checkSelectLevelCommand(command);
-        if (value.isPresent() && MenuModel.LEVELS_NAME_LIST.size() >= value.get()
+        if (value.isPresent() && MenuModel.LEVELS_NAME_LIST.size() > value.get()
                 && value.get() >= 0
                 && this.gameModel.getStatus().equals(Status.NEVERSTARTED)) {
             this.levelName = MenuModel.LEVELS_NAME_LIST.get(value.get());

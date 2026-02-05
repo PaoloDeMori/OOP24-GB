@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.jbox2d.dynamics.Body;
 import org.junit.jupiter.api.Test;
 
 import it.unibo.geometrybash.commons.UpdateInfoDto;
@@ -59,7 +60,7 @@ class TestAbstractControllerImpl {
     @Test
     void evaluateDeltaTimeTest() {
 
-        final GameModelImpl gM = new GameModelImpl(rL, new JBox2DPhysicsEngineFactory());
+        final GameModelImpl<Body> gM = new GameModelImpl<>(rL, new JBox2DPhysicsEngineFactory());
         final AbstractControllerImpl abs = new StaticDeltaTimeControllerImpl(gM,
                 view, rL);
         assertEquals(DELTA, abs.evaluateDeltaTime());
@@ -70,7 +71,7 @@ class TestAbstractControllerImpl {
      */
     @Test
     void controllerInterfacesTest() {
-        final GameModelImpl gM = new GameModelImpl(rL, new JBox2DPhysicsEngineFactory());
+        final GameModelImpl<Body> gM = new GameModelImpl<>(rL, new JBox2DPhysicsEngineFactory());
         final AbstractControllerImpl abs = new StaticDeltaTimeControllerImpl(gM,
                 new ViewImpl(rL, new AssetStore(rL)), rL);
         assertEquals(Status.NEVERSTARTED, abs.getModelStatus());
@@ -85,7 +86,7 @@ class TestAbstractControllerImpl {
     void startTest() {
         final ViewMock viewMock = new ViewMock();
         final MockAudioScheduler cAS = new MockAudioScheduler();
-        final GameModel gM = new GameModelImpl(rL, new JBox2DPhysicsEngineFactory());
+        final GameModel gM = new GameModelImpl<>(rL, new JBox2DPhysicsEngineFactory());
         final MockInputHandlerFactory inputHandlerFactory = new MockInputHandlerFactory();
 
         final AbstractControllerImpl controller = new MockAbstractController(gM, viewMock,
@@ -118,7 +119,7 @@ class TestAbstractControllerImpl {
     void updateTest() {
         final ViewMock viewMock = new ViewMock(this::notifyObj);
         final MockAudioScheduler cAS = new MockAudioScheduler();
-        final GameModel gM = new GameModelImpl(rL, new JBox2DPhysicsEngineFactory());
+        final GameModel gM = new GameModelImpl<>(rL, new JBox2DPhysicsEngineFactory());
         final MockInputHandlerFactory inputHandlerFactory = new MockInputHandlerFactory();
         final long maxWaitingTime = 3000L;
 
@@ -151,7 +152,7 @@ class TestAbstractControllerImpl {
     void updateGameOverTest() {
         final ViewMock viewMock = new ViewMock();
         final MockAudioScheduler cAS = new MockAudioScheduler(this::notifyObj);
-        final GameModel gM = new GameModelImpl(rL, new JBox2DPhysicsEngineFactory());
+        final GameModel gM = new GameModelImpl<>(rL, new JBox2DPhysicsEngineFactory());
         final MockInputHandlerFactory inputHandlerFactory = new MockInputHandlerFactory();
         final long maxWaitingTime = 3000L;
 

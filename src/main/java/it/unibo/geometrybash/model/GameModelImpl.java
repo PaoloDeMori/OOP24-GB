@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jbox2d.dynamics.Body;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,8 +28,10 @@ import it.unibo.geometrybash.model.player.PlayerWithPhysics;
 
 /**
  * An implementatio of the game model using JBox2d.
+ * 
+ * @param <T> the class used by the physics engine.
  */
-public final class GameModelImpl extends AbstractGameModelWithPhysicsEngine<Body> {
+public final class GameModelImpl<T> extends AbstractGameModelWithPhysicsEngine<T> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GameModelImpl.class);
     private static final String INVALID_STATE_EXCEPTION_MESSAGE = "A method is called while not in the correct state";
@@ -44,7 +45,7 @@ public final class GameModelImpl extends AbstractGameModelWithPhysicsEngine<Body
     private final LevelLoader levelLoader;
     private final ResourceLoader rLoader;
     private String levelName;
-    private final PhysicsEngineFactory<Body> physicsFactory;
+    private final PhysicsEngineFactory<T> physicsFactory;
     private final List<GameObject<?>> changedStateObjects;
     private final GameStateMapper gameStateMapper;
     private volatile boolean isJumpSignalActive;
@@ -58,7 +59,7 @@ public final class GameModelImpl extends AbstractGameModelWithPhysicsEngine<Body
      * @param rLoader the resource laoder.
      * @param pEF     the factory to create jbox2d entities.
      */
-    public GameModelImpl(final ResourceLoader rLoader, final PhysicsEngineFactory<Body> pEF) {
+    public GameModelImpl(final ResourceLoader rLoader, final PhysicsEngineFactory<T> pEF) {
         this.rLoader = rLoader;
         this.levelLoader = new LevelLoaderImpl(this::resetStateObjects);
         this.physicsFactory = pEF;
@@ -287,23 +288,6 @@ public final class GameModelImpl extends AbstractGameModelWithPhysicsEngine<Body
         this.state = Status.NEVERSTARTED;
         clearUpdatableList();
         this.changedStateObjects.clear();
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * <p>
-     * In this implementation of {@link GameModel} i use this method to call the
-     * jump signal in a thread
-     * safe wai.
-     * </p>
-     */
-    @Override
-    protected void beforeGameObjectsUpdate(final float deltaTime) {
-        if (this.isJumpSignalActive && this.player != null) {
-            this.player.jump();
-            this.isJumpSignalActive = false;
-        }
     }
 
     /**

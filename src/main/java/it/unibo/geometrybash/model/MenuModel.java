@@ -49,22 +49,4 @@ public final class MenuModel {
     public List<String> getHistory() {
         return new LinkedList<>(this.history);
     }
-
-    /**
-     * Returns a copy of the level's names.
-     *
-     * @return the list of level's names.
-     */
-    public List<String> getLevelsNames() {
-        return new LinkedList<>(LEVELS_NAME_LIST);
-    }
-
-    /**
-     * Returns a copy of the player's available colors.
-     *
-     * @return the list of player's available colors.
-     */
-    public Map<String, Integer> getPlayerColors() {
-        return Map.copyOf(AVAILABLE_COLORS);
-    }
 }

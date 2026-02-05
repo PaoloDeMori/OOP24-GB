@@ -37,7 +37,7 @@ public final class App {
         final AssetStore assetStore = new AssetStore(resourceLoader);
         final JBox2DPhysicsEngineFactory physicsEngineFactory = new JBox2DPhysicsEngineFactory();
         final View view = new ViewImpl(resourceLoader, assetStore);
-        final GameModel gameModel = new GameModelImpl(resourceLoader, physicsEngineFactory);
+        final GameModel gameModel = new GameModelImpl<>(resourceLoader, physicsEngineFactory);
         final Controller controller = new StaticDeltaTimeControllerImpl(gameModel, view, resourceLoader);
         if (controller.isTheModelSet() && controller.isTheViewSet()) {
             LOGGER.info("Starting the game");

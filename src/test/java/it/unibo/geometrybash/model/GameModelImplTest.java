@@ -24,7 +24,7 @@ class GameModelImplTest {
 
     @Test
     void testStartPauseAndResume() {
-        final GameModelImpl gM = new GameModelImpl(rL, pH);
+        final GameModelImpl<Body> gM = new GameModelImpl<>(rL, pH);
 
         try {
             gM.start(MenuModel.LEVELS_NAME_LIST.get(0));
@@ -45,7 +45,7 @@ class GameModelImplTest {
 
     @Test
     void testRestart() {
-        final GameModelImpl gM = new GameModelImpl(rL, pH);
+        final GameModelImpl<Body> gM = new GameModelImpl<>(rL, pH);
 
         try {
             gM.start(MenuModel.LEVELS_NAME_LIST.get(0));
@@ -62,7 +62,7 @@ class GameModelImplTest {
 
     @Test
     void testGetPlayer() {
-        final GameModelImpl gM = new GameModelImpl(rL, pH);
+        final GameModelImpl<Body> gM = new GameModelImpl<>(rL, pH);
         assertThrows(ModelExecutionException.class, gM::getPlayer);
 
         try {
@@ -78,7 +78,7 @@ class GameModelImplTest {
     @Test
     void testRespawnPlayer() throws ModelExecutionException {
         final float delta = 1 / 60f;
-        final GameModelImpl gM = new GameModelImpl(rL, pH);
+        final GameModelImpl<Body> gM = new GameModelImpl<>(rL, pH);
         assertThrows(ModelExecutionException.class, gM::getPlayer);
 
         try {
@@ -103,7 +103,7 @@ class GameModelImplTest {
         final int innerNewValue = 3;
         final int outerNewValue = 4;
 
-        final GameModelImpl gM = new GameModelImpl(rL, pH);
+        final GameModelImpl<Body> gM = new GameModelImpl<>(rL, pH);
         assertThrows(ModelExecutionException.class, gM::getPlayer);
 
         try {
